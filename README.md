@@ -15,3 +15,4 @@
 
 5. Commit any diagrams, flowcharts, documentation to github under the Docs folder.
 
+6. Use the wiki for meeting notes, documentation, plans, etc (like in CMPUT 301)
