@@ -390,7 +390,7 @@ unsigned layer_config[][NUM_CONFIG_ITEM] = {{0,
 							3}//Layer-8 fc
 							};
 
-char precision_config[][3] ={{8,  0, -4},//Layer-1
+signed char precision_config[][3] ={{8,  0, -4},//Layer-1
 							{ 8,  0, -2},//Layer-2
 							{ 8,  0, -1},//Layer-3
 							{ 8, -1, -1},//Layer-4

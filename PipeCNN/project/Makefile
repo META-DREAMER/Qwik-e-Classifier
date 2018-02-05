@@ -12,9 +12,9 @@ USE_OPENCV = 0
 #supported vendors are xilinx, altera, amd
 VENDOR = altera
 #select the host archecture  x86|arm32
-PLATFORM = x86
+PLATFORM = arm32
 #optinal flows are hw|hw_emu|sw_emu
-FLOW        = sw_emu
+FLOW        = hw
 KERNEL_SRCS = ./device/conv_pipe.cl
 KERNEL_NAME = conv
 KERNEL_DEFS =
