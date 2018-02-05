@@ -16,11 +16,3 @@
 5. Commit any diagrams, flowcharts, documentation to github under the Docs folder.
 
 6. Use the wiki for meeting notes, documentation, plans, etc (like in CMPUT 301)
-
-
-### Main "epics" to be completed
-
-1. Ethereum Smart Contract and creating our own ERC-20 Token
-2. Design and assembly of the actual hardware
-3. Design and development of microcontroller for switches/LCD/money acceptor (VHDL)
-4. Node app to communicate with smart contract/exchange API (either in the cloud, on a raspberry pi, or on the FPGA itself running linux)
