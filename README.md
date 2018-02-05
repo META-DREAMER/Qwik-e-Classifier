@@ -1,4 +1,4 @@
-# Qwik-e-Crypto
+# Qwik-e-Classifier
 
 1. Any tasks should be created at issues in the github repo. If you are taking on a task, assign that task to yourself. Some tasks might have multiple people. I’ve setup different labels for the issues:
 - `docs` is for all documentation stuff (proposal, diagrams, basically any work we do thats not software or hardware)
