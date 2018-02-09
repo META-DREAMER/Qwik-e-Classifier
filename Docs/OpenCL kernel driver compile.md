@@ -1,3 +1,5 @@
+Currently causes segfault when trying to load this kernel module with `insmod aclsoc_drv.ko` :(
+
 Instructions for cross-compiling on Ubuntu (tested on Windows subsystem for Linux)
 
 ## Required Linux tools
@@ -21,6 +23,11 @@ Extract from `sources\arm-angstrom-linux-gnueabi\linux-altera-ltsi-4.1.33\`
 Navigate to the folder containing the extracted kernel (Makefile is in the same level) and run: `make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-`
 
 This will run a configuration wizard, I added support for Altera CPUs.
+
+In the directory with the Linux kernel, navigate to `include/generated/` and edit `utsrelease.h` to be: 
+```C
+#define UTS_RELEASE "4.1.33-ltsi-altera"
+```
 
 ## Extract OpenCL FPGA executables
 Extract folder and navigate to: `aocl-rte-17.1.0-590.arm32\board\c5soc\arm32\driver`
