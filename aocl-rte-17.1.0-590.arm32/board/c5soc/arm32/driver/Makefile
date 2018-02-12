@@ -24,7 +24,7 @@ all :
 clean : clean-intermediates clean-module
 
 clean-module :
-	rm -f *.ko
+#	rm -f *.ko
 
 clean-intermediates:
 	rm -f $(obj-m)
