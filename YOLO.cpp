@@ -8,8 +8,13 @@
 
 #define INPUT_WIDTH 416
 #define INPUT_HEIGHT 416
+#define GRID_WIDTH 13
+#define GRID_HEIGHT 13
+#define CELL_SIZE 32
+#define BOXES_PER_CELL 5
+#define NUM_CLASSES 20
 
-struct BoundingBox {
+struct Box {
     float x;
     float y;
     float width;
@@ -19,28 +24,66 @@ struct BoundingBox {
 struct Prediction {
     int classIndex;
     float score;
-    BoundingBox box;
+    Box box;
 };
 
 const float anchors[] = {1.08, 1.19, 3.42, 4.41, 6.63, 11.38, 9.42, 5.11, 16.62, 10.52};
 
-
+/**
+  Logistic sigmoid, normalizes x to between 0 and 1
+*/
 double sigmoid(double x) {
     return 1 / (1 + exp(-x));
 }
 
-std::vector<double> softmax(std::vector<double> x) {
-    double max = *max_element(x.begin(), x.end());
-    
-    double sum = 0.0;
-    std::vector<double> out(x.size());
+/**
+  Returns index of largest value in given vector
+*/
+int argMax(std::vector<double> in) {
+    return std::distance(in.begin(), std::max_element(in.begin(), in.end()));
+}
 
-    for(std::vector<int>::size_type i = 0; i != x.size(); i++) {
-        out[i] = exp(x[i] - max);
+/**
+  Calculates intersection-over-union overlap of two bounding boxes.
+  Returns value between 0 and 1 representing how much overlap there is.
+*/
+float iou(Box a, Box b) {
+    float areaA = a.width * a.height;
+    if (areaA <= 0) return 0;
+
+    float areaB = b.width * b.height;
+    if (areaB <= 0) return 0;
+
+    float minX = std::max(a.x, b.x);
+    float minY = std::max(a.y, b.y);
+    float maxX = std::min(a.x + a.width, b.x + b.width);
+    float maxY = std::min(a.y + a.height, b.y + b.height);
+
+    float intersectArea = std::max(maxY - minY, 0.f) * std::max(maxX - minX, 0.f);
+
+    return intersectArea / (areaA + areaB - intersectArea);
+}
+
+/**
+  Normalizes all values in the given vector
+  so that they all add up to 1.
+*/
+std::vector<double> softmax(std::vector<double> in)
+{
+    std::vector<double> out(in.size());
+    double sum = 0.0;
+
+    // Find max value in the input vector
+    double max = *std::max_element(in.begin(), in.end());    
+
+    // Shift all values so that max value is 0 and exponentiate, compute sum
+    for(std::vector<int>::size_type i = 0; i != in.size(); i++) {
+        out[i] = exp(in[i] - max);
         sum += out[i];
     }
 
-    for(std::vector<int>::size_type i = 0; i != x.size(); i++)
+    // Divide each element by the sum to normalize all values
+    for(std::vector<int>::size_type i = 0; i != out.size(); i++)
         out[i] /= sum;
     
     return out;
@@ -48,14 +91,14 @@ std::vector<double> softmax(std::vector<double> x) {
 
 
 int main(int argc, char** argv) {
-    printf("\nSigmoid(1): %f\n\n", sigmoid(1));
+    printf("\n\nSigmoid(1): %f\n\n", sigmoid(1));
 
     static const double arr[] = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0};
     std::vector<double> vec (arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    vec = softmax(vec);
+    std::vector<double> softVec = softmax(vec);
     printf("Softmax [1, 2, 3, 4, 1, 2, 3]: \n");
-    for (std::vector<double>::const_iterator i = vec.begin(); i != vec.end(); ++i)
+    for (std::vector<double>::const_iterator i = softVec.begin(); i != softVec.end(); ++i)
         std::cout << *i << ' ';
 
-    printf("\n\n");
+    printf("\n\nArgmax [1, 2, 3, 4, 1, 2, 3]: %d\n\n", argMax(vec));
 }
