@@ -4,7 +4,7 @@
 
 # Configured Linux kernel source.
 # KDIR ?= /tools/aclboardpkg/.platform/linux-socfpga/linux-socfpga-socfpga-3.13-rel14.0/
-KDIR ?= /mnt/c/Users/mhauc/Downloads/linux/git/
+KDIR ?= /mnt/c/Users/mhauc/Downloads/linux-socfpga-socfpga-opencl_4.1.22/
 
 CROSS_COMPILE := arm-linux-gnueabihf-
 ARCH := arm
