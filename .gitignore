@@ -2,3 +2,7 @@
 .vscode/settings.json
 
 YOLO
+
+*.o
+
+YOLO-test

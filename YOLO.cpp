@@ -1,3 +1,13 @@
+/*
+  Implementation of tiny-yolo algorithm (https://pjreddie.com/darknet/yolo/)
+  Created by Hammad Jutt, March 3 2018
+
+  References used:
+  - https://github.com/pjreddie/darknet
+  - https://github.com/joycex99/tiny-yolo-keras/
+  - https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/non_max_suppression_op.cc
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,60 +16,59 @@
 #include <algorithm>
 #include <iostream>
 
-#define INPUT_WIDTH 416
-#define INPUT_HEIGHT 416
-#define GRID_WIDTH 13
-#define GRID_HEIGHT 13
-#define CELL_SIZE 32
-#define BOXES_PER_CELL 5
-#define NUM_CLASSES 20
-
-struct Box {
-    float x;
-    float y;
-    float width;
-    float height;
-};
-
-struct Prediction {
-    int classIndex;
-    float score;
-    Box box;
-};
+#include "YOLO.hpp"
 
 const float anchors[] = {1.08, 1.19, 3.42, 4.41, 6.63, 11.38, 9.42, 5.11, 16.62, 10.52};
 
 /**
   Logistic sigmoid, normalizes x to between 0 and 1
 */
-double sigmoid(double x) {
+double sigmoid(double x)
+{
     return 1 / (1 + exp(-x));
 }
 
 /**
   Returns index of largest value in given vector
 */
-int argMax(std::vector<double> in) {
+int argMax(std::vector<double> in)
+{
     return std::distance(in.begin(), std::max_element(in.begin(), in.end()));
 }
 
 /**
-  Calculates intersection-over-union overlap of two bounding boxes.
-  Returns value between 0 and 1 representing how much overlap there is.
+  Comparator function for sorting predictions
 */
-float iou(Box a, Box b) {
-    float areaA = a.width * a.height;
-    if (areaA <= 0) return 0;
+bool comparePredictions (Prediction a, Prediction b)
+{
+    return (a.score > b.score);
+}
 
-    float areaB = b.width * b.height;
-    if (areaB <= 0) return 0;
+/**
+  Calculates intersection-over-union overlap of two bounding boxes.
 
-    float minX = std::max(a.x, b.x);
-    float minY = std::max(a.y, b.y);
-    float maxX = std::min(a.x + a.width, b.x + b.width);
-    float maxY = std::min(a.y + a.height, b.y + b.height);
+  Parameters:
+    - a: The first bounding box
+    - b: The second bounding box
+  Returns:
+    - value between 0 and 1 representing how much overlap there is
+*/
+double iou(Box a, Box b)
+{
+    double areaA = a.width * a.height;
+    if (areaA <= 0)
+        return 0;
 
-    float intersectArea = std::max(maxY - minY, 0.f) * std::max(maxX - minX, 0.f);
+    double areaB = b.width * b.height;
+    if (areaB <= 0)
+        return 0;
+
+    double minX = std::max(a.x, b.x);
+    double minY = std::max(a.y, b.y);
+    double maxX = std::min(a.x + a.width, b.x + b.width);
+    double maxY = std::min(a.y + a.height, b.y + b.height);
+
+    double intersectArea = std::max(maxY - minY, 0.0) * std::max(maxX - minX, 0.0);
 
     return intersectArea / (areaA + areaB - intersectArea);
 }
@@ -67,38 +76,83 @@ float iou(Box a, Box b) {
 /**
   Normalizes all values in the given vector
   so that they all add up to 1.
+
+  Parameters:
+    - in: a vector of values to normalize
+  Returns:
+    - a vector containing the softmaxed values
 */
 std::vector<double> softmax(std::vector<double> in)
 {
+    if (in.size() <= 0) return in;
+
     std::vector<double> out(in.size());
     double sum = 0.0;
 
     // Find max value in the input vector
-    double max = *std::max_element(in.begin(), in.end());    
+    double max = *std::max_element(in.begin(), in.end());
 
     // Shift all values so that max value is 0 and exponentiate, compute sum
-    for(std::vector<int>::size_type i = 0; i != in.size(); i++) {
+    for (std::vector<int>::size_type i = 0; i != in.size(); i++)
+    {
         out[i] = exp(in[i] - max);
         sum += out[i];
     }
 
     // Divide each element by the sum to normalize all values
-    for(std::vector<int>::size_type i = 0; i != out.size(); i++)
+    for (std::vector<int>::size_type i = 0; i != out.size(); i++)
         out[i] /= sum;
-    
+
     return out;
 }
 
+/**
+  Removes bounding boxes that have too much overlap
+  with other bounding boxes that have a higher score.
 
-int main(int argc, char** argv) {
-    printf("\n\nSigmoid(1): %f\n\n", sigmoid(1));
+  Parameters:
+    - predictions: an vector of bounding boxes and their scores
+    - threshold: value between 0 and 1 to determine whether a box overlaps too much
+    - limit: the maximum number of boxes to select
+  Returns:
+    - a vector containing the resulting bounding boxes
+*/
+std::vector<Prediction> filterRedundantBoxes(
+    std::vector<Prediction> predictions,
+    float threshold,
+    int limit)
+{
+    // Sort based on confidence score
+    std::vector<Prediction> sorted = predictions;
+    std::sort (sorted.begin(), sorted.end(), comparePredictions);
 
-    static const double arr[] = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0};
-    std::vector<double> vec (arr, arr + sizeof(arr) / sizeof(arr[0]) );
-    std::vector<double> softVec = softmax(vec);
-    printf("Softmax [1, 2, 3, 4, 1, 2, 3]: \n");
-    for (std::vector<double>::const_iterator i = softVec.begin(); i != softVec.end(); ++i)
-        std::cout << *i << ' ';
+    std::vector<Prediction> selected;
+    std::vector<bool> active(sorted.size(), true);
+    int numActive = active.size();
 
-    printf("\n\nArgmax [1, 2, 3, 4, 1, 2, 3]: %d\n\n", argMax(vec));
+    // Starting at highest scoring box, remove all other boxes
+    // that overlap more than the given threshold. Repeat until
+    // limit is reached or no other boxes remain;
+    for (std::vector<int>::size_type i = 0; i != sorted.size(); i++)
+    {
+        if (!active[i]) continue;
+
+        Prediction a = sorted[i];
+        selected.push_back(a);
+        if (selected.size() >= limit) { break; }
+        for (std::vector<int>::size_type j = i+1; j != sorted.size(); j++)
+        {
+            if (!active[j]) continue;
+            
+            Prediction b = sorted[j];
+            if (iou(a.box, b.box) > threshold) {
+                active[j] = false;
+                numActive -= 1;
+                if (numActive <= 0) { goto finish; }
+            }
+        }
+    }
+
+finish:
+    return selected;
 }
