@@ -1,3 +1,6 @@
+// Header file for YOLO.cpp
+// Created by Hammad Jutt, March 3 2018
+
 #ifndef YOLO_H
 #define YOLO_H
 
