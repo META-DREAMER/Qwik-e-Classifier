@@ -12,7 +12,7 @@ TEST_CASE( "Sigmoid is computed", "[sigmoid]" ) {
 
 
 TEST_CASE( "Index of largest value in vector is returned", "[argMax]" ) {
-    std::vector<double> vec;
+    std::vector<float> vec;
 
     SECTION( "Basic case" ) {
         vec.push_back(1.1);
@@ -85,11 +85,11 @@ TEST_CASE( "IOU overlap is returned", "[iou]" ) {
 }
 
 TEST_CASE( "Softmax applied to given values", "[softmax]" ) {
-    std::vector<double> vec;
+    std::vector<float> vec;
 
     SECTION( "Basic case" ) {
         vec.push_back(-100);
-        std::vector<double> expected;
+        std::vector<float> expected;
         expected.push_back(1.0);
         REQUIRE_THAT(softmax(vec), Catch::Equals(expected));
     }
@@ -104,7 +104,7 @@ TEST_CASE( "Softmax applied to given values", "[softmax]" ) {
         vec.push_back(10);
         vec.push_back(10);
 
-        std::vector<double> expected;
+        std::vector<float> expected;
         expected.push_back(0.25);
         expected.push_back(0.25);
         expected.push_back(0.25);
@@ -119,8 +119,8 @@ TEST_CASE( "Softmax applied to given values", "[softmax]" ) {
         vec.push_back(-3);
         vec.push_back(4);
 
-        std::vector<double> res = softmax(vec);
-        double sum = 0.0;
+        std::vector<float> res = softmax(vec);
+        float sum = 0.0;
         for (auto& n : res)
             sum += n;
 

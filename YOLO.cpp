@@ -31,7 +31,7 @@ double sigmoid(double x)
 /**
   Returns index of largest value in given vector
 */
-int argMax(std::vector<double> in)
+int argMax(std::vector<float> in)
 {
     return std::distance(in.begin(), std::max_element(in.begin(), in.end()));
 }
@@ -39,7 +39,7 @@ int argMax(std::vector<double> in)
 /**
   Comparator function for sorting predictions
 */
-bool comparePredictions (Prediction a, Prediction b)
+bool comparePredictions(Prediction a, Prediction b)
 {
     return (a.score > b.score);
 }
@@ -82,15 +82,16 @@ double iou(Box a, Box b)
   Returns:
     - a vector containing the softmaxed values
 */
-std::vector<double> softmax(std::vector<double> in)
+std::vector<float> softmax(std::vector<float> in)
 {
-    if (in.size() <= 0) return in;
+    if (in.size() <= 0)
+        return in;
 
-    std::vector<double> out(in.size());
-    double sum = 0.0;
+    std::vector<float> out(in.size());
+    float sum = 0.0;
 
     // Find max value in the input vector
-    double max = *std::max_element(in.begin(), in.end());
+    float max = *std::max_element(in.begin(), in.end());
 
     // Shift all values so that max value is 0 and exponentiate, compute sum
     for (std::vector<int>::size_type i = 0; i != in.size(); i++)
@@ -124,7 +125,7 @@ std::vector<Prediction> filterRedundantBoxes(
 {
     // Sort based on confidence score
     std::vector<Prediction> sorted = predictions;
-    std::sort (sorted.begin(), sorted.end(), comparePredictions);
+    std::sort(sorted.begin(), sorted.end(), comparePredictions);
 
     std::vector<Prediction> selected;
     std::vector<bool> active(sorted.size(), true);
@@ -135,24 +136,107 @@ std::vector<Prediction> filterRedundantBoxes(
     // limit is reached or no other boxes remain;
     for (std::vector<int>::size_type i = 0; i != sorted.size(); i++)
     {
-        if (!active[i]) continue;
+        if (!active[i])
+            continue;
 
         Prediction a = sorted[i];
         selected.push_back(a);
-        if (selected.size() >= limit) { break; }
-        for (std::vector<int>::size_type j = i+1; j != sorted.size(); j++)
+        if (selected.size() >= limit)
         {
-            if (!active[j]) continue;
-            
+            break;
+        }
+        for (std::vector<int>::size_type j = i + 1; j != sorted.size(); j++)
+        {
+            if (!active[j])
+                continue;
+
             Prediction b = sorted[j];
-            if (iou(a.box, b.box) > threshold) {
+            if (iou(a.box, b.box) > threshold)
+            {
                 active[j] = false;
                 numActive -= 1;
-                if (numActive <= 0) { goto finish; }
+                if (numActive <= 0)
+                {
+                    goto finish;
+                }
             }
         }
     }
 
 finish:
     return selected;
+}
+
+/**
+  Removes bounding boxes that have too much overlap
+  with other bounding boxes that have a higher score.
+
+  Parameters:
+    - predictions: an vector of bounding boxes and their scores
+    - threshold: value between 0 and 1 to determine whether a box overlaps too much
+    - limit: the maximum number of boxes to select
+  Returns:
+    - a vector containing the resulting bounding boxes
+*/
+std::vector<Prediction> interpretNetworkOutput(
+    float (*features)[GRID_HEIGHT][GRID_WIDTH][FEATURES_PER_CELL])
+{
+    std::vector<Prediction> predictions;
+
+    for (std::vector<int>::size_type cy = 0; cy != GRID_HEIGHT; cy++) {
+        for (std::vector<int>::size_type cx = 0; cx != GRID_WIDTH; cx++) {
+            for (std::vector<int>::size_type b = 0; b != BOXES_PER_CELL; b++) {
+                // First box features: 0-24, second box features: (25-49), etc
+                int offset = b*(NUM_CLASSES + 5);
+
+                // extract bounding box data from feature array
+                float bx = (*features)[cy][cx][offset + 0];
+                float by = (*features)[cy][cx][offset + 1];
+                float bw = (*features)[cy][cx][offset + 2];
+                float bh = (*features)[cy][cx][offset + 3];
+                float bc = (*features)[cy][cx][offset + 4];
+                
+                // convert cell coords to coords in original image
+                float x = ((float)cx + sigmoid(bx)) * CELL_SIZE;
+                float y = ((float)cy + sigmoid(by)) * CELL_SIZE;
+
+                // box sizes relative to anchor, convert to width/height in original image
+                float w = expf(bw) * anchors[2*b + 0] * CELL_SIZE;
+                float h = expf(bh) * anchors[2*b + 1] * CELL_SIZE;
+
+                // convert confidence to percentage
+                float confidence = sigmoid(bc);
+
+                // extract classes from feature array and convert to percentages
+                std::vector<float> classes(NUM_CLASSES, 0.f);
+                for (std::vector<int>::size_type i = 0; i != classes.size(); i++) {
+                    classes[i] = (*features)[cy][cx][offset + 5 + i];
+                }
+                classes = softmax(classes);
+
+                // find best class
+                int bestClassIdx = argMax(classes);
+                float bestClassScore = classes[bestClassIdx];
+    
+                // combine confidence of bounding box with confidence of class
+                float classConfidence = bestClassScore * confidence;
+
+                // Only keep results that meet threshold
+                if (classConfidence > CONFIDENCE_THRESHOLD) {
+                    Box bounds = {};
+                    bounds.x = x - w/2; bounds.width = w;
+                    bounds.y = y - h/2; bounds.height = h;
+                    
+                    Prediction pred = {};
+                    pred.box = bounds;
+                    pred.classIndex = bestClassIdx;
+                    pred.score = classConfidence;
+
+                    predictions.push_back(pred);
+                }
+            }
+        }
+    }
+
+    return filterRedundantBoxes(predictions, IOU_THRESHOLD, MAX_BOXES);
 }
