@@ -6,16 +6,20 @@ HOST_INCS = ../common
 HOST_DEBUG =
 
 #if you are loading images from OpenCV interfaces please set to 1
-USE_OPENCV = 0
+USE_OPENCV = 1
 
 #set source and target for device
 #supported vendors are xilinx, altera, amd
 VENDOR = altera
 #select the host archecture  x86|arm32
-PLATFORM = arm32
+PLATFORM = x86
 #optinal flows are hw|hw_emu|sw_emu
-FLOW        = hw
+FLOW        = sw_emu
+ifeq ($(VENDOR),xilinx)
+KERNEL_SRCS = ./device/conv_pipe_xilinx.cl
+else
 KERNEL_SRCS = ./device/conv_pipe.cl
+endif
 KERNEL_NAME = conv
 KERNEL_DEFS =
 KERNEL_INCS = 
@@ -42,7 +46,7 @@ ifeq ($(USE_OPENCV),1)
 #add your OpenCV PATH here
 OCV_INCLUDES = -I/usr/local/include/
 OCV_LIBDIRS = -L/usr/local/lib 
-OCV_LIBS =  -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml
+OCV_LIBS =  -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_imgcodecs -lopencv_videoio
 endif
 else ifeq ($(PLATFORM),arm32)
 CXX := $(CROSS-COMPILE)g++
@@ -50,7 +54,7 @@ ifeq ($(USE_OPENCV),1)
 #add your cross compile OpenCV PATH here
 OCV_INCLUDES = -I/usr/local/opencv-arm/include/
 OCV_LIBDIRS = -L/usr/local/opencv-arm/lib 
-OCV_LIBS =  -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml
+OCV_LIBS =  -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_imgcodecs -lopencv_videoio
 endif
 endif
 
@@ -103,8 +107,12 @@ OCC = aoc
 ifeq ($(FLOW),sw_emu)
 OCCFLAGS = -v --report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 else ifeq ($(FLOW),hw)
+OCCFLAGS = -v --report -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+else ifeq ($(FLOW),hw_emu)
 OCCFLAGS = -v --report --profile -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 endif
+
+
 #amd
 else ifeq ($(VENDOR),amd)
 OCC =
