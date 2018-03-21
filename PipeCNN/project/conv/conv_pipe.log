@@ -1,0 +1,1 @@
+Compiler Command: aoc -v --report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib -g device/conv_pipe.cl -o conv.aocx

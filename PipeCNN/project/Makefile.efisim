@@ -1,0 +1,33 @@
+SV_EFI_SRCS = mult_add_fix8bx4/ipcore/mult_add_fix8bx4/mult_add_fix8bx4_0002.v mult_add_fix8bx4/mult_add_fix8bx4.v
+SV_SRCS = efi_testbench.sv $(SV_EFI_SRCS) 
+ 
+SIMLIBS = lib/verbosity_pkg.sv \
+          lib/avalon_mm_pkg.sv \
+          lib/avalon_utilities_pkg.sv \
+          altera_avalon_st_source_bfm/altera_avalon_st_source_bfm.sv \
+          altera_avalon_st_sink_bfm/altera_avalon_st_sink_bfm.sv 
+ 
+VLOGARGS = -sv 
+VSIMARGS = 
+ 
+GUI ?= 0 
+ifneq ($(GUI),1) 
+VSIMARGS += -c -do "run -all;" 
+endif 
+ 
+.PHONY : default all compiletb runtb clean 
+ 
+default: all 
+all: compiletb runtb 
+ 
+compiletb : 
+	vlib work 
+	$(foreach L, $(SIMLIBS), vlog $(VLOGARGS) $(IP_ROOTDIR)/altera/sopc_builder_ip/verification/$(L) &&) true 
+	$(foreach F, $(SV_SRCS), vlog $(VLOGARGS) $(F) &&) true 
+ 
+runtb : 
+	vsim $(VSIMARGS) -voptargs="+acc" -novopt -sv_root "$(INTELFPGAOCLSDKROOT)/linux64/lib" -sv_lib libefimsimlink efi_testbench 
+ 
+clean : 
+	rm -f vsim.wlf 
+	rm -rf work
