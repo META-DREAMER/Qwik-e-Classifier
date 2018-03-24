@@ -6,7 +6,7 @@ HOST_INCS = ../common
 HOST_DEBUG =
 
 #if you are loading images from OpenCV interfaces please set to 1
-USE_OPENCV = 1
+USE_OPENCV = 0
 
 #set source and target for device
 #supported vendors are xilinx, altera, amd
@@ -105,11 +105,11 @@ endif
 else ifeq ($(VENDOR),altera)
 OCC = aoc
 ifeq ($(FLOW),sw_emu)
-OCCFLAGS = -v --report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 else ifeq ($(FLOW),hw)
-OCCFLAGS = -v --report -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 else ifeq ($(FLOW),hw_emu)
-OCCFLAGS = -v --report --profile -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report --profile -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 endif
 
 

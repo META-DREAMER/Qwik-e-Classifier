@@ -332,86 +332,86 @@ char precision_config[][3] ={{7,  0, -2}//Layer-1
 
 // Test with batch=1
 // Alexnet Configuration
-unsigned layer_config[][NUM_CONFIG_ITEM] = {{0,
-							227, 227, 3, 11, 11, 3, 96, 96,
-							0,
-							55, 55, 96, 4, 0, 0, 1,
-							1, 27, 27, 96, 3, 2,
-							1,
-							1},//Layer-1
-							{0,
-							27, 27, 96, 5, 5, 48, 256, 256,
-							0,
-							27, 27, 256, 1, 2, 1, 1,
-							1, 13, 13, 256, 3, 2,
-							1,
-							1},//Layer-2
-							{0,
-							13, 13, 256, 3, 3, 256, 384, 384,
-							0,
-							13, 13, 384, 1, 1, 0, 1,
-							0, 13, 13, 384, 0, 0,
-							0,
-							1},//Layer-3
-							{0,
-							13, 13, 384, 3, 3, 192, 384, 384,
-							1,
-							13, 13, 384, 1, 1, 1, 1,
-							0, 13, 13, 384, 0, 0,
-							0,
-							0},//Layer-4
-							{0,
-							13, 13, 384, 3, 3, 192, 256, 256,
-							0,
-							13, 13, 256, 1, 1, 1, 1,
-							1, 6, 6, 256, 3, 2,
-							0,
-							2},//Layer-5  Note: for last conv layer, outputs are write to fc buffer
-							{1,
-							6, 6, 256, 6, 6, 256, 4096, 4096,  // Note: The input size (dim1/dim2) is the combined data size (batched)
-							2,
-							1, 1, 4096, 6, 0, 0, 1,
-							0, 1, 1, 4096, 0, 0,
-							0,
-							3},//Layer-6 fc
-							{1,
-							1, 1, 4096, 1, 1, 4096, 4096, 4096,
-							3,
-							1, 1, 4096, 1, 0, 0, 1,
-							0, 1, 1, 4096, 0, 0,
-							0,
-							2},//Layer-7 fc
-							{1,
-							1, 1, 4096, 1, 1, 4096, 1024, 1024,
-							2,
-							1, 1, 1024, 1, 0, 0, 0,
-							0, 1, 1, 1024, 0, 0,
-							0,
-							3}//Layer-8 fc
-							};
+// unsigned layer_config[][NUM_CONFIG_ITEM] = {{0,
+// 							227, 227, 3, 11, 11, 3, 96, 96,
+// 							0,
+// 							55, 55, 96, 4, 0, 0, 1,
+// 							1, 27, 27, 96, 3, 2,
+// 							1,
+// 							1},//Layer-1
+// 							{0,
+// 							27, 27, 96, 5, 5, 48, 256, 256,
+// 							0,
+// 							27, 27, 256, 1, 2, 1, 1,
+// 							1, 13, 13, 256, 3, 2,
+// 							1,
+// 							1},//Layer-2
+// 							{0,
+// 							13, 13, 256, 3, 3, 256, 384, 384,
+// 							0,
+// 							13, 13, 384, 1, 1, 0, 1,
+// 							0, 13, 13, 384, 0, 0,
+// 							0,
+// 							1},//Layer-3
+// 							{0,
+// 							13, 13, 384, 3, 3, 192, 384, 384,
+// 							1,
+// 							13, 13, 384, 1, 1, 1, 1,
+// 							0, 13, 13, 384, 0, 0,
+// 							0,
+// 							0},//Layer-4
+// 							{0,
+// 							13, 13, 384, 3, 3, 192, 256, 256,
+// 							0,
+// 							13, 13, 256, 1, 1, 1, 1,
+// 							1, 6, 6, 256, 3, 2,
+// 							0,
+// 							2},//Layer-5  Note: for last conv layer, outputs are write to fc buffer
+// 							{1,
+// 							6, 6, 256, 6, 6, 256, 4096, 4096,  // Note: The input size (dim1/dim2) is the combined data size (batched)
+// 							2,
+// 							1, 1, 4096, 6, 0, 0, 1,
+// 							0, 1, 1, 4096, 0, 0,
+// 							0,
+// 							3},//Layer-6 fc
+// 							{1,
+// 							1, 1, 4096, 1, 1, 4096, 4096, 4096,
+// 							3,
+// 							1, 1, 4096, 1, 0, 0, 1,
+// 							0, 1, 1, 4096, 0, 0,
+// 							0,
+// 							2},//Layer-7 fc
+// 							{1,
+// 							1, 1, 4096, 1, 1, 4096, 1024, 1024,
+// 							2,
+// 							1, 1, 1024, 1, 0, 0, 0,
+// 							0, 1, 1, 1024, 0, 0,
+// 							0,
+// 							3}//Layer-8 fc
+// 							};
 
-signed char precision_config[][3] ={{8,  0, -4},//Layer-1
-							{ 8,  0, -2},//Layer-2
-							{ 8,  0, -1},//Layer-3
-							{ 8, -1, -1},//Layer-4
-							{ 8, -1, -1},//Layer-5
-							{11, -1,  0},//Layer-6
-							{10,  0,  2},//Layer-7
-							{10,  2,  2}//Layer-8
-							};
+// signed char precision_config[][3] ={{8,  0, -4},//Layer-1
+// 							{ 8,  0, -2},//Layer-2
+// 							{ 8,  0, -1},//Layer-3
+// 							{ 8, -1, -1},//Layer-4
+// 							{ 8, -1, -1},//Layer-5
+// 							{11, -1,  0},//Layer-6
+// 							{10,  0,  2},//Layer-7
+// 							{10,  2,  2}//Layer-8
+// 							};
 
-unsigned input_config[5] = {227, 227, 3, 1}; //original image size(dim1, dim2, dim3), batch size
+// unsigned input_config[5] = {227, 227, 3, 1}; //original image size(dim1, dim2, dim3), batch size
 
-//unsigned output_config[3] = {27, 27, 96};//Layer-1
-//unsigned output_config[3] = {55, 55, 96};//Layer-1
+// //unsigned output_config[3] = {27, 27, 96};//Layer-1
+// //unsigned output_config[3] = {55, 55, 96};//Layer-1
 
-//unsigned output_config[3] = {13, 13, 256};//Layer-2
+// //unsigned output_config[3] = {13, 13, 256};//Layer-2
 
-//unsigned output_config[3] = {6, 6, 256};//Layer-5
+// //unsigned output_config[3] = {6, 6, 256};//Layer-5
 
-//unsigned output_config[3] = {1, 1, 4096};//Layer-6
+// //unsigned output_config[3] = {1, 1, 4096};//Layer-6
 
-unsigned output_config[3] = {1, 1, 1024};//Layer-8  Note: only one result is extracted and verified
+// unsigned output_config[3] = {1, 1, 1024};//Layer-8  Note: only one result is extracted and verified
 
 
 
@@ -571,3 +571,115 @@ unsigned input_config[4] = {224, 224, 3, 1};
 unsigned output_config[3] = {1, 1, 1024};//Layer-16
 */
 	
+
+
+
+
+// TINY YOLO CONFIGURATION
+unsigned layer_config[][NUM_CONFIG_ITEM] = {
+	{ // Layer1
+		// layer_type (conv = 0, fc = 1)
+		0, 
+		//data_w, data_h, data_n, weight_w, weight_h, weight_n, weight_m, bias_size
+		416, 416, 3, 3, 3, 3, 16, 16,
+		// memrd_src (0-> data_buf, 1-> output_buf)
+		0,
+		// conv_x, conv_y, conv_z, conv_stride, conv_padding, conv_split, conv_relu
+		416, 416, 16, 1, 1, 1, 1,
+		// pool_on, pool_x, pool_y, pool_z, pool_size, pool_stride,
+		1, 208, 208, 16, 2, 2,
+		// lrn control (on = 1, off = 0)
+		0,
+		// memwr_dst (0-> data_buf, 1-> output_buf  "2"
+		1
+	},
+	{ // Layer 2
+		0,
+		208, 208, 16, 3, 3, 8, 32, 32,
+		1,
+		208, 208, 32, 1, 1, 1, 1,
+		1, 104, 104, 32, 2, 2,
+		0,
+		0
+	},
+	{ // Layer 3
+		0,
+		104, 104, 32, 3, 3, 8, 64, 64,
+		0,
+		104, 104, 64, 1, 1, 1, 1,
+		1, 52, 52, 64, 2, 2,
+		0,
+		1
+	},
+	{ // Layer 4
+		0,
+		52, 52, 64, 3, 3, 8, 128, 128,
+		1,
+		52, 52, 128, 1, 1, 1, 1,
+		1, 26, 26, 128, 2, 2,
+		0,
+		0
+	},
+	{ // Layer 5
+		0,
+		26, 26, 128, 3, 3, 8, 256, 256,
+		0,
+		26, 26, 256, 1, 1, 1, 1,
+		1, 13, 13, 256, 2, 2,
+		0,
+		1
+	},
+	{ // Layer 6
+		0,
+		13, 13, 256, 3, 3, 8, 512, 512,
+		1,
+		13, 13, 512, 1, 1, 1, 1,
+		0, 13, 13, 512, 2, 1, // TEMP TURNED OFF, TURN BACK ON 
+		0,
+		0
+	},
+	{ // Layer 7
+		0,
+		13, 13, 512, 3, 3, 8, 1024, 1024,
+		0,
+		13, 13, 1024, 1, 1, 1, 1,
+		0, 13, 13, 1024, 2, 1,
+		0,
+		1
+	},
+	{ // Layer 8
+		0,
+		13, 13, 1024, 3, 3, 8, 1024, 1024,
+		1,
+		13, 13, 1024, 1, 1, 1, 1,
+		0, 13, 13, 1024, 2, 1,
+		0,
+		0
+	},
+	{ // Layer 9
+		0,
+		13, 13, 1024, 1, 1, 8, 125, 125,
+		0,
+		13, 13, 125, 1, 0, 1, 0,
+		0, 13, 13, 125, 2, 1,
+		0,
+		1
+	},
+};
+
+signed char precision_config[][3] ={
+	{8,  0, -4},//Layer-1
+	{ 8,  0, -2},//Layer-2
+	{ 8,  0, -1},//Layer-3
+	{ 8, -1, -1},//Layer-4
+	{ 8, -1, -1},//Layer-5
+	{8, -1,  0},//Layer-6
+	{8,  0,  2},//Layer-7
+	{8,  2,  2},//Layer-8
+	{8,  2,  2}//Layer-9
+};
+
+unsigned input_config[4] = {416, 416, 3, 1}; //original image size(dim1, dim2, dim3), batch size
+
+unsigned output_config[3] = {13, 13, 125};//Layer-8  Note: only one result is extracted and verified
+

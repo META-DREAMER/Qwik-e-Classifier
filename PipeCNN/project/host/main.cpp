@@ -74,13 +74,13 @@ float accuracy5=0;
 // AlexNet
 // Original problem size
 // File size is in num of DTYPE numbers
-#define IMAGE_FILE_SIZE   (227*227*3)
+#define IMAGE_FILE_SIZE   (416*416*3)
 //#define WEIGHTS_FILE_SIZE 60965224 //fc8-1000
-#define WEIGHTS_FILE_SIZE 61063552  //fc8-1024
-#define LAYER_NUM         8
-#define CONV_NUM          5
-const char *weight_file_path = "./data/data_alex/weights.dat";
-const char *input_file_path = "./data/data_alex/image.dat";
+#define WEIGHTS_FILE_SIZE 15730592  //fc8-1024
+#define LAYER_NUM         9
+#define CONV_NUM          9
+const char *weight_file_path = "./data/yolo/weights.dat";
+const char *input_file_path = "./data/yolo/dog.dat";
 const char *ref_file_path = "./data/data_alex/fc8.dat";
 const char *dump_file_path = "./result_dump.txt";
 
@@ -1110,7 +1110,7 @@ int prepare()
 
 			// Currently weight_n must be divisible by VEC_SIZE (for first layer, padding is performed when weight_n is not divisible by VEC_SIZE)
 			if((layer_config[ll][weight_n]%VEC_SIZE)!=0){
-				printf("\nError: incorrect setting of parameter VEC_SIZE !!!\n");
+				printf("\nError: incorrect setting of parameter VEC_SIZE !!! Layer: %d \n", ll);
 				return 1;
 			}
 			if((layer_config_original[ll][data_n]!=layer_config_original[ll-1][conv_z])){
