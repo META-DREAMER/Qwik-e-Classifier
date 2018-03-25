@@ -45,7 +45,8 @@
  * Deal with device init and shutdown, BAR mapping, and interrupts. */
 
 #include "aclsoc.h"
-#include <asm/siginfo.h>    //siginfo
+// #include <asm/siginfo.h>    //siginfo
+#include <linux/sched/signal.h>    //siginfo
 #include <linux/rcupdate.h> //rcu_read_lock
 #include <linux/version.h>  //kernel_version
 

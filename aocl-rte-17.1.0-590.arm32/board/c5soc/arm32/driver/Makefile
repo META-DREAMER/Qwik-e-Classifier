@@ -3,8 +3,8 @@
 # the ARM processor on the device.
 
 # Configured Linux kernel source.
-# KDIR ?= /tools/aclboardpkg/.platform/linux-socfpga/linux-socfpga-socfpga-3.13-rel14.0/
-KDIR ?= /mnt/c/Users/mhauc/Downloads/linux-socfpga-socfpga-opencl_4.1.22/
+KDIR ?= ~/linux-fpga/linux-socfpga/
+# KDIR ?= /mnt/c/Users/mhauc/Downloads/linux-socfpga-socfpga-opencl_4.1.22/
 
 CROSS_COMPILE := arm-linux-gnueabihf-
 ARCH := arm
@@ -17,8 +17,8 @@ aclsoc_drv-y := aclsoc.o aclsoc_fileio.o aclsoc_cmd.o
 
 all :
 	$(CROSS_COMPILE)gcc -g -DLINUX -Wall -Werror -o user user.c 
-#	[ ! -d $(KDIR) ] || CFLAGS=-DCONFIG_INTELFPGA_STAPL $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KDIR) M=`pwd` modules
-	[ ! -d $(KDIR) ] || CFLAGS=-DCONFIG_INTELFPGA_STAPL $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KDIR) SUBDIRS=${PWD} modules
+	[ ! -d $(KDIR) ] || CFLAGS=-DCONFIG_INTELFPGA_STAPL $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KDIR) M=`pwd` modules
+	# [ ! -d $(KDIR) ] || CFLAGS=-DCONFIG_INTELFPGA_STAPL $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KDIR) SUBDIRS=${PWD} modules
 
 
 clean : clean-intermediates clean-module
