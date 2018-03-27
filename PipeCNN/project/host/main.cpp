@@ -49,8 +49,8 @@ const char *vendor_name = "Intel";
 #define MAX_LAYER_NUM   16
 #define MAX_BATCH_SIZE  16
 
-#define IN_BUF_SIZE    256*256*64  // Note: the buffer size should be large enough to hold all temperary results
-#define OUT_BUF_SIZE   256*256*64
+#define IN_BUF_SIZE    512*512*64  // Note: the buffer size should be large enough to hold all temperary results
+#define OUT_BUF_SIZE   512*512*64
 #define FC_BUF_SIZE    32768*MAX_BATCH_SIZE
 
 #define MEAN_DATA_WIDTH   256
@@ -76,7 +76,7 @@ float accuracy5=0;
 // File size is in num of DTYPE numbers
 #define IMAGE_FILE_SIZE   (416*416*3)
 //#define WEIGHTS_FILE_SIZE 60965224 //fc8-1000
-#define WEIGHTS_FILE_SIZE 15730592  //fc8-1024
+#define WEIGHTS_FILE_SIZE 15858717  //fc8-1024
 #define LAYER_NUM         9
 #define CONV_NUM          9
 const char *weight_file_path = "./data/yolo/weights.dat";
@@ -380,7 +380,7 @@ int main(int argc, char** argv)
 	unsigned short out_dim1xbatch;
 	unsigned int   out_dim1x2xbatch;
 	unsigned char  padding_offset;
-	unsigned char  conv_group_num_dim1, conv_group_num_dim2;
+	unsigned short  conv_group_num_dim1, conv_group_num_dim2;
 	unsigned char  conv_win_size_dim1, conv_win_size_dim2;
 	unsigned int   conv_win_size_dim1x2x3;
 	unsigned char  conv_group_rem_dim1, conv_group_rem_dim2;
@@ -431,6 +431,7 @@ int main(int argc, char** argv)
 			// Convolution tasks (conv_x,conv_y) are divided into multiple groups
 			conv_group_num_dim1   = ceil((float)layer_config[j][conv_x]/CONV_GP_SIZE_X);
 			conv_group_num_dim2   = ceil((float)layer_config[j][conv_y]/CONV_GP_SIZE_Y);
+
 			if(layer_config[j][conv_x]==1){
 				conv_win_size_dim1  = layer_config[j][weight_w];
 				conv_group_rem_dim1   = layer_config[j][weight_w];
@@ -452,10 +453,11 @@ int main(int argc, char** argv)
 			weight_dim1x2 = layer_config[j][weight_w]*layer_config[j][weight_h];
 			weight_dim1x2x3 = layer_config[j][weight_w]*layer_config[j][weight_h]*layer_config[j][weight_n];
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][data_w]);
+
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][data_w]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][data_h]);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][data_h]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &data_dim1x2);
@@ -479,7 +481,7 @@ int main(int argc, char** argv)
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uint),  &weight_dim1x2x3);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_x]);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][conv_x]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			//status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_y]);
@@ -494,10 +496,10 @@ int main(int argc, char** argv)
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_split]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_num_dim1);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &conv_group_num_dim1);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_num_dim2);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &conv_group_num_dim2);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_rem_dim1);
@@ -580,7 +582,7 @@ int main(int argc, char** argv)
 				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uint), &pool_input_num);
 				checkError(status, "Failed to set argument %d of kernel pool", argi - 1);
 
-				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uchar), &pool_line_size);
+				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_ushort), &pool_line_size);
 				checkError(status, "Failed to set argument %d of kernel pool", argi - 1);
 
 				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_size]);
@@ -745,10 +747,10 @@ int main(int argc, char** argv)
 			status = clEnqueueNDRangeKernel(que_memWr[i], knl_memWr[i], 3, NULL, knl_memWr_global_size, knl_memWr_local_size, 0, NULL, &memWr_event[i]);
 			checkError(status, "Failed to launch kernel memWr");
 
-
 			// kernel lrn
 			if(layer_config[j][lrn_on]){
 
+				printf("\nHam3.5\n");
 				knl_lrn_global_size[0] = layer_config[j][pool_x];
 				knl_lrn_global_size[1] = layer_config[j][pool_y];
 				knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
@@ -1139,6 +1141,7 @@ int prepare()
 		}
 		conv_win_size_dim2    = layer_config[ll][weight_h];
 		// check win_buffer size
+		printf("\nlayer: %d, dim1: %d, dim2: %d, weight_n: %d\n", ll, conv_win_size_dim1, conv_win_size_dim2, layer_config[ll][weight_n]/VEC_SIZE);
 		if(conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE > WIN_BUF_SIZE){
 
 			printf("Error: required win_buffer size is %d, configured size is %d \n", conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE, WIN_BUF_SIZE);

@@ -34,10 +34,10 @@
 #define USE_ROM 
 
 // The following macros are used for debug
-//#define DEBUG_MEMRD
-//#define DEBUG_CONV
-//#define DEBUG_POOL
-//#define DEBUG_MEMWR
+// #define DEBUG_MEMRD
+// #define DEBUG_CONV
+// #define DEBUG_POOL
+// #define DEBUG_MEMWR
 //#define DEBUG_LRN
 //#define DEBUG_LRN_OUT
 
@@ -106,8 +106,8 @@ __attribute__((task))
 __attribute__((max_global_work_dim(0)))
 void memRead(
 			// Params Ports
-			uchar  data_dim1,
-			uchar  data_dim2,
+			ushort  data_dim1,
+			ushort  data_dim2,
 			ushort data_dim1xdim2,
 			uchar  weight_dim1,
 			uchar  weight_dim2,
@@ -115,13 +115,13 @@ void memRead(
 			ushort weight_dim4_div_lane, // avoid generating divider
 			uchar  weight_dim1x2,
 			uint   weight_dim1x2x3,
-			uchar  conv_x,
+			ushort  conv_x,
 			//uchar  conv_y,           // not used in this version
 			uchar  stride,
 			uchar  padding,
 			uchar  split,
-			uchar  group_num_x,
-			uchar  group_num_y,
+			ushort  group_num_x,
+			ushort  group_num_y,
 			uchar  group_rem_size_x,
 			//uchar  group_rem_size_y, // not used in this version
 			uint   group_rem_size_xyz,
@@ -135,7 +135,7 @@ void memRead(
 
 {
 
-
+	// ushort conv_x = conv_x_orig
 	// Input Data, Weights and Bias
 	lane_data     data_vec;
 	channel_vec   data_ch_vec;
@@ -164,6 +164,7 @@ void memRead(
 	__local lane_data    win_buffer[2][WIN_BUF_SIZE]; // working sequence 0->1->0->1 ...
 	// Weight buffer
 	__local channel_vec  weight_buffer[WEIGHT_BUF_SIZE];
+
 
 	// Initialize the winbuf with the data in the first iteration of the group looping (as gp_num_x_winbuf=0, gp_num_y_winbuf=0)
 	for(unsigned short win_itm_z=0; win_itm_z<weight_dim3/VEC_SIZE; win_itm_z++){
@@ -234,6 +235,7 @@ void memRead(
 					item_loop_bound = (weight_dim1x2x3*CONV_GP_SIZE_Y*CONV_GP_SIZE_X/VEC_SIZE);
 				}
 
+
 				#pragma ivdep array(win_buffer)
 				#pragma ivdep array(weight_buffer)
 				Item:for(unsigned int  win_itm_xyz=0; win_itm_xyz<item_loop_bound; win_itm_xyz++){
@@ -281,15 +283,16 @@ void memRead(
 								
 								weight_ch_vec = weights[out_idx_z*weight_dim1x2x3/VEC_SIZE + output_idx_dim3*weight_dim1x2 + output_idx_dim2*weight_dim1 + output_idx_dim1];
 								weight_buffer[output_idx_dim3*weight_dim2*weight_dim1 + output_idx_dim2*weight_dim1 + output_idx_dim1] = weight_ch_vec;
-
 							}
-							
+
 							// In this version, grouping is only performed in row (x) direction
 							if(gp_num_x*CONV_GP_SIZE_X+gp_item_idx_x<conv_x){
                     
 								if(output_idx_dim1==0 && output_idx_dim2==0 && output_idx_dim3==0){
+
 									bias_ch_in = bias[out_idx_z];
 									write_channel_intel(bias_ch, bias_ch_in);
+
 									//#ifdef DEBUG_MEMRD
 									//printf("work-item x=%d, y=%d, z=%d, channel =0, write bias=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, bias_ch_in.lane[0]);
 									//#endif
@@ -310,7 +313,7 @@ void memRead(
 								
 								#ifdef DEBUG_MEMRD
 								//if(gp_num_x==group_num_x-1 && gp_num_y==0 && out_idx_z==0){
-									printf("work-item x=%d, y=%d, z=%d, offset=%d, write data in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, data_offset, (float)data_ch_vec.lane[0].data[0]);
+									// printf("work-item x=%d, y=%d, z=%d, offset=%d, write data in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, data_offset, (float)data_ch_vec.lane[0].data[0]);
 									//printf("work-item x=%d, y=%d, z=%d, write weight in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, (float)weight_ch_vec.lane[0].data[0]);
 								//}
 								#endif
@@ -333,9 +336,10 @@ void memRead(
 								else
 									output_idx_dim1++;
 
-								}
+							}
 
 				}
+
 
 		// used as virtual group loop counters for winbuf loading operations
 		if((out_idx_z_winbuf==weight_dim4_div_lane-1) && (gp_num_y_winbuf==group_num_y-1) && (gp_num_x_winbuf==group_num_x-1))
@@ -485,12 +489,14 @@ void coreConv(
 		}
 
 		// write convoluation results
-		if((contol&0x02)==0x02)
+		if((contol&0x02)==0x02) {
 			//by-pass pooling
 			write_channel_intel(bypass_ch, conv_ch_in);
-		else // to pooling kernel
+		}
+		else { // to pooling kernel
 			write_channel_intel(conv_ch, conv_ch_in);
 			//printf("Write channel item-%d is written in channel %d...\n", k, ll);
+		}
 
 	}// end of output loop
  
@@ -502,7 +508,7 @@ __attribute__((task))
 void maxPool(
 			// Params Ports
 			uint  input_num,
-			uchar line_size,  // line_size should be no larger than POOL_LBUF_DEPTH
+			ushort line_size,  // line_size should be no larger than POOL_LBUF_DEPTH
 			uchar pool_size,  // by now, only pooling size no larger than 3
 			uchar pool_stride
 			
@@ -513,10 +519,10 @@ void maxPool(
 
 	DPTYPE line_buf_0[LANE_NUM][POOL_LBUF_DEPTH];
 	DPTYPE line_buf_1[LANE_NUM][POOL_LBUF_DEPTH];
-	uchar  line_buf_ptr;
-	uchar  col_pool_cnt;
-	uchar  row_pool_cnt;
-	uchar  row_cnt;
+	ushort  line_buf_ptr;
+	ushort  col_pool_cnt;
+	ushort  row_pool_cnt;
+	ushort  row_cnt;
 	DPTYPE row_pool_reg[LANE_NUM];
 	DPTYPE col_pool_reg[LANE_NUM];
 	DPTYPE pool_reg[LANE_NUM][POOL_MAX_SIZE];
@@ -527,7 +533,6 @@ void maxPool(
 	row_pool_cnt = 0;
 	col_pool_cnt = 0;
 	for(unsigned int k=0; k<input_num; k++){
-
 		conv_ch_out = read_channel_intel(conv_ch);
 	
 		// Two line buffer to form the 3x3 pooling window
@@ -562,6 +567,7 @@ void maxPool(
 		printf("        row_cnt=%d\n", row_cnt);
 		#endif
 		
+
 		// Generates pooling pipeline register wr/rd pointer
 		if(row_pool_cnt==(pool_size-1)){
 
@@ -578,6 +584,7 @@ void maxPool(
 		}
 		else
 			col_pool_cnt = 0;
+		
 
 		// Generates line buffer wr/rd pointer
 		if(line_buf_ptr==(line_size-1)){
@@ -635,18 +642,27 @@ void memWrite(
 
 	channel_scal   output;
 	__local DPTYPE buffer[LANE_NUM];
+	// printf("startMR1, localz: %d\n", local_z);
 
 	if(local_z==0){
-		if((bypass&0x01)==0x01)
+		if((bypass&0x01)==0x01) {
+			// printf("bypass2-T\n");
 			output = read_channel_intel(bypass_ch);
-		else
+		}
+		else {
+			// printf("bypass2-F\n");
 			output = read_channel_intel(pool_ch);
+		}
 
+		
 		#pragma unroll
 		for(uchar ll=0; ll<LANE_NUM; ll++){
 			buffer[ll]=output.lane[ll];
 		}
+
 	}
+	// printf("startMR3\n");
+
 
 	barrier(CLK_LOCAL_MEM_FENCE);
 
@@ -668,8 +684,9 @@ void memWrite(
 		#endif
 
 	}
-	
+	// printf("startMR3\n");
 	barrier(CLK_LOCAL_MEM_FENCE);
+	// printf("endMR4\n");
 
 }
 
