@@ -24,6 +24,7 @@
 // CNN network configuration file
 #include "../device/hw_param.cl"
 #include "layer_config.h"
+#include "../../YOLO.hpp"
 
 #ifdef USE_OPENCV
 #include <opencv2/highgui/highgui.hpp>
@@ -192,6 +193,7 @@ int  prepare();
 void readDataBack();
 void verifyResult(int num);
 void dumpResult();
+void formatResult();
 void reorderWeights(DTYPE *weights, DTYPE *weight_buf, unsigned dim1, unsigned dim2, unsigned dim3, unsigned dim4, unsigned dim3_original, unsigned dim4_original, unsigned offset, unsigned padding_offset, unsigned vecSize, unsigned laneNum);
 void reorderBias(DTYPE *dataIn, DTYPE *bias, unsigned offset, unsigned padding_offset, unsigned dim4, unsigned dim4_original, unsigned laneNum);
 void reorderOutput(DTYPE *output, DTYPE *output_reorder, unsigned dim1, unsigned dim2, unsigned dim3);
@@ -978,7 +980,8 @@ void verifyResult(int num)
 		getProb(output_one_item);
 	}
 	// Dump results and golden_ref for debugging
-	dumpResult();
+	// dumpResult();
+	formatResult();
 #endif
 }
 
@@ -1488,8 +1491,8 @@ void dumpResult(){
 		for(unsigned j=0; j<output_config[output_h]; j++){
 			result_file << "x=" << j << ": ";
 			for(unsigned k=0; k<output_config[output_w]; k++){
-					result_file << (float)output_reorder[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << "(";
-					result_file << (float)golden_ref[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << ") ";
+					result_file << (float)output_reorder[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << " ";
+					// result_file << (float)golden_ref[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << ") ";
 			}
 			result_file << endl;
 		}
@@ -1497,6 +1500,30 @@ void dumpResult(){
 	}
 	result_file.close();
 }
+
+
+void formatResult(){
+	ofstream result_file;
+
+	result_file.open(dump_file_path, ios::out);
+
+	unsigned xDim = output_config[output_w];
+	unsigned yDim = output_config[output_h];
+	unsigned zDim = output_config[output_n];
+	result_file << xDim << " ";
+    result_file << yDim << " ";
+    result_file << zDim << " ";
+	for(unsigned x=0; x<xDim; x++){
+		for(unsigned y=0; y<yDim; y++){
+			for(unsigned z=0; z<zDim; z++){
+				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[8][frac_dout]) << " ";
+			}
+		}
+	}
+	result_file.close();
+}
+
+
 
 #ifdef USE_OPENCV
 // Load image from files

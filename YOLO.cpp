@@ -15,6 +15,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 #include "YOLO.hpp"
 
@@ -178,9 +179,7 @@ finish:
   Returns:
     - a vector containing the resulting bounding boxes
 */
-std::vector<Prediction> interpretNetworkOutput(
-    float (*features)[GRID_HEIGHT][GRID_WIDTH][FEATURES_PER_CELL])
-{
+std::vector<Prediction> interpretNetworkOutput(float ***features) {
     std::vector<Prediction> predictions;
 
     for (std::vector<int>::size_type cy = 0; cy != GRID_HEIGHT; cy++) {
@@ -190,11 +189,12 @@ std::vector<Prediction> interpretNetworkOutput(
                 int offset = b*(NUM_CLASSES + 5);
 
                 // extract bounding box data from feature array
-                float bx = (*features)[cy][cx][offset + 0];
-                float by = (*features)[cy][cx][offset + 1];
-                float bw = (*features)[cy][cx][offset + 2];
-                float bh = (*features)[cy][cx][offset + 3];
-                float bc = (*features)[cy][cx][offset + 4];
+                float bx = features[cy][cx][offset + 0];
+                float by = features[cy][cx][offset + 1];
+                float bw = features[cy][cx][offset + 2];
+                float bh = features[cy][cx][offset + 3];
+                float bc = features[cy][cx][offset + 4];
+
                 
                 // convert cell coords to coords in original image
                 float x = ((float)cx + sigmoid(bx)) * CELL_SIZE;
@@ -207,10 +207,11 @@ std::vector<Prediction> interpretNetworkOutput(
                 // convert confidence to percentage
                 float confidence = sigmoid(bc);
 
+                // printf("x: %f, y: %f, w: %f, h: %f, c: %f\n", x, y, w, h, confidence);
                 // extract classes from feature array and convert to percentages
                 std::vector<float> classes(NUM_CLASSES, 0.f);
                 for (std::vector<int>::size_type i = 0; i != classes.size(); i++) {
-                    classes[i] = (*features)[cy][cx][offset + 5 + i];
+                    classes[i] = features[cy][cx][offset + 5 + i];
                 }
                 classes = softmax(classes);
 
@@ -240,3 +241,45 @@ std::vector<Prediction> interpretNetworkOutput(
 
     return filterRedundantBoxes(predictions, IOU_THRESHOLD, MAX_BOXES);
 }
+
+float *** readResults(){
+    std::ifstream result_file ("result_dump.txt", std::ios::in);
+
+    if (!result_file.is_open()) {
+        printf("Unable to open results file\n");
+        exit(-1);
+    }
+    
+    int xDim;
+    int yDim;
+    int zDim;
+    result_file >> xDim;
+    result_file >> yDim;
+    result_file >> zDim;
+
+    float *** array = new float**[xDim];
+
+    for(int x=0; x<xDim; x++){
+        array[x] = new float*[yDim];
+        for(int y=0; y<yDim; y++){
+            array[x][y] = new float[zDim];
+            for(int z=0; z<zDim; z++){
+                result_file >> array[x][y][z];
+            }
+        }
+    }
+    result_file.close();
+    return array;
+}
+
+int main() {
+
+    float ***features = readResults();
+
+    std::vector<Prediction> predictions = interpretNetworkOutput(features);
+    for (int i = 0; i <predictions.size(); i++) {
+        printf("Res#%d: class: %d, score: %f, Box: { x:%f, y:%f, w: %f, h: %f }\n", i, predictions[i].classIndex, predictions[i].score, predictions[i].box.x, predictions[i].box.y, predictions[i].box.width, predictions[i].box.height);
+
+    }
+}
+
