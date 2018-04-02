@@ -52,7 +52,7 @@
 //#define WIN_BUF_SIZE        CONV_GP_SIZE_X*9216/VEC_SIZE  // for AlexNet  batch>=4
 //#define WEIGHT_BUF_SIZE     9216/VEC_SIZE                 // for AlexNet  batch>=4
 // Conv Kernel
-#define PIPE_DEPTH          4
+#define PIPE_DEPTH          6
 // Pooling Kernel
 #define POOL_LBUF_DEPTH     512            // Must be large enough to hold one line (dim1/dim2)
 #define POOL_MAX_SIZE       3

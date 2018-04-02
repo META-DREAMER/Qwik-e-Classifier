@@ -669,17 +669,16 @@ unsigned layer_config[][NUM_CONFIG_ITEM] = {
 
 signed char precision_config[][3] ={
 	//frac_w, frac_din, frac_dout
-	{4,  0, -4},//Layer-1
-	{ 10,  0, -2},//Layer-2
-	{ 10,  0, -1},//Layer-3
-	{ 11, -1, -1},//Layer-4
-	{ 11, -1, -1},//Layer-5
-	{11, -1,  0},//Layer-6
-	{10,  0,  2},//Layer-7
-	{14,  2,  2},//Layer-8
-	{11,  2,  2}//Layer-9
+	{3, 7, 4},//Layer-1
+	{10, 5, 4},//Layer-2
+	{9, 5, 4},//Layer-3
+	{10, 5, 4},//Layer-4
+	{11, 5, 4},//Layer-5
+	{11, 7, 4},//Layer-6
+	{10, 7, 3},//Layer-7
+	{14, 5, 6},//Layer-8
+	{11, 6, 5},//Layer-9
 };
-
 unsigned input_config[4] = {416, 416, 3, 1}; //original image size(dim1, dim2, dim3), batch size
 
 unsigned output_config[3] = {13, 13, 125};//Layer-8  Note: only one result is extracted and verified

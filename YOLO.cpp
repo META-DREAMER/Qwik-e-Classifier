@@ -224,6 +224,10 @@ std::vector<Prediction> interpretNetworkOutput(float ***features) {
 
                 // Only keep results that meet threshold
                 if (classConfidence > CONFIDENCE_THRESHOLD) {
+                    for (std::vector<float>::const_iterator i = classes.begin(); i != classes.end(); ++i)
+                        std::cout << *i << ' ';
+                    std::cout << '\n';
+                    printf("%f, %f, %f, %f, %f, %f, %d\n", x, y, w, h, confidence, bestClassScore, bestClassIdx);
                     Box bounds = {};
                     bounds.x = x - w/2; bounds.width = w;
                     bounds.y = y - h/2; bounds.height = h;
@@ -278,7 +282,15 @@ int main() {
 
     std::vector<Prediction> predictions = interpretNetworkOutput(features);
     for (int i = 0; i <predictions.size(); i++) {
-        printf("Res#%d: class: %d, score: %f, Box: { x:%f, y:%f, w: %f, h: %f }\n", i, predictions[i].classIndex, predictions[i].score, predictions[i].box.x, predictions[i].box.y, predictions[i].box.width, predictions[i].box.height);
+        float x = predictions[i].box.x;
+        float y = predictions[i].box.y;
+        float w = predictions[i].box.width;
+        float h = predictions[i].box.height;
+        int xmin = x;
+        int xmax = x+w;
+        int ymin = y;
+        int ymax = y+h;
+        printf("Res#%d: class: %d, score: %f, Box: { xmin:%d, ymin: %d, xmax:%d, ymax: %d }\n", i, predictions[i].classIndex, predictions[i].score, xmin, ymin, xmax, ymax);
 
     }
 }
