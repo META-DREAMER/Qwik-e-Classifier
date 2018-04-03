@@ -31,7 +31,7 @@ netparams = {{net.params('layer1-conv',1).get_data(),net.params('layer1-conv',2)
         
 %% 
 WeightWidth    = [ 8;  8;  8;  8;  8;  8;  8;  8; 8];
-WeightFrac     = [ 3;  10;  9;  10;  11;  11;  10;  14; 11];
+WeightFrac     = [ 4;  10;  9;  10;  11;  11;  10;  14; 11];
 
 MathType   = fimath('RoundingMethod', 'Nearest', 'OverflowAction', 'Saturate', 'ProductMode', 'FullPrecision', 'SumMode', 'FullPrecision');
 
@@ -44,7 +44,7 @@ end
 
 %%
 
-fid = fopen('weights2.dat', 'w');
+fid = fopen('weights.dat', 'w');
 for i=1:9
     fwrite(fid, storedInteger(weight{i}), 'int8');
     fwrite(fid, storedInteger(bias{i}), 'int8');
@@ -56,22 +56,24 @@ for j=1:9
     a{j} = abs(netparams{j}{1});
     a{j} = a{j}(:);
     a{j} = sort(a{j});
-    w{j} = a{j}(floor(length(a{j}) * 0.9),1);
+    w{j} = a{j}(floor(length(a{j}) * 0.95),1);
     fi(w{j},1, 8)
 end
 
 %%
-list = [0.7137255, 7.6881866, 2.298757, 3.4270577, 6.525853, 2.0557456, 2.547694, 5.2614956, 1.9306443, 2.8374465, 5.329569, 1.1087949, 2.0124393, 4.9843855, 0.717907, 1.3517387, 4.687367, 0.54389256, 0.6342814, 11.511874, 2.3954833, 1.9440837, 1.3162186, 3.9641447];
+list = [0.7137255, 7.6881866, 2.298757, 3.4270577, 6.525853, 2.0557456, 2.547694, 5.2614956, 1.9306443, 2.8374465, 5.329569, 1.1087949, 2.0124393, 4.9843855, 0.717907, 1.3517387, 4.687367, 0.54389256, 0.5438, 6.169411874, 4.8567, 2.612, 1.406, 4.1136];
+list2 = [-7705, 726, -400, -1353, -10194, -1941, 92, 1767, 0];
 
-for n = 1:length(list)
-    a = fi(list(n), 1, 8);  
+for n = 1:length(list2)
+    a = fi(list2(n), 1, 8);  
     disp(n); disp(a);
 end
 
 %%
-dog2 = dog / 255;
 
-for i = 1:length(dog)
-    i
-   dog2(i) = storedInteger(fi(dog2(i),1, 8, 7));
+% dog2 = dog / 255;
+
+for i = 1:length(dog2)
+   dog2(i) = storedInteger(fi(dog2(i),1, 8, 8));
+   disp(i);
 end

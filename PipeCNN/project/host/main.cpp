@@ -80,7 +80,9 @@ float accuracy5=0;
 #define WEIGHTS_FILE_SIZE 15858717  //fc8-1024
 #define LAYER_NUM         9
 #define CONV_NUM          9
-const char *weight_file_path = "./data/yolo/weights2.dat";
+
+
+const char *weight_file_path = "./data/yolo/weights.dat";
 const char *input_file_path = "./data/yolo/dog2.dat";
 const char *ref_file_path = "./data/data_alex/fc8.dat";
 const char *dump_file_path = "./result_dump.txt";
@@ -1516,7 +1518,7 @@ void formatResult(){
 	for(unsigned x=0; x<xDim; x++){
 		for(unsigned y=0; y<yDim; y++){
 			for(unsigned z=0; z<zDim; z++){
-				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z] << " ";
+				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[8][frac_dout]) << " ";
 			}
 		}
 	}

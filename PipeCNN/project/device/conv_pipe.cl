@@ -35,7 +35,7 @@
 
 // The following macros are used for debug
 // #define DEBUG_MEMRD
-// #define DEBUG_CONV
+#define DEBUG_CONV
 // #define DEBUG_POOL
 // #define DEBUG_MEMWR
 //#define DEBUG_LRN
@@ -642,15 +642,12 @@ void memWrite(
 
 	channel_scal   output;
 	__local DPTYPE buffer[LANE_NUM];
-	// printf("startMR1, localz: %d\n", local_z);
 
 	if(local_z==0){
 		if((bypass&0x01)==0x01) {
-			// printf("bypass2-T\n");
 			output = read_channel_intel(bypass_ch);
 		}
 		else {
-			// printf("bypass2-F\n");
 			output = read_channel_intel(pool_ch);
 		}
 
@@ -661,7 +658,6 @@ void memWrite(
 		}
 
 	}
-	// printf("startMR3\n");
 
 
 	barrier(CLK_LOCAL_MEM_FENCE);
@@ -684,10 +680,7 @@ void memWrite(
 		#endif
 
 	}
-	// printf("startMR3\n");
 	barrier(CLK_LOCAL_MEM_FENCE);
-	// printf("endMR4\n");
-
 }
 
 

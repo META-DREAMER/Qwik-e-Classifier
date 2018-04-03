@@ -20,6 +20,7 @@
 #include "YOLO.hpp"
 
 const float anchors[] = {1.08, 1.19, 3.42, 4.41, 6.63, 11.38, 9.42, 5.11, 16.62, 10.52};
+const std::string labels[] = { "aeroplane","bicycle","bird","boat","bottle","bus","car","cat","chair","cow","diningtable","dog","horse","motorbike","person","pottedplant","sheep","sofa","train","tvmonitor"};
 
 /**
   Logistic sigmoid, normalizes x to between 0 and 1
@@ -290,7 +291,7 @@ int main() {
         int xmax = x+w;
         int ymin = y;
         int ymax = y+h;
-        printf("Res#%d: class: %d, score: %f, Box: { xmin:%d, ymin: %d, xmax:%d, ymax: %d }\n", i, predictions[i].classIndex, predictions[i].score, xmin, ymin, xmax, ymax);
+        printf("Res#%d: class: %s, score: %f, Box: { xmin:%d, ymin: %d, xmax:%d, ymax: %d }\n", i, labels[predictions[i].classIndex].c_str(), predictions[i].score, xmin, ymin, xmax, ymax);
 
     }
 }

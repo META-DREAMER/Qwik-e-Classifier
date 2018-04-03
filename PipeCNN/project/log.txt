@@ -1,0 +1,230 @@
+***************************************************
+PipeCNN: An OpenCL-Based FPGA Accelerator for CNNs 
+***************************************************
+
+Platform: Intel(R) FPGA SDK for OpenCL(TM)
+Using 1 device(s)
+  Device 0: EmulatorDevice : Emulated Device
+Device OpenCL Version: OpenCL 1.0 Intel(R) FPGA SDK for OpenCL(TM), Version 17.1
+Device Max Compute Units: 1
+Device Max WorkGroup Size: 2147483647
+Device Max WorkItem Size: 2147483647
+Device Global Memory Size: 32109 MBytes
+Device Local Memory Size: 16 KBytes
+Device Max Clock Freq: 1000 Mhz
+
+Loading kernel/binary from file conv.aocx
+
+layer: 0, dim1: 9, dim2: 3, weight_n: 0
+
+layer: 1, dim1: 9, dim2: 3, weight_n: 1
+
+layer: 2, dim1: 9, dim2: 3, weight_n: 2
+
+layer: 3, dim1: 9, dim2: 3, weight_n: 4
+
+layer: 4, dim1: 9, dim2: 3, weight_n: 8
+
+layer: 5, dim1: 9, dim2: 3, weight_n: 16
+
+layer: 6, dim1: 9, dim2: 3, weight_n: 32
+
+layer: 7, dim1: 9, dim2: 3, weight_n: 64
+
+Warnning: layer-9 requires padding zero-value feature maps for give param LANE_NUM=16
+      original num of feature maps is 125, new value is 128
+      padding_offset=1 (layer=9)
+
+
+layer: 8, dim1: 7, dim2: 1, weight_n: 64
+
+15858717 total weights read 
+1024 total output reference read 
+
+Warning: golden reference file size does not match !!!
+
+519168 bytes image data read from binary files
+
+Executing Layer 1:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching single work-item kernel Pooling
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 208, 208, 16)
+dot_cnt=0 sum=18520.000000 rnd=1.000000 sum_bias=1.000000 final=0.000000 (bias=35.000000)
+
+
+Executing Layer 2:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching single work-item kernel Pooling
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 104, 104, 32)
+dot_cnt=0 sum=0.000000 rnd=1.000000 sum_bias=0.000000 final=0.000000 (bias=-128.000000)
+
+
+Executing Layer 3:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching single work-item kernel Pooling
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 52, 52, 64)
+dot_cnt=0 sum=0.000000 rnd=1.000000 sum_bias=1.000000 final=0.000000 (bias=127.000000)
+
+
+Executing Layer 4:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching single work-item kernel Pooling
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 26, 26, 128)
+dot_cnt=0 sum=-23609.000000 rnd=-11.000000 sum_bias=501.000000 final=-6.000000 (bias=127.000000)
+
+
+Executing Layer 5:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching single work-item kernel Pooling
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 256)
+dot_cnt=0 sum=-11323.000000 rnd=-1.000000 sum_bias=510.000000 final=-1.000000 (bias=-128.000000)
+
+
+Executing Layer 6:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 512)
+dot_cnt=0 sum=-547.000000 rnd=-4.000000 sum_bias=508.000000 final=-2.000000 (bias=-128.000000)
+
+
+Executing Layer 7:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 1024)
+dot_cnt=0 sum=-1073.000000 rnd=-33.000000 sum_bias=478.000000 final=-17.000000 (bias=-128.000000)
+
+
+Executing Layer 8:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 1024)
+dot_cnt=0 sum=-54890.000000 rnd=0.000000 sum_bias=1.000000 final=0.000000 (bias=127.000000)
+
+
+Executing Layer 9:
+
+Launching single work-item kernel winbuffer
+
+Launching single work-item kernel Conv
+
+Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 128)
+dot_cnt=0 sum=0.000000 rnd=1.000000 sum_bias=1.000000 final=0.000000 (bias=0.000000)
+
+
+Copyed one result from NO.0 output buffers.
+Selected item = 0 from the combined batch results in fc buffers
+
+Start verifying results ...
+Item=0 is wrong (result=0.000000, golden_ref=-14.000000)
+Item=1 is wrong (result=0.000000, golden_ref=13.000000)
+Item=2 is wrong (result=3.000000, golden_ref=-5.000000)
+Item=3 is wrong (result=0.000000, golden_ref=-7.000000)
+Item=4 is wrong (result=1.000000, golden_ref=-9.000000)
+Item=5 is wrong (result=0.000000, golden_ref=-3.000000)
+Item=6 is wrong (result=-1.000000, golden_ref=-6.000000)
+Item=8 is wrong (result=-2.000000, golden_ref=11.000000)
+Item=9 is wrong (result=-1.000000, golden_ref=-3.000000)
+Totally 9476 Wrong Results
+
+PipeCNN exited !!!
+
+
+-------------------
+
+Performance Summary
+
+Kernel runtime summary:
+  Layer-1:
+    MemRd: 5473.464 ms
+    Conv : 5472.880 ms
+    Pool : 5472.884 ms
+    MemWr: 5473.339 ms
+    Lrn  : 0.000 ms
+  Layer-2:
+    MemRd: 2421.578 ms
+    Conv : 2421.533 ms
+    Pool : 2421.619 ms
+    MemWr: 2421.733 ms
+    Lrn  : 0.000 ms
+  Layer-3:
+    MemRd: 1830.125 ms
+    Conv : 1830.067 ms
+    Pool : 1830.184 ms
+    MemWr: 1830.295 ms
+    Lrn  : 0.000 ms
+  Layer-4:
+    MemRd: 2248.012 ms
+    Conv : 2247.970 ms
+    Pool : 2247.956 ms
+    MemWr: 2248.039 ms
+    Lrn  : 0.000 ms
+  Layer-5:
+    MemRd: 1786.384 ms
+    Conv : 1786.338 ms
+    Pool : 1786.320 ms
+    MemWr: 1786.376 ms
+    Lrn  : 0.000 ms
+  Layer-6:
+    MemRd: 1624.596 ms
+    Conv : 1624.548 ms
+    Pool : 0.000 ms
+    MemWr: 1624.625 ms
+    Lrn  : 0.000 ms
+  Layer-7:
+    MemRd: 6480.027 ms
+    Conv : 6479.981 ms
+    Pool : 0.000 ms
+    MemWr: 6480.027 ms
+    Lrn  : 0.000 ms
+  Layer-8:
+    MemRd: 13310.303 ms
+    Conv : 13310.257 ms
+    Pool : 0.000 ms
+    MemWr: 13310.294 ms
+    Lrn  : 0.000 ms
+  Layer-9:
+    MemRd: 178.387 ms
+    Conv : 178.385 ms
+    Pool : 0.000 ms
+    MemWr: 178.422 ms
+    Lrn  : 0.000 ms
+
+Total kernel runtime 35351.958 ms 
+Batch size = 1, average process time per batch: 35351.958 ms 
+
+Total runtime: 35.354145s 
+
