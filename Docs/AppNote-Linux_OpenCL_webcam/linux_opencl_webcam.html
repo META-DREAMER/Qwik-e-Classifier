@@ -436,9 +436,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_sd_card_layout">1.4. SD Card layout</a></li>
 </ul>
 </li>
-<li><a href="#_preparing_our_donor_sd_card_image">2. Preparing our donor SD card image</a></li>
-<li><a href="#_compiling_our_custom_linux_kernel">3. Compiling our custom Linux kernel</a></li>
-<li><a href="#_installing_and_running_diagnostic_tools">4. Installing and running diagnostic tools</a></li>
+<li><a href="#_preparing_our_donor_sd_card_image">2. Preparing our donor SD card image</a>
+<ul class="sectlevel2">
+<li><a href="#_download_the_image">2.1. Download the image</a></li>
+<li><a href="#_load_the_image_onto_a_microsd_card">2.2. Load the image onto a MicroSD card</a></li>
+</ul>
+</li>
+<li><a href="#_compiling_our_custom_linux_kernel">3. Compiling our custom Linux kernel</a>
+<ul class="sectlevel2">
+<li><a href="#_installing_dependencies">3.1. Installing dependencies</a></li>
+<li><a href="#_downloading_kernel_source">3.2. Downloading kernel source</a></li>
+<li><a href="#_building_with_a_modified_config">3.3. Building with a modified config</a></li>
+</ul>
+</li>
+<li><a href="#_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</a></li>
 <li><a href="#_quartus_setup">5. Quartus setup</a></li>
 <li><a href="#_compiling_and_running_our_own_host_program_and_opencl_code">6. Compiling and running our own host program, and OpenCL code</a>
 <ul class="sectlevel2">
@@ -450,6 +461,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_appendix">7. Appendix</a>
 <ul class="sectlevel2">
 <li><a href="#_the_device_source_tree">7.1. The device source tree</a></li>
+<li><a href="#_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</a></li>
+<li><a href="#_troubleshooting">7.3. Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -462,8 +475,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>This document will go over all of the steps needed to get embedded Linux with OpenCL drivers, HDMI video out, and webcam drivers running on the Terasic DE10-Nano board.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you do not need a Linux image with both HDMI output, AND OpenCL to be running, you can use an official SD card image provided by Terasic or Intel.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="_prerequisites">1.1. Prerequisites</h3>
+<div class="paragraph">
+<p>Hardware:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Terasic DE10 Cyclone V development board</p>
+</li>
+<li>
+<p>Mini-USB to USB A cable</p>
+</li>
+<li>
+<p>4GB+ MicroSD card</p>
+</li>
+<li>
+<p>Ethernet cable</p>
+</li>
+<li>
+<p>SD card reader</p>
+</li>
+<li>
+<p>A PC that can run Quartus (preferably running Linux, see apendix for running on Windows)</p>
+</li>
+<li>
+<p>Optional: webcam, USB OTG to USB A adapter</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p>This document assumes you are at least somewhat familiar with the following topics:</p>
 </div>
@@ -471,9 +524,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul>
 <li>
 <p>Linux (navigating via the commandline, and commandline tools)</p>
-</li>
-<li>
-<p>gcc / Makefiles</p>
 </li>
 <li>
 <p>Quartus, and Qsys (now known as Platform Designer in 17.1 and up)</p>
@@ -497,9 +547,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li>
 <p>Linux drivers</p>
 </li>
-<li>
-<p>Rust</p>
-</li>
 </ul>
 </div>
 </div>
@@ -507,7 +554,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_hardware">1.2. Hardware</h3>
 <div class="paragraph">
 <p>The DE10-Nano includes a single CycloneV SoC (system on chip) composed of a dual core ARM Cortex A9 CPU and a FPGA with 110k logic elements, a MicroSD card slot, USB host via an OTG (on-the-go) port, and ethernet.
-Intel supports running Linux on the SoC which then requires drivers to communicate with ethernet, USB webcams, FPGA fabric, and OpenCL custom components that run in the FPGA fabric.
+Intel supports running Linux on the SoC which then requires drivers to communicate with ethernet, USB webcams, FPGA fabric, and OpenCL custom components that <em>run in</em> the FPGA fabric.
 Most of these drivers are available in the Linux kernel source, so including them is as simple as enabling them in the kernel configuration.
 The one not supported directly by the kernel is the OpenCL driver.
 Intel provides the source code of this driver which can be compiled to be used with our kernel.</p>
@@ -533,7 +580,7 @@ However, in practice, the workflows are slightly different:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>The FPGA requires pre compiled OpenCL code compared to source files for a GPU</p>
+<p>The FPGA requires pre compiled OpenCL code compared to GPUs using the OpenCL source code</p>
 </li>
 <li>
 <p>FPGA code may contain Intel specific OpenCL extensions which will only run on Intel FPGAs</p>
@@ -544,11 +591,33 @@ However, in practice, the workflows are slightly different:</p>
 <div class="sect2">
 <h3 id="_sd_card_layout">1.4. SD Card layout</h3>
 <div class="paragraph">
-<p>Our operating system is stored on the SD card, but it is split into several partitions.
-Due to the difficulty of of compiling everything from scratch and creating an SD card image, we will instead be modifying an existing SD card image from the user thinkoco on github, then updating the kernel with webcam drivers enabled, and installing some software in linux.</p>
+<p>Our operating system is stored on the SD card, split into several partitions.
+The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, and the compressed kernel image file.
+The boot partition is FAT32, so we can access its contents from Windows, or another operating system to modify the files that are used during boot.</p>
 </div>
 <div class="paragraph">
-<p>I will give a very brief, and incomplete, overview as we are not too concerned with the specifics of how the SD card is setup.</p>
+<p>Due to the difficulty of of compiling everything from scratch and creating an SD card image, we will instead be modifying an existing SD card image from the user thinkoco on github, then updating the kernel with webcam drivers enabled, and installing some software in Linux.</p>
+</div>
+<div class="paragraph">
+<p>Much of the content in this guide has been adapted from thinkoco&#8217;s guide which you can view <a href="https://github.com/thinkoco/c5soc_opencl/blob/master/HowToDo.md">here</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The site RocketBoards.org (run by Intel) has what is known as the "Golden System Reference Design (GSRD)" which is a good starting point for working with Intel FPGAs.
+<a href="https://rocketboards.org/foswiki/Documentation/GSRD" class="bare">https://rocketboards.org/foswiki/Documentation/GSRD</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://rocketboards.org/foswiki/Documentation/GSRDSdCard">Here is the documentation on the SD card layout if you want to learn more.</a></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -556,17 +625,188 @@ Due to the difficulty of of compiling everything from scratch and creating an SD
 <div class="sect1">
 <h2 id="_preparing_our_donor_sd_card_image">2. Preparing our donor SD card image</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>We will be using the SD card image provied by the user thinkoco on Github which uses kernel version 3.18 with a root file system containing Ubuntu 16.04.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The file system also already includes the Intel RTE (a subset of the FPGA SDK for OpenCL).
+The RTE contains diagnostic tools, a compiled kernel driver to communicate with the OpenCL FPGA logic, and the OpenCL dynamic libraries (<code>.so</code> files) that the host program is linked against.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_download_the_image">2.1. Download the image</h3>
+<div class="paragraph">
+<p>The .img file can be downloaded from [here]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_load_the_image_onto_a_microsd_card">2.2. Load the image onto a MicroSD card</h3>
+<div class="paragraph">
+<p>On Windows use Win32DiskImager, on Mac or Linux use <code>dd</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can follow Intel&#8217;s guide on writing the image with these tools <a href="https://rocketboards.org/foswiki/Documentation/GSRDBootLinuxSd">here.</a></p>
+</div>
+<div class="paragraph">
+<p>Connect the DE10-Nano to your development PC with the Mini-USB cable and open a serial connection with baud rate 115200.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>During boot this serial port will display the Linux boot sequence, and after booting, display a login prompt.
+The default username is <code>root</code> and there is no password.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Insert the SD card into the DE10-Nano, and apply power.
+If you get a login prompt, you are ready for the next step.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_compiling_our_custom_linux_kernel">3. Compiling our custom Linux kernel</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will build our own kernel with the required drivers.
+In the FAT32 boot partition, the kernel is the <code>zImage</code> file.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A <code>zImage</code> is a compressed kernel image, signified by the 'z'.
+An uncompressed kernel image is named <code>uImage</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Our built kernel (<code>zImage</code>) will also disable strict checking for loadable modules.
+This means that even if the version magic of a module does not match exactly, it will still be loaded by the kernel.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Our OpenCL Linux kernel driver is loaded as module into the kernel, hence the need for loadable module support.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Loading kernel modules that weren&#8217;t compiled against the <em>exact</em> kernel version (3.18) may lead to kernel panics with this setting disabled. Be sure to re-enable for non-development builds.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following steps were done on a server running Ubuntu 16.04.</p>
+</div>
+<div class="sect2">
+<h3 id="_installing_dependencies">3.1. Installing dependencies</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ sudo apt update
+$ sudo apt install u-boot-tools gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libncurses5-dev make lsb uml-utilities git</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_downloading_kernel_source">3.2. Downloading kernel source</h3>
+<div class="paragraph">
+<p>Apparently Intel does not like keeping source code public that is vulnerable to some exploits, so they have removed their 3.18 branch from github possibly due to the Meltdown / Spectre exploits.
+Instead, we will download the kernel source from thinkoco&#8217;s github repository.</p>
+</div>
+<div class="paragraph">
+<p>We can either clone the whole repository (~1.4GB), or just a single branch as shown below.
+If you clone the entire repo, be sure to checkout the 3.18 branch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
+$ cd linux-socfpga</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_building_with_a_modified_config">3.3. Building with a modified config</h3>
+<div class="paragraph">
+<p>We will use a config already modified to include support for webcams.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>.config</code> file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a <code>ncurses</code> frontend.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cp 3.18_usbcam_config .config
+# setup compiler options
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-linux-gnueabihf-
+$ export LOADADDR=0x8000
 
+# setting LOCALVERSION blank means that kernel modules will
+# not have to match their version exactly to the kernel
+$ export LOCALVERSION=
+
+# build with 24 threads. replace 24 with the number of threads on your machine
+$ make -j24 zImage
+
+# copy the compiled kernel
+$ cp arch/arm/boot/zImage ~/output/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that we have our modified <code>zImage</code>, we can insert the MicroSD card into our computer and overwrite the original <code>zImage</code> in the FAT32 partition.
+Once again, boot the DE10 with the USB serial connected and verify you get to the login prompt.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installing_and_running_diagnostic_tools">4. Installing and running diagnostic tools</h2>
+<h2 id="_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</h2>
 <div class="sectionbody">
 
 </div>
@@ -604,12 +844,20 @@ Due to the difficulty of of compiling everything from scratch and creating an SD
 <h3 id="_the_device_source_tree">7.1. The device source tree</h3>
 
 </div>
+<div class="sect2">
+<h3 id="_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting">7.3. Troubleshooting</h3>
+
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-02 20:31:04 DST
+Last updated 2018-04-05 02:40:11 DST
 </div>
 </div>
 </body>
