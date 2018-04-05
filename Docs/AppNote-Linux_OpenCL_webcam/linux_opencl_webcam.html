@@ -450,7 +450,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</a></li>
-<li><a href="#_quartus_setup">5. Quartus setup</a></li>
+<li><a href="#_quartus_setup">5. Quartus setup</a>
+<ul class="sectlevel2">
+<li><a href="#_installation">5.1. Installation</a>
+<ul class="sectlevel3">
+<li><a href="#_environment_variable_setup">5.1.1. Environment Variable setup</a></li>
+</ul>
+</li>
+<li><a href="#_board_support_package_bsp">5.2. Board Support Package (BSP)</a>
+<ul class="sectlevel3">
+<li><a href="#_installation_2">5.2.1. Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_compiling_and_running_our_own_host_program_and_opencl_code">6. Compiling and running our own host program, and OpenCL code</a>
 <ul class="sectlevel2">
 <li><a href="#_writing_the_code">6.1. Writing the code</a></li>
@@ -601,11 +614,11 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 <div class="paragraph">
 <p>Much of the content in this guide has been adapted from thinkoco&#8217;s guide which you can view <a href="https://github.com/thinkoco/c5soc_opencl/blob/master/HowToDo.md">here</a>.</p>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Tip</div>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -636,7 +649,7 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The file system also already includes the Intel RTE (a subset of the FPGA SDK for OpenCL).
+<p>The file system also already includes the Intel RTE (Runtime Environment, a subset of the FPGA SDK for OpenCL).
 The RTE contains diagnostic tools, a compiled kernel driver to communicate with the OpenCL FPGA logic, and the OpenCL dynamic libraries (<code>.so</code> files) that the host program is linked against.</p>
 </div>
 </td>
@@ -689,11 +702,11 @@ If you get a login prompt, you are ready for the next step.</p>
 <p>The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will build our own kernel with the required drivers.
 In the FAT32 boot partition, the kernel is the <code>zImage</code> file.</p>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Tip</div>
 </td>
 <td class="content">
 <div class="paragraph">
@@ -791,7 +804,8 @@ $ export LOADADDR=0x8000
 # not have to match their version exactly to the kernel
 $ export LOCALVERSION=
 
-# build with 24 threads. replace 24 with the number of threads on your machine
+# build with 24 threads. replace 24 with the number of threads on your machine.
+# with 24 cores this took ~90 seconds
 $ make -j24 zImage
 
 # copy the compiled kernel
@@ -814,12 +828,117 @@ Once again, boot the DE10 with the USB serial connected and verify you get to th
 <div class="sect1">
 <h2 id="_quartus_setup">5. Quartus setup</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_installation">5.1. Installation</h3>
+<div class="paragraph">
+<p><a href="http://dl.altera.com/opencl/17.1/?edition=standard&amp;download_manager=direct">Download and install Intel FPGA for OpenCL 17.1 edition of Quartus</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/download_center.png" alt="Screenshot of which Quartus version to download">
+</div>
+<div class="title">Figure 1. Screenshot of download page</div>
+</div>
+<div class="paragraph">
+<p>When installing, be sure to enable support for Cyclone V devices.
+We will need at least a Standard license in order to compile everything.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+See the appendix for working from home with a VPN and using the University of Alberta license server.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_environment_variable_setup">5.1.1. Environment Variable setup</h4>
 
+</div>
+</div>
+<div class="sect2">
+<h3 id="_board_support_package_bsp">5.2. Board Support Package (BSP)</h3>
+<div class="paragraph">
+<p>To go with our Linux image provided by thinkoco, we will also use their board support package (BSP).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="title">What is a BSP?</div>
+<div class="paragraph">
+<p>A BSP allows us to include non OpenCL code in our FPGA fabric.
+This is where we add custom Qsys components, custom VHDL or Verilog code, etc.</p>
+</div>
+<div class="paragraph">
+<p>The BSP we use contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Qsys component <code>acl_iface</code> "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.</p>
+</li>
+<li>
+<p>Qsys component for HDMI output</p>
+</li>
+<li>
+<p>Qsys components for onboard switches, buttons, and LEDs</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_installation_2">5.2.1. Installation</h4>
+<div class="paragraph">
+<p>Download or clone <a href="https://github.com/thinkoco/c5soc_opencl">thinkoco&#8217;s repository</a>.</p>
+</div>
+<div class="paragraph">
+<p>Copy the folder <code>de10_nano_sharedonly_hdmi</code> to the following folder: <code>C:\intelFPGA\17.1\hld\board\c5soc\hardware</code> or equivalent if on Linux.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You can view the contents of the BSP by opening the above folder&#8217;s <code>top.qpf</code> file in Quartus, and opening <code>system.qsys</code> and <code>iface/acl_iface_system.qsys</code> in Platform Designer.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_compiling_and_running_our_own_host_program_and_opencl_code">6. Compiling and running our own host program, and OpenCL code</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The offline OpenCL compiler is invoked with the <code>aoc</code> command at the commandline.</p>
+</div>
 <div class="sect2">
 <h3 id="_writing_the_code">6.1. Writing the code</h3>
 
@@ -857,7 +976,7 @@ Once again, boot the DE10 with the USB serial connected and verify you get to th
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-05 02:40:11 DST
+Last updated 2018-04-05 03:13:37 DST
 </div>
 </div>
 </body>

@@ -69,7 +69,7 @@ Due to the difficulty of of compiling everything from scratch and creating an SD
 
 Much of the content in this guide has been adapted from thinkoco's guide which you can view https://github.com/thinkoco/c5soc_opencl/blob/master/HowToDo.md[here].
 
-[NOTE]
+[TIP]
 ====
 The site RocketBoards.org (run by Intel) has what is known as the "Golden System Reference Design (GSRD)" which is a good starting point for working with Intel FPGAs.
 https://rocketboards.org/foswiki/Documentation/GSRD
@@ -116,7 +116,7 @@ If you get a login prompt, you are ready for the next step.
 == Compiling our custom Linux kernel 
 The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will build our own kernel with the required drivers.
 In the FAT32 boot partition, the kernel is the `zImage` file.
-[NOTE]
+[TIP]
 ====
 A `zImage` is a compressed kernel image, signified by the 'z'.
 An uncompressed kernel image is named `uImage`.
@@ -183,23 +183,47 @@ Once again, boot the DE10 with the USB serial connected and verify you get to th
 === Installation
 http://dl.altera.com/opencl/17.1/?edition=standard&download_manager=direct[Download and install Intel FPGA for OpenCL 17.1 edition of Quartus].
 
+.Screenshot of download page
 image::download_center.png[Screenshot of which Quartus version to download]
 
 When installing, be sure to enable support for Cyclone V devices.
 We will need at least a Standard license in order to compile everything.
 
-NOTE: See the appendix for working from home with a VPN and using the University of Alberta license server.
+TIP: See the appendix for working from home with a VPN and using the University of Alberta license server.
+
+==== Environment Variable setup 
+
 
 === Board Support Package (BSP)
+To go with our Linux image provided by thinkoco, we will also use their board support package (BSP).
+
+[NOTE]
+.What is a BSP?
+====
+A BSP allows us to include non OpenCL code in our FPGA fabric.
+This is where we add custom Qsys components, custom VHDL or Verilog code, etc.
+
+The BSP we use contains:
+
+* Qsys component `acl_iface` "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.
+* Qsys component for HDMI output
+* Qsys components for onboard switches, buttons, and LEDs
+====
+
 ==== Installation
+Download or clone https://github.com/thinkoco/c5soc_opencl[thinkoco's repository].
 
-==== Upgrading to 17.1
+Copy the folder `de10_nano_sharedonly_hdmi` to the following folder: `C:\intelFPGA\17.1\hld\board\c5soc\hardware` or equivalent if on Linux.
 
+NOTE: If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
 
+TIP: You can view the contents of the BSP by opening the above folder's `top.qpf` file in Quartus, and opening `system.qsys` and `iface/acl_iface_system.qsys` in Platform Designer.
 
 
 
 == Compiling and running our own host program, and OpenCL code 
+The offline OpenCL compiler is invoked with the `aoc` command at the commandline.
+
 
 === Writing the code 
 
