@@ -669,7 +669,7 @@ unsigned layer_config[][NUM_CONFIG_ITEM] = {
 
 signed char precision_config[][3] ={
 	//frac_w, frac_din, frac_dout
-	{4, 8, -6},//Layer-1
+	{3, 7, -6},//Layer-1
 	{10, -6, -3},//Layer-2
 	{9, -3, -2},//Layer-3
 	{10, -2, -4},//Layer-4

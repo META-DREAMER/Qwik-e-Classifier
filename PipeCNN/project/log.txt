@@ -54,7 +54,7 @@ Launching single work-item kernel Conv
 Launching single work-item kernel Pooling
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 208, 208, 16)
-dot_cnt=0 sum=18520.000000 rnd=1.000000 sum_bias=1.000000 final=0.000000 (bias=35.000000)
+dot_cnt=0 sum=-3849.000000 rnd=0.000000 sum_bias=1.000000 final=0.000000 (bias=17.000000)
 
 
 Executing Layer 2:
@@ -78,7 +78,7 @@ Launching single work-item kernel Conv
 Launching single work-item kernel Pooling
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 52, 52, 64)
-dot_cnt=0 sum=0.000000 rnd=1.000000 sum_bias=1.000000 final=0.000000 (bias=127.000000)
+dot_cnt=0 sum=-81.000000 rnd=0.000000 sum_bias=1.000000 final=0.000000 (bias=127.000000)
 
 
 Executing Layer 4:
@@ -90,7 +90,7 @@ Launching single work-item kernel Conv
 Launching single work-item kernel Pooling
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 26, 26, 128)
-dot_cnt=0 sum=-23609.000000 rnd=-11.000000 sum_bias=501.000000 final=-6.000000 (bias=127.000000)
+dot_cnt=0 sum=-7456.000000 rnd=-3.000000 sum_bias=509.000000 final=-2.000000 (bias=127.000000)
 
 
 Executing Layer 5:
@@ -102,7 +102,7 @@ Launching single work-item kernel Conv
 Launching single work-item kernel Pooling
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 256)
-dot_cnt=0 sum=-11323.000000 rnd=-1.000000 sum_bias=510.000000 final=-1.000000 (bias=-128.000000)
+dot_cnt=0 sum=-3064.000000 rnd=0.000000 sum_bias=0.000000 final=0.000000 (bias=-128.000000)
 
 
 Executing Layer 6:
@@ -112,7 +112,7 @@ Launching single work-item kernel winbuffer
 Launching single work-item kernel Conv
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 512)
-dot_cnt=0 sum=-547.000000 rnd=-4.000000 sum_bias=508.000000 final=-2.000000 (bias=-128.000000)
+dot_cnt=0 sum=0.000000 rnd=1.000000 sum_bias=0.000000 final=0.000000 (bias=-128.000000)
 
 
 Executing Layer 7:
@@ -122,7 +122,7 @@ Launching single work-item kernel winbuffer
 Launching single work-item kernel Conv
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 1024)
-dot_cnt=0 sum=-1073.000000 rnd=-33.000000 sum_bias=478.000000 final=-17.000000 (bias=-128.000000)
+dot_cnt=0 sum=-4479.000000 rnd=-139.000000 sum_bias=372.000000 final=-70.000000 (bias=-128.000000)
 
 
 Executing Layer 8:
@@ -132,7 +132,7 @@ Launching single work-item kernel winbuffer
 Launching single work-item kernel Conv
 
 Launching kernel MemWr with local size: 1, 1, 16  (global size: 13, 13, 1024)
-dot_cnt=0 sum=-54890.000000 rnd=0.000000 sum_bias=1.000000 final=0.000000 (bias=127.000000)
+dot_cnt=0 sum=-120739.000000 rnd=-58.000000 sum_bias=455.000000 final=-29.000000 (bias=127.000000)
 
 
 Executing Layer 9:
@@ -149,16 +149,16 @@ Copyed one result from NO.0 output buffers.
 Selected item = 0 from the combined batch results in fc buffers
 
 Start verifying results ...
-Item=0 is wrong (result=0.000000, golden_ref=-14.000000)
-Item=1 is wrong (result=0.000000, golden_ref=13.000000)
-Item=2 is wrong (result=3.000000, golden_ref=-5.000000)
-Item=3 is wrong (result=0.000000, golden_ref=-7.000000)
-Item=4 is wrong (result=1.000000, golden_ref=-9.000000)
+Item=0 is wrong (result=-3.000000, golden_ref=-14.000000)
+Item=1 is wrong (result=-3.000000, golden_ref=13.000000)
+Item=2 is wrong (result=-2.000000, golden_ref=-5.000000)
+Item=3 is wrong (result=-1.000000, golden_ref=-7.000000)
+Item=4 is wrong (result=0.000000, golden_ref=-9.000000)
 Item=5 is wrong (result=0.000000, golden_ref=-3.000000)
-Item=6 is wrong (result=-1.000000, golden_ref=-6.000000)
-Item=8 is wrong (result=-2.000000, golden_ref=11.000000)
-Item=9 is wrong (result=-1.000000, golden_ref=-3.000000)
-Totally 9476 Wrong Results
+Item=6 is wrong (result=1.000000, golden_ref=-6.000000)
+Item=8 is wrong (result=1.000000, golden_ref=11.000000)
+Item=9 is wrong (result=0.000000, golden_ref=-3.000000)
+Totally 9478 Wrong Results
 
 PipeCNN exited !!!
 
@@ -169,62 +169,62 @@ Performance Summary
 
 Kernel runtime summary:
   Layer-1:
-    MemRd: 5473.464 ms
-    Conv : 5472.880 ms
-    Pool : 5472.884 ms
-    MemWr: 5473.339 ms
+    MemRd: 5430.785 ms
+    Conv : 5430.477 ms
+    Pool : 5430.562 ms
+    MemWr: 5430.747 ms
     Lrn  : 0.000 ms
   Layer-2:
-    MemRd: 2421.578 ms
-    Conv : 2421.533 ms
-    Pool : 2421.619 ms
-    MemWr: 2421.733 ms
+    MemRd: 2481.024 ms
+    Conv : 2480.928 ms
+    Pool : 2481.062 ms
+    MemWr: 2481.178 ms
     Lrn  : 0.000 ms
   Layer-3:
-    MemRd: 1830.125 ms
-    Conv : 1830.067 ms
-    Pool : 1830.184 ms
-    MemWr: 1830.295 ms
+    MemRd: 2281.835 ms
+    Conv : 2281.757 ms
+    Pool : 2281.792 ms
+    MemWr: 2281.831 ms
     Lrn  : 0.000 ms
   Layer-4:
-    MemRd: 2248.012 ms
-    Conv : 2247.970 ms
-    Pool : 2247.956 ms
-    MemWr: 2248.039 ms
+    MemRd: 1752.921 ms
+    Conv : 1752.865 ms
+    Pool : 1752.831 ms
+    MemWr: 1752.895 ms
     Lrn  : 0.000 ms
   Layer-5:
-    MemRd: 1786.384 ms
-    Conv : 1786.338 ms
-    Pool : 1786.320 ms
-    MemWr: 1786.376 ms
+    MemRd: 1457.031 ms
+    Conv : 1456.956 ms
+    Pool : 1456.927 ms
+    MemWr: 1456.997 ms
     Lrn  : 0.000 ms
   Layer-6:
-    MemRd: 1624.596 ms
-    Conv : 1624.548 ms
+    MemRd: 1636.558 ms
+    Conv : 1636.521 ms
     Pool : 0.000 ms
-    MemWr: 1624.625 ms
+    MemWr: 1636.587 ms
     Lrn  : 0.000 ms
   Layer-7:
-    MemRd: 6480.027 ms
-    Conv : 6479.981 ms
+    MemRd: 6590.516 ms
+    Conv : 6590.472 ms
     Pool : 0.000 ms
-    MemWr: 6480.027 ms
+    MemWr: 6590.543 ms
     Lrn  : 0.000 ms
   Layer-8:
-    MemRd: 13310.303 ms
-    Conv : 13310.257 ms
+    MemRd: 13162.208 ms
+    Conv : 13162.147 ms
     Pool : 0.000 ms
-    MemWr: 13310.294 ms
+    MemWr: 13162.214 ms
     Lrn  : 0.000 ms
   Layer-9:
-    MemRd: 178.387 ms
-    Conv : 178.385 ms
+    MemRd: 179.934 ms
+    Conv : 179.896 ms
     Pool : 0.000 ms
-    MemWr: 178.422 ms
+    MemWr: 179.934 ms
     Lrn  : 0.000 ms
 
-Total kernel runtime 35351.958 ms 
-Batch size = 1, average process time per batch: 35351.958 ms 
+Total kernel runtime 34972.017 ms 
+Batch size = 1, average process time per batch: 34972.017 ms 
 
-Total runtime: 35.354145s 
+Total runtime: 34.973831s 
 

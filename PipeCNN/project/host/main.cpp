@@ -83,7 +83,7 @@ float accuracy5=0;
 
 
 const char *weight_file_path = "./data/yolo/weights.dat";
-const char *input_file_path = "./data/yolo/dog2.dat";
+const char *input_file_path = "./data/yolo/dog.dat";
 const char *ref_file_path = "./data/data_alex/fc8.dat";
 const char *dump_file_path = "./result_dump.txt";
 

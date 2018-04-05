@@ -228,7 +228,7 @@ std::vector<Prediction> interpretNetworkOutput(float ***features) {
                     for (std::vector<float>::const_iterator i = classes.begin(); i != classes.end(); ++i)
                         std::cout << *i << ' ';
                     std::cout << '\n';
-                    printf("%f, %f, %f, %f, %f, %f, %d\n", x, y, w, h, confidence, bestClassScore, bestClassIdx);
+                    // printf("%f, %f, %f, %f, %f, %f, %d\n", x, y, w, h, confidence, bestClassScore, bestClassIdx);
                     Box bounds = {};
                     bounds.x = x - w/2; bounds.width = w;
                     bounds.y = y - h/2; bounds.height = h;
@@ -248,7 +248,7 @@ std::vector<Prediction> interpretNetworkOutput(float ***features) {
 }
 
 float *** readResults(){
-    std::ifstream result_file ("result_dump.txt", std::ios::in);
+    std::ifstream result_file ("PipeCNN/project/result_dump.txt", std::ios::in);
 
     if (!result_file.is_open()) {
         printf("Unable to open results file\n");
