@@ -4,7 +4,7 @@ This appnote is written with [Asciidoctor](https://asciidoctor.org/docs/user-man
 ```bash
 $ sudo apt install asciidoctor
 # required to render to pdf
-$ gem install asciidoctor-pdf
+$ gem install asciidoctor-pdf --pre
 # required for syntax highlighting
 $ gem install rouge 
 ```
