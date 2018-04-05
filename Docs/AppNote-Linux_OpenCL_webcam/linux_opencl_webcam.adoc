@@ -193,6 +193,21 @@ TIP: See the appendix for working from home with a VPN and using the University 
 
 ==== Environment Variable setup 
 
+Follow Intel's instructions from their getting started guide https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[here].
+
+.Table Summary of Variables (on Windows)
+|===
+| Variable | Value
+
+| `INTELFPGAOCLSDKROOT`
+| `C:\intelFGPA\17.1\hld`
+
+| `PATH`
+| append these to `PATH`:
+* `%INTELFPGAOCLSDKROOT%\bin`
+* `%INTELFPGAOCLSDKROOT%\windows64\bin`
+* `%INTELFPGAOCLSDKROOT%\host\windows64\bin`
+
 
 === Board Support Package (BSP)
 To go with our Linux image provided by thinkoco, we will also use their board support package (BSP).
@@ -224,6 +239,7 @@ TIP: You can view the contents of the BSP by opening the above folder's `top.qpf
 == Compiling and running our own host program, and OpenCL code 
 The offline OpenCL compiler is invoked with the `aoc` command at the commandline.
 
+I am most familiar with Rust, so the example will be written in it, but any 
 
 === Writing the code 
 
@@ -232,10 +248,26 @@ The offline OpenCL compiler is invoked with the `aoc` command at the commandline
 === Modifying OpenCL libraries
 
 == Appendix
-Other information that may be useful.
 
 === The device source tree
+In the FAT32 partition of the SD card their is a file named `socfpga.dtb` which is a "device tree blob".
+The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.
+
+It includes things like the kind of processor, amount of RAM, the HDMI Qsys component's address, FPGA manager address, button addresses, onboard LED addresses, etc.
+You can view Intel's documentation on how to modify a `.dts` file (device tree _source_) which is then compiled into the above `.dtb` file.
+
+https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator[Intel documentation]
 
 === Modifying Linux kernel config
+The config can be modified on the command line by running the following in the kernel source directory:
+
+CAUTION: The `ARCH` and `CROSS_COMPILE` environment variables should be set before running this command
+
+```sh
+$ make menuconfig
+```
+
+This will give you an ncurses interface to modify the config.
+Be sure to backup your config before running `make clean` as I believe it deletes it?
 
 === Troubleshooting
