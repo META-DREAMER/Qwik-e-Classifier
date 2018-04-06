@@ -1,0 +1,30 @@
+[package]
+name = "ocl-interop"
+version = "0.1.4"
+authors = ["Nopey Nope<golgothasTerror101@gmail.com>", "Nick Sanders <cogciprocate@gmail.com>"]
+build = "build.rs"
+repository = "https://github.com/cogciprocate/ocl/"
+description = "Creates an OpenCL Context with OpenGL Interop enabled"
+readme = "README.md"
+keywords = ["OpenCL", "OpenGL", "gpgpu", "gpu", "GL"]
+categories = ["concurrency", "hardware-support", "api-bindings", "external-ffi-bindings"]
+license = "MIT/Apache-2.0"
+
+[dependencies]
+ocl = { path = "../ocl" }
+
+# For tests
+[dev-dependencies]
+gl = "0.9"
+# Red test
+sdl2 = "0.31"
+# Green test
+glutin = "0.12"
+# Blue test
+glfw = "0.20"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cgl = "^0.2"
+
+[target.'cfg(not(target_os="macos"))'.build-dependencies]
+gl_generator = "^0.5"
