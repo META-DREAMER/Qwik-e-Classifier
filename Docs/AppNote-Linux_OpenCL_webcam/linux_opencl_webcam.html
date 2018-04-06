@@ -630,6 +630,9 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 <div class="paragraph">
 <p>Much of the content in this guide has been adapted from thinkoco&#8217;s guide which you can view <a href="https://github.com/thinkoco/c5soc_opencl/blob/master/HowToDo.md">here</a>.</p>
 </div>
+<div class="paragraph">
+<p>Many thanks to <a href="https://github.com/thinkoco">thinkoco (Welon Tank)</a> for their guides, and support!</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -945,6 +948,10 @@ See the appendix for working from home with a VPN and using the University of Al
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFGPA\17.1\hld</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AOCL_BOARD_PACKAGE_ROOT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFPGA\17.1\hld\board\c5soc</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATH</code></p></td>
 <td class="tableblock halign-left valign-top"><div><div class="paragraph">
 <p>append these to <code>PATH</code>:</p>
@@ -1078,7 +1085,7 @@ We can compile our <code>trivial.cl</code> OpenCL source file into the required 
 <p>I am most familiar with Rust, so the example will be written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).</p>
 </div>
 <div class="paragraph">
-<p>See the included files (<code>main.rs</code>) to see the Rust code.
+<p>See the included files (<code>example-rs/src/main.rs</code>) to see the Rust code.
 Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10.</p>
 </div>
 <div class="listingblock">
@@ -1106,11 +1113,9 @@ $ sudo apt install ocl-icd-opencl-dev</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ source ./init_opencl_17.1.sh</code></pre>
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ source ./init_opencl_17.1.sh</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>In the folder with <code>Cargo.toml</code>:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1119,7 +1124,7 @@ $ sudo apt install ocl-icd-opencl-dev</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-Must have an internet connection to download dependencies.
+Rust&#8217;s package manager <code>cargo</code> needs an internet connection to download the required dependencies.
 </td>
 </tr>
 </table>
@@ -1127,8 +1132,12 @@ Must have an internet connection to download dependencies.
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~/example-rs
-$ cargo run --release triv2.aocx</code></pre>
+$ cargo run --release trivial.aocx</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Where <code>trivial.aocx</code> is the compiled output of <code>trivial.cl</code>.
+For more info see <a href="#_compilation_flow">Compilation flow</a></p>
 </div>
 </div>
 </div>
@@ -1202,7 +1211,7 @@ Be sure to backup your config before running <code>make clean</code> as I believ
 <div class="sect2">
 <h3 id="_working_remotely_with_vpn">7.5. Working remotely with VPN</h3>
 <div class="paragraph">
-<p>Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.</p>
+<p>We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university&#8217;s VPN to contact the U of A license server.</p>
 </div>
 <div class="paragraph">
 <p>Install the university VPN client from <a href="https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158">here</a>.</p>
@@ -1374,7 +1383,7 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-06 02:39:10 DST
+Last updated 2018-04-06 03:23:27 DST
 </div>
 </div>
 </body>

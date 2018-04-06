@@ -70,6 +70,9 @@ Due to the difficulty of of compiling everything from scratch and creating an SD
 
 Much of the content in this guide has been adapted from thinkoco's guide which you can view https://github.com/thinkoco/c5soc_opencl/blob/master/HowToDo.md[here].
 
+Many thanks to https://github.com/thinkoco[thinkoco (Welon Tank)] for their guides, and support!
+
+
 [TIP]
 ====
 The site RocketBoards.org (run by Intel) has what is known as the "Golden System Reference Design (GSRD)" which is a good starting point for working with Intel FPGAs.
@@ -237,6 +240,9 @@ Follow Intel's instructions from their getting started guide https://www.altera.
 | `INTELFPGAOCLSDKROOT`
 | `C:\intelFGPA\17.1\hld`
 
+| `AOCL_BOARD_PACKAGE_ROOT`
+| `C:\intelFPGA\17.1\hld\board\c5soc`
+
 | `PATH`
 a| append these to `PATH`:
 
@@ -296,7 +302,7 @@ Now copy the generated `opencl.rbf` to the FAT32 partition of the SD card. The F
 === Install Rust on the DE10-Nano
 I am most familiar with Rust, so the example will be written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).
 
-See the included files (`main.rs`) to see the Rust code.
+See the included files (`example-rs/src/main.rs`) to see the Rust code.
 Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10. 
 
 ```sh
@@ -318,17 +324,19 @@ Copy the example code to the DE10 into `~/example-rs`
 Load the OpenCL kernel module, and set the required environment variables:
 
 ```sh
+$ cd ~
 $ source ./init_opencl_17.1.sh 
 ```
 
-In the folder with `Cargo.toml`:
-
-NOTE: Must have an internet connection to download dependencies.
+NOTE: Rust's package manager `cargo` needs an internet connection to download the required dependencies.
 
 ```sh
 $ cd ~/example-rs
-$ cargo run --release triv2.aocx
+$ cargo run --release trivial.aocx
 ```
+
+Where `trivial.aocx` is the compiled output of `trivial.cl`.
+For more info see <<Compilation flow>>
 
 == Appendix
 
@@ -366,7 +374,7 @@ $ export DISPLAY=":0"
 ```
 
 === Working remotely with VPN 
-Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.
+We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university's VPN to contact the U of A license server.
 
 Install the university VPN client from https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158[here].
 
