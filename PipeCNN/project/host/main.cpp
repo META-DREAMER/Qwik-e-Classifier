@@ -25,7 +25,9 @@
 #include "../device/hw_param.cl"
 #include "layer_config.h"
 
+
 #ifdef USE_OPENCV
+#include "YOLO.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
@@ -49,8 +51,8 @@ const char *vendor_name = "Intel";
 #define MAX_LAYER_NUM   16
 #define MAX_BATCH_SIZE  16
 
-#define IN_BUF_SIZE    256*256*64  // Note: the buffer size should be large enough to hold all temperary results
-#define OUT_BUF_SIZE   256*256*64
+#define IN_BUF_SIZE    512*512*64  // Note: the buffer size should be large enough to hold all temperary results
+#define OUT_BUF_SIZE   512*512*64
 #define FC_BUF_SIZE    32768*MAX_BATCH_SIZE
 
 #define MEAN_DATA_WIDTH   256
@@ -74,13 +76,15 @@ float accuracy5=0;
 // AlexNet
 // Original problem size
 // File size is in num of DTYPE numbers
-#define IMAGE_FILE_SIZE   (227*227*3)
+#define IMAGE_FILE_SIZE   (416*416*3)
 //#define WEIGHTS_FILE_SIZE 60965224 //fc8-1000
-#define WEIGHTS_FILE_SIZE 61063552  //fc8-1024
-#define LAYER_NUM         8
-#define CONV_NUM          5
-const char *weight_file_path = "./data/data_alex/weights.dat";
-const char *input_file_path = "./data/data_alex/image.dat";
+#define WEIGHTS_FILE_SIZE 15858717  //fc8-1024
+#define LAYER_NUM         9
+#define CONV_NUM          9
+
+
+const char *weight_file_path = "./data/yolo/weights.dat";
+const char *input_file_path = "./data/yolo/dog.dat";
 const char *ref_file_path = "./data/data_alex/fc8.dat";
 const char *dump_file_path = "./result_dump.txt";
 
@@ -182,6 +186,8 @@ DTYPE *golden_ref;
 unsigned layer_config_original[LAYER_NUM][NUM_CONFIG_ITEM];
 
 #ifdef USE_OPENCV
+Mat curImage;
+
 int  load_picture(DTYPE *image);
 void getAccuracy(DTYPE *output_reorder,int num);
 void labelNum();
@@ -192,6 +198,7 @@ int  prepare();
 void readDataBack();
 void verifyResult(int num);
 void dumpResult();
+void formatResult();
 void reorderWeights(DTYPE *weights, DTYPE *weight_buf, unsigned dim1, unsigned dim2, unsigned dim3, unsigned dim4, unsigned dim3_original, unsigned dim4_original, unsigned offset, unsigned padding_offset, unsigned vecSize, unsigned laneNum);
 void reorderBias(DTYPE *dataIn, DTYPE *bias, unsigned offset, unsigned padding_offset, unsigned dim4, unsigned dim4_original, unsigned laneNum);
 void reorderOutput(DTYPE *output, DTYPE *output_reorder, unsigned dim1, unsigned dim2, unsigned dim3);
@@ -272,7 +279,7 @@ int main(int argc, char** argv)
 	knl_conv.reset(num_devices);
 	knl_memWr.reset(num_devices);
 	knl_pool.reset(num_devices);
-	knl_lrn.reset(num_devices);
+	// knl_lrn.reset(num_devices);
 	// For each layer a group of buffers are created to store the weights and bias
 	weights_buf.reset(num_devices*LAYER_NUM);
 	bias_buf.reset(num_devices*LAYER_NUM);
@@ -316,8 +323,8 @@ int main(int argc, char** argv)
 		knl_memWr[i] = clCreateKernel(program, knl_name_memWr, &status);
 		checkError(status, "Failed to create memWr kernel");
 
-		knl_lrn[i] = clCreateKernel(program, knl_name_lrn, &status);
-		checkError(status, "Failed to create lrn kernel");
+		// knl_lrn[i] = clCreateKernel(program, knl_name_lrn, &status);
+		// checkError(status, "Failed to create lrn kernel");
 
 		// Mems
 		// Create weight and bias buffers for each layer
@@ -380,7 +387,7 @@ int main(int argc, char** argv)
 	unsigned short out_dim1xbatch;
 	unsigned int   out_dim1x2xbatch;
 	unsigned char  padding_offset;
-	unsigned char  conv_group_num_dim1, conv_group_num_dim2;
+	unsigned short  conv_group_num_dim1, conv_group_num_dim2;
 	unsigned char  conv_win_size_dim1, conv_win_size_dim2;
 	unsigned int   conv_win_size_dim1x2x3;
 	unsigned char  conv_group_rem_dim1, conv_group_rem_dim2;
@@ -431,6 +438,7 @@ int main(int argc, char** argv)
 			// Convolution tasks (conv_x,conv_y) are divided into multiple groups
 			conv_group_num_dim1   = ceil((float)layer_config[j][conv_x]/CONV_GP_SIZE_X);
 			conv_group_num_dim2   = ceil((float)layer_config[j][conv_y]/CONV_GP_SIZE_Y);
+
 			if(layer_config[j][conv_x]==1){
 				conv_win_size_dim1  = layer_config[j][weight_w];
 				conv_group_rem_dim1   = layer_config[j][weight_w];
@@ -452,10 +460,11 @@ int main(int argc, char** argv)
 			weight_dim1x2 = layer_config[j][weight_w]*layer_config[j][weight_h];
 			weight_dim1x2x3 = layer_config[j][weight_w]*layer_config[j][weight_h]*layer_config[j][weight_n];
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][data_w]);
+
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][data_w]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][data_h]);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][data_h]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &data_dim1x2);
@@ -479,7 +488,7 @@ int main(int argc, char** argv)
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uint),  &weight_dim1x2x3);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_x]);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &layer_config[j][conv_x]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			//status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_y]);
@@ -494,10 +503,10 @@ int main(int argc, char** argv)
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &layer_config[j][conv_split]);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_num_dim1);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &conv_group_num_dim1);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
-			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_num_dim2);
+			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_ushort), &conv_group_num_dim2);
 			checkError(status, "Failed to set argument %d of kernel memRd", argi - 1);
 
 			status = clSetKernelArg(knl_memRd[i], argi++, sizeof(cl_uchar), &conv_group_rem_dim1);
@@ -580,7 +589,7 @@ int main(int argc, char** argv)
 				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uint), &pool_input_num);
 				checkError(status, "Failed to set argument %d of kernel pool", argi - 1);
 
-				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uchar), &pool_line_size);
+				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_ushort), &pool_line_size);
 				checkError(status, "Failed to set argument %d of kernel pool", argi - 1);
 
 				status = clSetKernelArg(knl_pool[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_size]);
@@ -682,25 +691,25 @@ int main(int argc, char** argv)
 			}
 
 			//  Set knl_lrn arguments.
-			if(layer_config[j][lrn_on]){
-				argi = 0;
+			// if(layer_config[j][lrn_on]){
+			// 	argi = 0;
 
-				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_x]);
-				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_x]);
+			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_y]);
-				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_y]);
+			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_char), &precision_config[j][frac_dout]);
-				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_char), &precision_config[j][frac_dout]);
+			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &output_buf[i*input_config[batch_size]+k]);
-				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &output_buf[i*input_config[batch_size]+k]);
+			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &data_buf[i*input_config[batch_size]+k]);
-				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &data_buf[i*input_config[batch_size]+k]);
+			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			}
+			// }
 
 			// Excutes Kernel
 			//
@@ -745,23 +754,23 @@ int main(int argc, char** argv)
 			status = clEnqueueNDRangeKernel(que_memWr[i], knl_memWr[i], 3, NULL, knl_memWr_global_size, knl_memWr_local_size, 0, NULL, &memWr_event[i]);
 			checkError(status, "Failed to launch kernel memWr");
 
-
 			// kernel lrn
-			if(layer_config[j][lrn_on]){
+			// if(layer_config[j][lrn_on]){
 
-				knl_lrn_global_size[0] = layer_config[j][pool_x];
-				knl_lrn_global_size[1] = layer_config[j][pool_y];
-				knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
-				knl_lrn_local_size[0] = 1;
-				knl_lrn_local_size[1] = 1;
-				knl_lrn_local_size[2] = layer_config[j][pool_z]/VEC_SIZE;
+			// 	printf("\nHam3.5\n");
+			// 	knl_lrn_global_size[0] = layer_config[j][pool_x];
+			// 	knl_lrn_global_size[1] = layer_config[j][pool_y];
+			// 	knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
+			// 	knl_lrn_local_size[0] = 1;
+			// 	knl_lrn_local_size[1] = 1;
+			// 	knl_lrn_local_size[2] = layer_config[j][pool_z]/VEC_SIZE;
 
-				if(k == 0&&pic_num==1)
-					printf("\nLaunching kernel lrn with local size: %d, %d, %d  (global size: %d, %d, %d)\n", (int)knl_lrn_local_size[0], (int)knl_lrn_local_size[1], (int)knl_lrn_local_size[2], (int)knl_lrn_global_size[0], (int)knl_lrn_global_size[1], (int)knl_lrn_global_size[2]);
+			// 	if(k == 0&&pic_num==1)
+			// 		printf("\nLaunching kernel lrn with local size: %d, %d, %d  (global size: %d, %d, %d)\n", (int)knl_lrn_local_size[0], (int)knl_lrn_local_size[1], (int)knl_lrn_local_size[2], (int)knl_lrn_global_size[0], (int)knl_lrn_global_size[1], (int)knl_lrn_global_size[2]);
 
-				status = clEnqueueNDRangeKernel(que_memWr[i], knl_lrn[i], 3, NULL, knl_lrn_global_size, knl_lrn_local_size, 0, NULL, &lrn_event[i]);
-				checkError(status, "Failed to launch kernel lrn");
-			}
+			// 	status = clEnqueueNDRangeKernel(que_memWr[i], knl_lrn[i], 3, NULL, knl_lrn_global_size, knl_lrn_local_size, 0, NULL, &lrn_event[i]);
+			// 	checkError(status, "Failed to launch kernel lrn");
+			// }
 
 			// Wait for all kernel to finish
 			if(layer_config[j][lrn_on]){
@@ -814,8 +823,8 @@ int main(int argc, char** argv)
 		verifyResult(pic_num);
 
 #ifdef USE_OPENCV
-			getAccuracy(output_reorder,pic_num);
-			printf("\n\n");
+			// getAccuracy(output_reorder,pic_num);
+			// printf("\n\n");
 		}//end of picture iteration
 #endif
 
@@ -935,21 +944,25 @@ void verifyResult(int num)
 #ifdef USE_OPENCV
     int max_label;
     char * substr;
-	softmax(output_reorder, output_one_item);
-	max_label = getProb(output_one_item);
-	// Show the picture
-    substr = &synset_buf[max_label][10];
+    unsigned xDim = output_config[output_w];
+	unsigned yDim = output_config[output_h];
+	unsigned zDim = output_config[output_n];
 
-	Mat img = imread(picture_file_path);
-    putText(img,substr,Point(20, 50), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 0), 2, 8);
-    if(max_label == label[num-1]){
-        putText(img,"True",Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 255, 0), 2, 8);
-    } else {
-        putText(img,"False",Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 0, 255), 2, 8);
-        printf("False: True_label = %d Inferred_label = %d\n\n", label[num], max_label);
-    }
-    imshow( "PipeCNN", img);
-	cvMoveWindow("PipeCNN",0,0);//set the window's position
+	float *** features = new float**[xDim];
+	for(unsigned x=0; x<xDim; x++){
+		features[x] = new float*[yDim];
+		for(unsigned y=0; y<yDim; y++){
+			features[x][y] = new float[zDim];
+			for(unsigned z=0; z<zDim; z++){
+				features[x][y][z] = (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[8][frac_dout]);
+			}
+		}
+	}
+
+	std::vector<Prediction> predictions = interpretNetworkOutput(features);
+	draw_bounds(curImage, predictions);
+    imshow("PipeCNN", curImage);
+
     waitKey(600);
 #else
 	// Validate the results
@@ -976,7 +989,8 @@ void verifyResult(int num)
 		getProb(output_one_item);
 	}
 	// Dump results and golden_ref for debugging
-	dumpResult();
+	// dumpResult();
+	formatResult();
 #endif
 }
 
@@ -1110,7 +1124,7 @@ int prepare()
 
 			// Currently weight_n must be divisible by VEC_SIZE (for first layer, padding is performed when weight_n is not divisible by VEC_SIZE)
 			if((layer_config[ll][weight_n]%VEC_SIZE)!=0){
-				printf("\nError: incorrect setting of parameter VEC_SIZE !!!\n");
+				printf("\nError: incorrect setting of parameter VEC_SIZE !!! Layer: %d \n", ll);
 				return 1;
 			}
 			if((layer_config_original[ll][data_n]!=layer_config_original[ll-1][conv_z])){
@@ -1139,6 +1153,7 @@ int prepare()
 		}
 		conv_win_size_dim2    = layer_config[ll][weight_h];
 		// check win_buffer size
+		printf("\nlayer: %d, dim1: %d, dim2: %d, weight_n: %d\n", ll, conv_win_size_dim1, conv_win_size_dim2, layer_config[ll][weight_n]/VEC_SIZE);
 		if(conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE > WIN_BUF_SIZE){
 
 			printf("Error: required win_buffer size is %d, configured size is %d \n", conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE, WIN_BUF_SIZE);
@@ -1485,8 +1500,8 @@ void dumpResult(){
 		for(unsigned j=0; j<output_config[output_h]; j++){
 			result_file << "x=" << j << ": ";
 			for(unsigned k=0; k<output_config[output_w]; k++){
-					result_file << (float)output_reorder[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << "(";
-					result_file << (float)golden_ref[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << ") ";
+					result_file << (float)output_reorder[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << " ";
+					// result_file << (float)golden_ref[output_config[output_w]*output_config[output_h]*i + output_config[output_w]*j + k] << ") ";
 			}
 			result_file << endl;
 		}
@@ -1495,39 +1510,47 @@ void dumpResult(){
 	result_file.close();
 }
 
+
+void formatResult(){
+	ofstream result_file;
+
+	result_file.open(dump_file_path, ios::out);
+
+	unsigned xDim = output_config[output_w];
+	unsigned yDim = output_config[output_h];
+	unsigned zDim = output_config[output_n];
+	result_file << xDim << " ";
+    result_file << yDim << " ";
+    result_file << zDim << " ";
+	for(unsigned x=0; x<xDim; x++){
+		for(unsigned y=0; y<yDim; y++){
+			for(unsigned z=0; z<zDim; z++){
+				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[8][frac_dout]) << " ";
+			}
+		}
+	}
+	result_file.close();
+}
+
+
 #ifdef USE_OPENCV
 // Load image from files
 int load_picture(DTYPE *image){
-
-		float *mean_data;
-
-		printf("\nLoading picture %s .....\n\n", picture_file_path);
-
-		// load ILSVRC2012 database mean data
-		mean_data = (float *) malloc(sizeof(float)*MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT*MEAN_DATA_CHANNEl);
-		if(mean_data == NULL){
-			printf("Error: allocating memory for images failed !!!\n");
-			return 1;
+		VideoCapture cap;
+		if(!cap.open(0)) {
+			printf("Error: unable to open webcam.\n");
+        	return 1;
 		}
-
-		FILE *p_mean_data=fopen(mean_data_file_path,"rb");
-		fread(mean_data,sizeof(float),MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT*MEAN_DATA_CHANNEl,p_mean_data);
-
-		// load picture from files
-		Mat img = imread(picture_file_path);
-		// resize pic to MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT, and substract with mean data
 		Mat img1;
-		resize(img,img1,Size(MEAN_DATA_WIDTH,MEAN_DATA_HEIGHT));
-		img1.convertTo(img1,CV_32FC3);
-		Mat mean_mat(MEAN_DATA_WIDTH, MEAN_DATA_HEIGHT, CV_32FC3, mean_data);
-		img1 = img1 - mean_mat;
+		cap >> img1;
+
 		// resize to the input size of the first layer
-		Mat img2;
-		resize(img1,img2,Size(layer_config_original[0][data_w],layer_config_original[0][data_h]));
+		resize(img1,curImage,Size(layer_config_original[0][data_w],layer_config_original[0][data_h]));
 		// convert to 8-bit fixed-point
-		img2.convertTo(img2,CV_8SC3);
+		curImage.convertTo(curImage,CV_8SC3);
+
 		// reorder channel sequence from RGB to GBR
-		DTYPE * data_ptr = (DTYPE*)img2.data;
+		DTYPE * data_ptr = (DTYPE*)curImage.data;
 		unsigned int w,h,c;
 		unsigned int k=0;
 		for(h=0;h<layer_config_original[0][data_h];h++){
@@ -1538,7 +1561,6 @@ int load_picture(DTYPE *image){
 				}
 			}
 		}
-		fclose(p_mean_data);
 		return 0;
 }
 

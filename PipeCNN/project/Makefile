@@ -1,20 +1,29 @@
+
+#if you are loading images from OpenCV interfaces please set to 1
+USE_OPENCV = 1
+
 #set source and target for host
 HOST_EXE  = run.exe
-HOST_SRCS = ./host/main.cpp ../common/ocl_util.cpp ../common/timer.cpp
+HOST_SRCS_ORIG = ./host/main.cpp ../common/ocl_util.cpp ../common/timer.cpp
+
+ifeq ($(USE_OPENCV),1)
+HOST_SRCS = $(HOST_SRCS_ORIG) ./host/YOLO.cpp
+else
+HOST_SRCS = $(HOST_SRCS_ORIG)
+endif
+
 HOST_OBJS = $(HOST_SRCS:%.cpp=%.o)
 HOST_INCS = ../common
 HOST_DEBUG =
 
-#if you are loading images from OpenCV interfaces please set to 1
-USE_OPENCV = 1
 
 #set source and target for device
 #supported vendors are xilinx, altera, amd
 VENDOR = altera
 #select the host archecture  x86|arm32
-PLATFORM = x86
+PLATFORM = arm32
 #optinal flows are hw|hw_emu|sw_emu
-FLOW        = sw_emu
+FLOW        = hw
 ifeq ($(VENDOR),xilinx)
 KERNEL_SRCS = ./device/conv_pipe_xilinx.cl
 else
@@ -105,11 +114,11 @@ endif
 else ifeq ($(VENDOR),altera)
 OCC = aoc
 ifeq ($(FLOW),sw_emu)
-OCCFLAGS = -v --report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report -march=emulator -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 else ifeq ($(FLOW),hw)
-OCCFLAGS = -v --report -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 else ifeq ($(FLOW),hw_emu)
-OCCFLAGS = -v --report --profile -I device/RTL -L device/RTL -l rtl_lib.aoclib 
+OCCFLAGS = -v -report --profile -I device/RTL -L device/RTL -l rtl_lib.aoclib 
 endif
 
 

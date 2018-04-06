@@ -165,8 +165,9 @@ def pick_empty_layers(layer, net, model, i):
 
     bottom = layer.bottom[0]
     top = layer.top[0]
-
+    print 'bot: {}, top: {}'.format(bottom, top)
     if (bottom != top):
+        
         # Not supperted yet
         return
 
@@ -182,7 +183,7 @@ def pick_empty_layers(layer, net, model, i):
     if layer.type == 'Scale':
         no_scaling = np.all(net.params[layer.name][0].data == 1)
         zero_bias = np.all(net.params[layer.name][1].data == 0)
-
+        print 'nosc: {}, zb: {}'.format(no_scaling, zero_bias)
         if no_scaling and zero_bias:
             print 'Delete layer: {}'.format(layer.name)
             to_delete_empty.append(layer)
