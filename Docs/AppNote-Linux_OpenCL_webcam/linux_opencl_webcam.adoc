@@ -78,7 +78,8 @@ https://rocketboards.org/foswiki/Documentation/GSRD
 https://rocketboards.org/foswiki/Documentation/GSRDSdCard[Here is the documentation on the SD card layout if you want to learn more.]
 ====
 
-
+=== Block diagram
+image::block.png[block diagram?]
 
 
 == Preparing our donor SD card image 
@@ -330,6 +331,9 @@ $ cargo run --release triv2.aocx
 ```
 
 == Appendix
+
+=== Compilation flow 
+image::compilation.png[Compilation overview]
 
 === The device source tree
 In the FAT32 partition of the SD card there is a file named `socfpga.dtb` which is a "device tree blob".

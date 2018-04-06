@@ -434,6 +434,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_hardware">1.2. Hardware</a></li>
 <li><a href="#_embedded_software">1.3. Embedded Software</a></li>
 <li><a href="#_sd_card_layout">1.4. SD Card layout</a></li>
+<li><a href="#_block_diagram">1.5. Block diagram</a></li>
 </ul>
 </li>
 <li><a href="#_preparing_our_donor_sd_card_image">2. Preparing our donor SD card image</a>
@@ -478,14 +479,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_appendix">7. Appendix</a>
 <ul class="sectlevel2">
-<li><a href="#_the_device_source_tree">7.1. The device source tree</a></li>
-<li><a href="#_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</a></li>
-<li><a href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.3. Running graphics programs on the HDMI output, from the USB serial port</a></li>
-<li><a href="#_working_remotely_with_vpn">7.4. Working remotely with VPN</a></li>
-<li><a href="#_compiling_code_cl_code_for_software_emulation">7.5. Compiling <code>.cl</code> for software emulation</a></li>
-<li><a href="#_opencl_quickstart">7.6. OpenCL quickstart</a></li>
-<li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">7.7. Documentation for Intel FPGA SDK for OpenCL</a></li>
-<li><a href="#_useful_linux_commands">7.8. Useful Linux commands</a></li>
+<li><a href="#_compilation_flow">7.1. Compilation flow</a></li>
+<li><a href="#_the_device_source_tree">7.2. The device source tree</a></li>
+<li><a href="#_modifying_linux_kernel_config">7.3. Modifying Linux kernel config</a></li>
+<li><a href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.4. Running graphics programs on the HDMI output, from the USB serial port</a></li>
+<li><a href="#_working_remotely_with_vpn">7.5. Working remotely with VPN</a></li>
+<li><a href="#_compiling_code_cl_code_for_software_emulation">7.6. Compiling <code>.cl</code> for software emulation</a></li>
+<li><a href="#_opencl_quickstart">7.7. OpenCL quickstart</a></li>
+<li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">7.8. Documentation for Intel FPGA SDK for OpenCL</a></li>
+<li><a href="#_useful_linux_commands">7.9. Useful Linux commands</a></li>
 </ul>
 </li>
 <li><a href="#_troubleshooting">8. Troubleshooting</a></li>
@@ -645,6 +647,14 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_block_diagram">1.5. Block diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/block.png" alt="block diagram?">
+</div>
 </div>
 </div>
 </div>
@@ -1127,7 +1137,15 @@ $ cargo run --release triv2.aocx</code></pre>
 <h2 id="_appendix">7. Appendix</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_the_device_source_tree">7.1. The device source tree</h3>
+<h3 id="_compilation_flow">7.1. Compilation flow</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/compilation.png" alt="Compilation overview">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_device_source_tree">7.2. The device source tree</h3>
 <div class="paragraph">
 <p>In the FAT32 partition of the SD card there is a file named <code>socfpga.dtb</code> which is a "device tree blob".
 The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.</p>
@@ -1141,7 +1159,7 @@ You can view Intel&#8217;s documentation on how to modify a <code>.dts</code> fi
 </div>
 </div>
 <div class="sect2">
-<h3 id="_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</h3>
+<h3 id="_modifying_linux_kernel_config">7.3. Modifying Linux kernel config</h3>
 <div class="paragraph">
 <p>The config can be modified on the command line by running the following in the kernel source directory:</p>
 </div>
@@ -1168,7 +1186,7 @@ Be sure to backup your config before running <code>make clean</code> as I believ
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.3. Running graphics programs on the HDMI output, from the USB serial port</h3>
+<h3 id="_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.4. Running graphics programs on the HDMI output, from the USB serial port</h3>
 <div class="paragraph">
 <p>It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.</p>
 </div>
@@ -1182,7 +1200,7 @@ Be sure to backup your config before running <code>make clean</code> as I believ
 </div>
 </div>
 <div class="sect2">
-<h3 id="_working_remotely_with_vpn">7.4. Working remotely with VPN</h3>
+<h3 id="_working_remotely_with_vpn">7.5. Working remotely with VPN</h3>
 <div class="paragraph">
 <p>Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.</p>
 </div>
@@ -1215,7 +1233,7 @@ The VPN will only tunnel traffic to *.ualberta.ca domains, so your external IP w
 </div>
 </div>
 <div class="sect2">
-<h3 id="_compiling_code_cl_code_for_software_emulation">7.5. Compiling <code>.cl</code> for software emulation</h3>
+<h3 id="_compiling_code_cl_code_for_software_emulation">7.6. Compiling <code>.cl</code> for software emulation</h3>
 <div class="paragraph">
 <p>Since <code>aoc</code> takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the <code>.cl</code> code before committing to the full build time.</p>
 </div>
@@ -1237,13 +1255,13 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 </div>
 <div class="sect2">
-<h3 id="_opencl_quickstart">7.6. OpenCL quickstart</h3>
+<h3 id="_opencl_quickstart">7.7. OpenCL quickstart</h3>
 <div class="paragraph">
 <p><a href="http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854" class="bare">http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854</a></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_documentation_for_intel_fpga_sdk_for_opencl">7.7. Documentation for Intel FPGA SDK for OpenCL</h3>
+<h3 id="_documentation_for_intel_fpga_sdk_for_opencl">7.8. Documentation for Intel FPGA SDK for OpenCL</h3>
 <div class="paragraph">
 <p>Intel&#8217;s official documentation, with more detailed instructions for installing Quartus, and running <code>aoc</code>.</p>
 </div>
@@ -1258,7 +1276,7 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 </div>
 <div class="sect2">
-<h3 id="_useful_linux_commands">7.8. Useful Linux commands</h3>
+<h3 id="_useful_linux_commands">7.9. Useful Linux commands</h3>
 <div class="paragraph">
 <p>Check if dynamic libraries are available for a given executable</p>
 </div>
@@ -1356,7 +1374,7 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-05 20:02:20 DST
+Last updated 2018-04-06 02:39:10 DST
 </div>
 </div>
 </body>
