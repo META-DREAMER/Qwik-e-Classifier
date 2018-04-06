@@ -38,7 +38,7 @@
 // Macro architecture parameters
 // General
 #define VEC_SIZE            16              // larger than 4, i.e., 4, 8, 16, ...
-#define LANE_NUM            16             // larger than 1, for alexnet: 2, 3, 4, 8, 12, 15, 16, 22, 28, 32, 34, 48, 50, 51, 52, 64, ...
+#define LANE_NUM            8             // larger than 1, for alexnet: 2, 3, 4, 8, 12, 15, 16, 22, 28, 32, 34, 48, 50, 51, 52, 64, ...
 #define CHN_DEPTH           0
 //MemRD Kernel
 #define CONV_GP_SIZE_X      7	
@@ -52,7 +52,7 @@
 //#define WIN_BUF_SIZE        CONV_GP_SIZE_X*9216/VEC_SIZE  // for AlexNet  batch>=4
 //#define WEIGHT_BUF_SIZE     9216/VEC_SIZE                 // for AlexNet  batch>=4
 // Conv Kernel
-#define PIPE_DEPTH          6
+#define PIPE_DEPTH          4
 // Pooling Kernel
 #define POOL_LBUF_DEPTH     512            // Must be large enough to hold one line (dim1/dim2)
 #define POOL_MAX_SIZE       3
