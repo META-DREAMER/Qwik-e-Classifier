@@ -1,0 +1,68 @@
+[package]
+name = "ocl"
+
+# [REMINDER]: Bump `html_root_url` in `src/lib.rs`.
+# [REMINDER]: Bump version in `README.md`.
+# [REMINDER]: Set version and date in `RELEASES.md`.
+version = "0.17.0"
+
+authors = ["Nick Sanders <cogciprocate@gmail.com>"]
+description = "OpenCL bindings and interfaces for Rust."
+documentation = "https://docs.rs/ocl"
+homepage = "https://github.com/cogciprocate/ocl"
+repository = "https://github.com/cogciprocate/ocl"
+readme = "README.md"
+keywords = ["opencl", "gpu", "gpgpu", "async"]
+license = "MIT/Apache-2.0"
+exclude = ["target/*", "*.png", "bak/*"]
+categories = ["asynchronous", "concurrency", "science", "api-bindings"]
+
+[features]
+event_debug_print = []
+kernel_debug_print = []
+kernel_debug_sleep = []
+opencl_version_1_1 = ["ocl-core/opencl_version_1_1"]
+opencl_version_1_2 = ["ocl-core/opencl_version_1_2"]
+opencl_version_2_0 = ["ocl-core/opencl_version_2_0"]
+opencl_version_2_1 = ["ocl-core/opencl_version_2_1"]
+opencl_vendor_mesa = ["ocl-core/opencl_vendor_mesa"]
+
+# Enabling `future_guard_drop_panic` will cause `FutureGuard::drop` to panic
+# if the guard is dropped before polled. This is helpful when troubleshooting
+# deadlocks with `RwVec` and other `OrderLock` based types.
+future_guard_drop_panic = []
+
+# Enabling `async_block` causes all `Future::poll` functions to behave in a
+# thread-blocking manner, causing the calling thread to block then return
+# `Async::Ready(..)` instead of behaving as a normal future would (returning
+# either `Async::Ready(..)` or `Async::NotReady` depending on the situation).
+#
+# Enabling this feature will reduce performance. Do this only if your
+# (platform) drivers have issues/bugs with event callbacks or thread
+# synchronization (old/non-compliant drivers - Known cases: certain
+# pre-Sandy-Bridge Intel processors [on Intel drivers], some other
+# pre-gen-5-core processors [on Intel drivers]).
+#
+# Leaving this disabled is recommended.
+async_block = []
+
+# Default features:
+default = ["opencl_version_1_1", "opencl_version_1_2"]
+
+[dependencies]
+nodrop = "0.1"
+failure = "0.1"
+num-traits = "0.2"
+futures = "0.1"
+qutex = "0.2"
+ocl-core = { version = "~0.8.0", path = "../ocl-core" }
+
+[dev-dependencies]
+find_folder = "0.3"
+colorify = "0.2"
+time = "0.1"
+rand = "0.4"
+chrono = "0.2"
+futures-cpupool = "0.1"
+lazy_static = "0.2"
+ocl-extras = { version = "0.1", path = "ocl-extras" }
