@@ -275,6 +275,20 @@ TIP: You can view the contents of the BSP by opening the above folder's `top.qpf
 The offline OpenCL compiler is invoked with the `aoc` command at the commandline.
 
 === Compiling `.cl` file into `.aocx` and `.rbf` files with `aoc`
+Intel's offline OpenCL compiler is invoked via the `aoc` command from the commandline.
+We can compile our `trivial.cl` OpenCL source file into the required `trivial.aocx` with:
+
+```sh 
+$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx 
+```
+This compiles with verbose message printing, produces a report, and selects the BSP.
+
+Since we need a `.rbf` file we can convert the generated `top.sof` to `opencl.rbf` with:
+```sh
+$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf
+```
+
+Now copy the generated `opencl.rbf` to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.
 
 
 === Install Rust on the DE10-Nano
@@ -337,6 +351,15 @@ $ make menuconfig
 This will give you an ncurses interface to modify the config.
 Be sure to backup your config before running `make clean` as I believe it deletes it.
 
+=== Running graphics programs on the HDMI output, from the USB serial port 
+It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.
+
+To open these programs on the HDMI output, export the `DISPLAY` environment variable.
+
+```sh 
+$ export DISPLAY=":0"
+```
+
 === Working remotely with VPN 
 Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.
 
@@ -352,7 +375,7 @@ Set the `LM_LICENSE_FILE` environment variable to: 12000@lic.ece.ualberta.ca
 
 When opening Quartus, set the license to use the environment variable.
 
-=== Running `aoc` in an emulator
+=== Compiling `.cl` for software emulation
 Since `aoc` takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the `.cl` code before committing to the full build time.
 
 To compile for emulator add `-march=emulator` to the `aoc` command.
@@ -360,7 +383,19 @@ The OpenCL host program can then be compiled for the development PC, and run wit
 
 TIP: If on Windows, you can download Intel's RTE for Windows, and in one of the folders is `OpenCL.lib`. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
 
-=== Troubleshooting
+=== OpenCL quickstart
+http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854
+
+=== Documentation for Intel FPGA SDK for OpenCL
+Intel's official documentation, with more detailed instructions for installing Quartus, and running `aoc`.
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[Getting Started]
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf[Programming Guide]
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf[Custom Platform Toolkit]
+
+== Troubleshooting
 
 |===
 | Problem | Possible Cause | Possible Solution

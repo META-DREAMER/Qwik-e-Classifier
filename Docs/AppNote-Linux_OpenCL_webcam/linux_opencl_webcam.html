@@ -480,11 +480,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_the_device_source_tree">7.1. The device source tree</a></li>
 <li><a href="#_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</a></li>
-<li><a href="#_working_remotely_with_vpn">7.3. Working remotely with VPN</a></li>
-<li><a href="#_running_code_aoc_code_in_an_emulator">7.4. Running <code>aoc</code> in an emulator</a></li>
-<li><a href="#_troubleshooting">7.5. Troubleshooting</a></li>
+<li><a href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.3. Running graphics programs on the HDMI output, from the USB serial port</a></li>
+<li><a href="#_working_remotely_with_vpn">7.4. Working remotely with VPN</a></li>
+<li><a href="#_compiling_code_cl_code_for_software_emulation">7.5. Compiling <code>.cl</code> for software emulation</a></li>
+<li><a href="#_opencl_quickstart">7.6. OpenCL quickstart</a></li>
+<li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">7.7. Documentation for Intel FPGA SDK for OpenCL</a></li>
 </ul>
 </li>
+<li><a href="#_troubleshooting">8. Troubleshooting</a></li>
 </ul>
 </div>
 </div>
@@ -1031,7 +1034,29 @@ You can view the contents of the BSP by opening the above folder&#8217;s <code>t
 </div>
 <div class="sect2">
 <h3 id="_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code">6.1. Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></h3>
-
+<div class="paragraph">
+<p>Intel&#8217;s offline OpenCL compiler is invoked via the <code>aoc</code> command from the commandline.
+We can compile our <code>trivial.cl</code> OpenCL source file into the required <code>trivial.aocx</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This compiles with verbose message printing, produces a report, and selects the BSP.</p>
+</div>
+<div class="paragraph">
+<p>Since we need a <code>.rbf</code> file we can convert the generated <code>top.sof</code> to <code>opencl.rbf</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now copy the generated <code>opencl.rbf</code> to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_install_rust_on_the_de10_nano">6.2. Install Rust on the DE10-Nano</h3>
@@ -1139,7 +1164,21 @@ Be sure to backup your config before running <code>make clean</code> as I believ
 </div>
 </div>
 <div class="sect2">
-<h3 id="_working_remotely_with_vpn">7.3. Working remotely with VPN</h3>
+<h3 id="_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">7.3. Running graphics programs on the HDMI output, from the USB serial port</h3>
+<div class="paragraph">
+<p>It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.</p>
+</div>
+<div class="paragraph">
+<p>To open these programs on the HDMI output, export the <code>DISPLAY</code> environment variable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ export DISPLAY=":0"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_working_remotely_with_vpn">7.4. Working remotely with VPN</h3>
 <div class="paragraph">
 <p>Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.</p>
 </div>
@@ -1172,7 +1211,7 @@ The VPN will only tunnel traffic to *.ualberta.ca domains, so your external IP w
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_code_aoc_code_in_an_emulator">7.4. Running <code>aoc</code> in an emulator</h3>
+<h3 id="_compiling_code_cl_code_for_software_emulation">7.5. Compiling <code>.cl</code> for software emulation</h3>
 <div class="paragraph">
 <p>Since <code>aoc</code> takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the <code>.cl</code> code before committing to the full build time.</p>
 </div>
@@ -1194,7 +1233,31 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 </div>
 <div class="sect2">
-<h3 id="_troubleshooting">7.5. Troubleshooting</h3>
+<h3 id="_opencl_quickstart">7.6. OpenCL quickstart</h3>
+<div class="paragraph">
+<p><a href="http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854" class="bare">http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_documentation_for_intel_fpga_sdk_for_opencl">7.7. Documentation for Intel FPGA SDK for OpenCL</h3>
+<div class="paragraph">
+<p>Intel&#8217;s official documentation, with more detailed instructions for installing Quartus, and running <code>aoc</code>.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">Getting Started</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf">Programming Guide</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf">Custom Platform Toolkit</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting">8. Troubleshooting</h2>
+<div class="sectionbody">
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1268,10 +1331,9 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-05 19:12:49 DST
+Last updated 2018-04-05 19:44:39 DST
 </div>
 </div>
 </body>
