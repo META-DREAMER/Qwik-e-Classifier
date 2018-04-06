@@ -51,7 +51,7 @@ The processor also supports the NEON SIMD instructions.
 === Embedded Software
 In order to more easily take advantage of the FPGA logic from Linux, Intel provides an OpenCL offline compiler allowing us to write "high-level" OpenCL code that then gets compiled down into a bitstream that can be loaded onto the FPGA.
 The Linux kernel communicates with the custom logic on the FPGA by way of an Intel provided kernel driver and the matching Qsys component.
-With this driver loaded, we can run what's known as an "OpenCL host program" which uses the standard OpenCL interface to talk to the FPGA.
+With this driver loaded, we can run what's known as an "OpenCL host program" which uses the standard OpenCL interface to talk to the FPGA (via the kernel driver).
 This host program is run in userland in Linux.
 No FPGA specific code is required in the host program, and it can be coded in many languages with OpenCL support like C++, C, Rust, Python, etc.
 Theoretically the host program could be written in a way to be backend agnostic, where the OpenCL device could be a GPU, FPGA, etc.
@@ -62,8 +62,8 @@ However, in practice, the workflows are slightly different:
 
 === SD Card layout
 Our operating system is stored on the SD card, split into several partitions.
-The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, and the compressed kernel image file.
-The boot partition is FAT32, so we can access its contents from Windows, or another operating system to modify the files that are used during boot.
+The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, `.rbf` used to configure the FPGA on boot, and the compressed kernel image file.
+The boot partition is FAT32, so we can access its contents from Windows, or another operating system to modify the files that are used during boot (`zImage` and `opencl.rbf` files).
 
 Due to the difficulty of of compiling everything from scratch and creating an SD card image, we will instead be modifying an existing SD card image from the user thinkoco on github, then updating the kernel with webcam drivers enabled, and installing some software in Linux.
 
@@ -90,7 +90,7 @@ The RTE contains diagnostic tools, a compiled kernel driver to communicate with 
 ====
 
 === Download the image 
-The .img file can be downloaded from [here]
+The `.img` file can be downloaded from [here]
 
 === Load the image onto a MicroSD card
 On Windows use Win32DiskImager, on Mac or Linux use `dd`.
@@ -178,6 +178,39 @@ Once again, boot the DE10 with the USB serial connected and verify you get to th
 
 == Installing and running OpenCL diagnostic tools 
 
+First, we need to expand the root filesystem to give us the full space on the SD card.
+
+```sh
+$ cd ~
+$ ./expand_rootfs.sh 
+# follow the scripts instructions after it finishes.
+```
+
+=== Installing `clinfo`
+We need to copy some files around so the diagnostic tools know what OpenCL devices are available.
+
+```sh
+$ cd ~/aocl-rte-17.1.0-590.arm32
+$ mkdir -p /etc/OpenCL/vendors
+$ cp Altera.icd /etc/OpenCL/vendors/
+$ mkdir -p /opt/Intel/OpenCL/Boards 
+$ echo /home/root/aocl-rte-17.1.0-590.arm32/board/c5soc/arm32/lib/libintel_soc32_mmd.so > /opt/Intel/OpenCL/Boards/c5.fcd
+
+# install the `clinfo` tool which prints information about available OpenCL devices
+$ sudo apt install clinfo
+
+$ clinfo
+```
+
+=== Intel's `aocl` tool 
+After initializing the environment variables for use with the RTE, we can run `aocl diagnose` to check that the kernel module loaded correctly.
+```sh
+$ cd ~
+# set the environment variables, and load the OpenCL driver
+$ source ./init_opencl_17
+$ aocl diagnose
+```
+
 == Quartus setup
 
 === Installation
@@ -203,14 +236,16 @@ Follow Intel's instructions from their getting started guide https://www.altera.
 | `C:\intelFGPA\17.1\hld`
 
 | `PATH`
-| append these to `PATH`:
+a| append these to `PATH`:
+
 * `%INTELFPGAOCLSDKROOT%\bin`
 * `%INTELFPGAOCLSDKROOT%\windows64\bin`
 * `%INTELFPGAOCLSDKROOT%\host\windows64\bin`
 
+|===
 
 === Board Support Package (BSP)
-To go with our Linux image provided by thinkoco, we will also use their board support package (BSP).
+To go with the Linux image provided by thinkoco, we will also use their board support package (BSP).
 
 [NOTE]
 .What is a BSP?
@@ -239,18 +274,50 @@ TIP: You can view the contents of the BSP by opening the above folder's `top.qpf
 == Compiling and running our own host program, and OpenCL code 
 The offline OpenCL compiler is invoked with the `aoc` command at the commandline.
 
-I am most familiar with Rust, so the example will be written in it, but any 
+=== Compiling `.cl` file into `.aocx` and `.rbf` files with `aoc`
 
-=== Writing the code 
 
-=== Compiling the OpenCL code
+=== Install Rust on the DE10-Nano
+I am most familiar with Rust, so the example will be written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).
 
-=== Modifying OpenCL libraries
+See the included files (`main.rs`) to see the Rust code.
+Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10. 
+
+```sh
+$ cd ~
+$ mkdir rust 
+$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
+$ chmod +x rustup-init 
+$ ./rustup-init 
+$ [enter]
+# after finished installing, follow instructions to add the rust executables to `PATH`
+
+# install the OpenCL headers 
+$ sudo apt install ocl-icd-opencl-dev
+```
+
+=== Run the example on the DE10 
+Copy the example code to the DE10 into `~/example-rs`
+
+Load the OpenCL kernel module, and set the required environment variables:
+
+```sh
+$ source ./init_opencl_17.1.sh 
+```
+
+In the folder with `Cargo.toml`:
+
+NOTE: Must have an internet connection to download dependencies.
+
+```sh
+$ cd ~/example-rs
+$ cargo run --release triv2.aocx
+```
 
 == Appendix
 
 === The device source tree
-In the FAT32 partition of the SD card their is a file named `socfpga.dtb` which is a "device tree blob".
+In the FAT32 partition of the SD card there is a file named `socfpga.dtb` which is a "device tree blob".
 The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.
 
 It includes things like the kind of processor, amount of RAM, the HDMI Qsys component's address, FPGA manager address, button addresses, onboard LED addresses, etc.
@@ -268,6 +335,59 @@ $ make menuconfig
 ```
 
 This will give you an ncurses interface to modify the config.
-Be sure to backup your config before running `make clean` as I believe it deletes it?
+Be sure to backup your config before running `make clean` as I believe it deletes it.
+
+=== Working remotely with VPN 
+Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.
+
+Install the university VPN client from https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158[here].
+
+Login with your CCID, and password.
+
+NOTE: The VPN will only tunnel traffic to *.ualberta.ca domains, so your external IP won't change.
+
+Close Quartus if it's open.
+
+Set the `LM_LICENSE_FILE` environment variable to: 12000@lic.ece.ualberta.ca
+
+When opening Quartus, set the license to use the environment variable.
+
+=== Running `aoc` in an emulator
+Since `aoc` takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the `.cl` code before committing to the full build time.
+
+To compile for emulator add `-march=emulator` to the `aoc` command.
+The OpenCL host program can then be compiled for the development PC, and run with this `.aocx` file, even if the dev PC doesn't have an FPGA installed.
+
+TIP: If on Windows, you can download Intel's RTE for Windows, and in one of the folders is `OpenCL.lib`. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
 
 === Troubleshooting
+
+|===
+| Problem | Possible Cause | Possible Solution
+
+| No login prompt 
+a| 
+* corrupt root file system
+* corrupt `zImage`
+* incorrect `socfpga.dtb` 
+a| remake the SD card with the provided `.img` and verify you get a login screen without any modifications
+
+a| `aocl` command not found
+| Environment variables not set 
+a| run: `source ./init_opencl_17` from the home directory 
+
+a| `quartus_cpf` command not found 
+| Development PC environment variables not set correctly
+| See <<Environment Variable setup>>
+
+a| `aoc` command not found 
+| Development PC environment variables not set correctly
+| See <<Environment Variable setup>>
+
+| OpenCL host program freezes when run on DE10
+a| `opencl.rbf` is not the correct version
+a| Shutdown DE10, plug MicroSD card into PC and copy the `.rbf` file that corresponds to the OpenCL host program. It should be named `opencl.rbf` in the FAT32 partition.
+
+Alternatively, there could be something wrong with the BSP creating an invalid `.rbf` file. Double check the BSP has no errors in Quartus/Qsys.
+
+|===

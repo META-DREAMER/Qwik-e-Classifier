@@ -449,7 +449,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_building_with_a_modified_config">3.3. Building with a modified config</a></li>
 </ul>
 </li>
-<li><a href="#_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</a></li>
+<li><a href="#_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</a>
+<ul class="sectlevel2">
+<li><a href="#_installing_code_clinfo_code">4.1. Installing <code>clinfo</code></a></li>
+<li><a href="#_intel_s_code_aocl_code_tool">4.2. Intel&#8217;s <code>aocl</code> tool</a></li>
+</ul>
+</li>
 <li><a href="#_quartus_setup">5. Quartus setup</a>
 <ul class="sectlevel2">
 <li><a href="#_installation">5.1. Installation</a>
@@ -466,16 +471,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_compiling_and_running_our_own_host_program_and_opencl_code">6. Compiling and running our own host program, and OpenCL code</a>
 <ul class="sectlevel2">
-<li><a href="#_writing_the_code">6.1. Writing the code</a></li>
-<li><a href="#_compiling_the_opencl_code">6.2. Compiling the OpenCL code</a></li>
-<li><a href="#_modifying_opencl_libraries">6.3. Modifying OpenCL libraries</a></li>
+<li><a href="#_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code">6.1. Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></a></li>
+<li><a href="#_install_rust_on_the_de10_nano">6.2. Install Rust on the DE10-Nano</a></li>
+<li><a href="#_run_the_example_on_the_de10">6.3. Run the example on the DE10</a></li>
 </ul>
 </li>
 <li><a href="#_appendix">7. Appendix</a>
 <ul class="sectlevel2">
 <li><a href="#_the_device_source_tree">7.1. The device source tree</a></li>
 <li><a href="#_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</a></li>
-<li><a href="#_troubleshooting">7.3. Troubleshooting</a></li>
+<li><a href="#_working_remotely_with_vpn">7.3. Working remotely with VPN</a></li>
+<li><a href="#_running_code_aoc_code_in_an_emulator">7.4. Running <code>aoc</code> in an emulator</a></li>
+<li><a href="#_troubleshooting">7.5. Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -584,7 +591,7 @@ The processor also supports the NEON SIMD instructions.</p>
 <div class="paragraph">
 <p>In order to more easily take advantage of the FPGA logic from Linux, Intel provides an OpenCL offline compiler allowing us to write "high-level" OpenCL code that then gets compiled down into a bitstream that can be loaded onto the FPGA.
 The Linux kernel communicates with the custom logic on the FPGA by way of an Intel provided kernel driver and the matching Qsys component.
-With this driver loaded, we can run what&#8217;s known as an "OpenCL host program" which uses the standard OpenCL interface to talk to the FPGA.
+With this driver loaded, we can run what&#8217;s known as an "OpenCL host program" which uses the standard OpenCL interface to talk to the FPGA (via the kernel driver).
 This host program is run in userland in Linux.
 No FPGA specific code is required in the host program, and it can be coded in many languages with OpenCL support like C++, C, Rust, Python, etc.
 Theoretically the host program could be written in a way to be backend agnostic, where the OpenCL device could be a GPU, FPGA, etc.
@@ -605,8 +612,8 @@ However, in practice, the workflows are slightly different:</p>
 <h3 id="_sd_card_layout">1.4. SD Card layout</h3>
 <div class="paragraph">
 <p>Our operating system is stored on the SD card, split into several partitions.
-The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, and the compressed kernel image file.
-The boot partition is FAT32, so we can access its contents from Windows, or another operating system to modify the files that are used during boot.</p>
+The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, <code>.rbf</code> used to configure the FPGA on boot, and the compressed kernel image file.
+The boot partition is FAT32, so we can access its contents from Windows, or another operating system to modify the files that are used during boot (<code>zImage</code> and <code>opencl.rbf</code> files).</p>
 </div>
 <div class="paragraph">
 <p>Due to the difficulty of of compiling everything from scratch and creating an SD card image, we will instead be modifying an existing SD card image from the user thinkoco on github, then updating the kernel with webcam drivers enabled, and installing some software in Linux.</p>
@@ -659,7 +666,7 @@ The RTE contains diagnostic tools, a compiled kernel driver to communicate with 
 <div class="sect2">
 <h3 id="_download_the_image">2.1. Download the image</h3>
 <div class="paragraph">
-<p>The .img file can be downloaded from [here]</p>
+<p>The <code>.img</code> file can be downloaded from [here]</p>
 </div>
 </div>
 <div class="sect2">
@@ -822,7 +829,50 @@ Once again, boot the DE10 with the USB serial connected and verify you get to th
 <div class="sect1">
 <h2 id="_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>First, we need to expand the root filesystem to give us the full space on the SD card.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ ./expand_rootfs.sh
+# follow the scripts instructions after it finishes.</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installing_code_clinfo_code">4.1. Installing <code>clinfo</code></h3>
+<div class="paragraph">
+<p>We need to copy some files around so the diagnostic tools know what OpenCL devices are available.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~/aocl-rte-17.1.0-590.arm32
+$ mkdir -p /etc/OpenCL/vendors
+$ cp Altera.icd /etc/OpenCL/vendors/
+$ mkdir -p /opt/Intel/OpenCL/Boards
+$ echo /home/root/aocl-rte-17.1.0-590.arm32/board/c5soc/arm32/lib/libintel_soc32_mmd.so &gt; /opt/Intel/OpenCL/Boards/c5.fcd
 
+# install the `clinfo` tool which prints information about available OpenCL devices
+$ sudo apt install clinfo
+
+$ clinfo</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_intel_s_code_aocl_code_tool">4.2. Intel&#8217;s <code>aocl</code> tool</h3>
+<div class="paragraph">
+<p>After initializing the environment variables for use with the RTE, we can run <code>aocl diagnose</code> to check that the kernel module loaded correctly.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+# set the environment variables, and load the OpenCL driver
+$ source ./init_opencl_17
+$ aocl diagnose</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -857,13 +907,53 @@ See the appendix for working from home with a VPN and using the University of Al
 </div>
 <div class="sect3">
 <h4 id="_environment_variable_setup">5.1.1. Environment Variable setup</h4>
-
+<div class="paragraph">
+<p>Follow Intel&#8217;s instructions from their getting started guide <a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">here</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Table Summary of Variables (on Windows)</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Variable</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INTELFPGAOCLSDKROOT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFGPA\17.1\hld</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATH</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>append these to <code>PATH</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\bin</code></p>
+</li>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\windows64\bin</code></p>
+</li>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\host\windows64\bin</code></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_board_support_package_bsp">5.2. Board Support Package (BSP)</h3>
 <div class="paragraph">
-<p>To go with our Linux image provided by thinkoco, we will also use their board support package (BSP).</p>
+<p>To go with the Linux image provided by thinkoco, we will also use their board support package (BSP).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -940,43 +1030,248 @@ You can view the contents of the BSP by opening the above folder&#8217;s <code>t
 <p>The offline OpenCL compiler is invoked with the <code>aoc</code> command at the commandline.</p>
 </div>
 <div class="sect2">
-<h3 id="_writing_the_code">6.1. Writing the code</h3>
+<h3 id="_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code">6.1. Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></h3>
 
 </div>
 <div class="sect2">
-<h3 id="_compiling_the_opencl_code">6.2. Compiling the OpenCL code</h3>
+<h3 id="_install_rust_on_the_de10_nano">6.2. Install Rust on the DE10-Nano</h3>
+<div class="paragraph">
+<p>I am most familiar with Rust, so the example will be written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).</p>
+</div>
+<div class="paragraph">
+<p>See the included files (<code>main.rs</code>) to see the Rust code.
+Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ mkdir rust
+$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
+$ chmod +x rustup-init
+$ ./rustup-init
+$ [enter]
+# after finished installing, follow instructions to add the rust executables to `PATH`
 
+# install the OpenCL headers
+$ sudo apt install ocl-icd-opencl-dev</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_modifying_opencl_libraries">6.3. Modifying OpenCL libraries</h3>
-
+<h3 id="_run_the_example_on_the_de10">6.3. Run the example on the DE10</h3>
+<div class="paragraph">
+<p>Copy the example code to the DE10 into <code>~/example-rs</code></p>
+</div>
+<div class="paragraph">
+<p>Load the OpenCL kernel module, and set the required environment variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ source ./init_opencl_17.1.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the folder with <code>Cargo.toml</code>:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Must have an internet connection to download dependencies.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~/example-rs
+$ cargo run --release triv2.aocx</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_appendix">7. Appendix</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Other information that may be useful.</p>
-</div>
 <div class="sect2">
 <h3 id="_the_device_source_tree">7.1. The device source tree</h3>
-
+<div class="paragraph">
+<p>In the FAT32 partition of the SD card there is a file named <code>socfpga.dtb</code> which is a "device tree blob".
+The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.</p>
+</div>
+<div class="paragraph">
+<p>It includes things like the kind of processor, amount of RAM, the HDMI Qsys component&#8217;s address, FPGA manager address, button addresses, onboard LED addresses, etc.
+You can view Intel&#8217;s documentation on how to modify a <code>.dts</code> file (device tree <em>source</em>) which is then compiled into the above <code>.dtb</code> file.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator">Intel documentation</a></p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_modifying_linux_kernel_config">7.2. Modifying Linux kernel config</h3>
-
+<div class="paragraph">
+<p>The config can be modified on the command line by running the following in the kernel source directory:</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+The <code>ARCH</code> and <code>CROSS_COMPILE</code> environment variables should be set before running this command
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ make menuconfig</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will give you an ncurses interface to modify the config.
+Be sure to backup your config before running <code>make clean</code> as I believe it deletes it.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_troubleshooting">7.3. Troubleshooting</h3>
-
+<h3 id="_working_remotely_with_vpn">7.3. Working remotely with VPN</h3>
+<div class="paragraph">
+<p>Since we need a license to compile the OpenCL code with Quartus, we can use the U of A license server so we can work remotely/on our own machine.</p>
+</div>
+<div class="paragraph">
+<p>Install the university VPN client from <a href="https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Login with your CCID, and password.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The VPN will only tunnel traffic to *.ualberta.ca domains, so your external IP won&#8217;t change.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Close Quartus if it&#8217;s open.</p>
+</div>
+<div class="paragraph">
+<p>Set the <code>LM_LICENSE_FILE</code> environment variable to: <a href="mailto:12000@lic.ece.ualberta.ca">12000@lic.ece.ualberta.ca</a></p>
+</div>
+<div class="paragraph">
+<p>When opening Quartus, set the license to use the environment variable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_code_aoc_code_in_an_emulator">7.4. Running <code>aoc</code> in an emulator</h3>
+<div class="paragraph">
+<p>Since <code>aoc</code> takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the <code>.cl</code> code before committing to the full build time.</p>
+</div>
+<div class="paragraph">
+<p>To compile for emulator add <code>-march=emulator</code> to the <code>aoc</code> command.
+The OpenCL host program can then be compiled for the development PC, and run with this <code>.aocx</code> file, even if the dev PC doesn&#8217;t have an FPGA installed.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the folders is <code>OpenCL.lib</code>. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting">7.5. Troubleshooting</h3>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem</th>
+<th class="tableblock halign-left valign-top">Possible Cause</th>
+<th class="tableblock halign-left valign-top">Possible Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No login prompt</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>corrupt root file system</p>
+</li>
+<li>
+<p>corrupt <code>zImage</code></p>
+</li>
+<li>
+<p>incorrect <code>socfpga.dtb</code></p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>remake the SD card with the provided <code>.img</code> and verify you get a login screen without any modifications</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><code>aocl</code> command not found</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environment variables not set</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>run: <code>source ./init_opencl_17</code> from the home directory</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><code>quartus_cpf</code> command not found</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development PC environment variables not set correctly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#_environment_variable_setup">Environment Variable setup</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><code>aoc</code> command not found</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development PC environment variables not set correctly</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="#_environment_variable_setup">Environment Variable setup</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenCL host program freezes when run on DE10</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><code>opencl.rbf</code> is not the correct version</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Shutdown DE10, plug MicroSD card into PC and copy the <code>.rbf</code> file that corresponds to the OpenCL host program. It should be named <code>opencl.rbf</code> in the FAT32 partition.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, there could be something wrong with the BSP creating an invalid <code>.rbf</code> file. Double check the BSP has no errors in Quartus/Qsys.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-05 03:13:37 DST
+Last updated 2018-04-05 19:12:49 DST
 </div>
 </div>
 </body>
