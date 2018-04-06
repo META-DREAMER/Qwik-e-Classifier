@@ -1,0 +1,336 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/c5soc/system.qsys --block-symbol-file --output-directory=/home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/c5soc/system --family="Cyclone V" --part=5CSXFC6D6F31C8ES
+Progress: Loading c5soc/system.qsys
+Progress: Reading input file
+Progress: Adding acl_iface [acl_iface_system 1.0]
+Progress: Reading input file
+Progress: Adding global_reset [altera_reset_bridge 14.1]
+Warning: global_reset: Used altera_reset_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module global_reset
+Progress: Adding config_clk [altera_clock_bridge 14.1]
+Warning: config_clk: Used altera_clock_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module config_clk
+Progress: Adding acl_kernel_clk [acl_kernel_clk_noreconfig 1.0]
+Progress: Parameterizing module acl_kernel_clk
+Progress: Adding clock_cross_kernel_mem0 [altera_avalon_mm_clock_crossing_bridge 14.1]
+Warning: clock_cross_kernel_mem0: Used altera_avalon_mm_clock_crossing_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module clock_cross_kernel_mem0
+Progress: Adding kernel_clk [clock_source 14.1]
+Warning: kernel_clk: Used clock_source 17.1 (instead of 14.1)
+Progress: Parameterizing module kernel_clk
+Progress: Adding acl_memory_bank_divider [acl_memory_bank_divider 1.0]
+Warning: acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Warning: acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Progress: Parameterizing module acl_memory_bank_divider
+Progress: Adding clock_bridge [altera_clock_bridge 14.1]
+Warning: clock_bridge: Used altera_clock_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module clock_bridge
+Progress: Adding clock_cross_kernel_mem1 [altera_avalon_mm_clock_crossing_bridge 14.1]
+Warning: clock_cross_kernel_mem1: Used altera_avalon_mm_clock_crossing_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module clock_cross_kernel_mem1
+Progress: Adding version_id [version_id 10.0]
+Progress: Parameterizing module version_id
+Progress: Adding fpga_sdram [altera_mem_if_ddr3_emif 14.1]
+Warning: fpga_sdram: Used altera_mem_if_ddr3_emif 17.1 (instead of 14.1)
+Progress: Parameterizing module fpga_sdram
+Progress: Adding hps [altera_hps 14.1]
+Warning: hps: Used altera_hps 17.1 (instead of 14.1)
+Progress: Parameterizing module hps
+Progress: Adding kernel_interface [acl_kernel_interface_soc 1.0]
+Progress: Parameterizing module kernel_interface
+Progress: Adding pll [altera_pll 14.1]
+Warning: pll: Used altera_pll 17.1 (instead of 14.1)
+Progress: Parameterizing module pll
+Progress: Adding clock_cross_axi_fpga [altera_avalon_mm_clock_crossing_bridge 14.1]
+Warning: clock_cross_axi_fpga: Used altera_avalon_mm_clock_crossing_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module clock_cross_axi_fpga
+Progress: Adding address_span_extender_kernel [altera_address_span_extender 14.1]
+Warning: address_span_extender_kernel: Used altera_address_span_extender 17.1 (instead of 14.1)
+Progress: Parameterizing module address_span_extender_kernel
+Info: address_span_extender_kernel: Upgrade from altera_address_span_extender v14.1. Removing parameter AUTO_CLOCK_CLOCK_RATE
+Info: address_span_extender_kernel: Upgrade from altera_address_span_extender v14.1. Removing parameter AUTO_DEVICE_FAMILY
+Info: address_span_extender_kernel: Upgrade from altera_address_span_extender v14.1 TERMINATE_SLAVE_PORT(true) -> ENABLE_SLAVE_PORT(false).
+Progress: Adding address_span_extender_axi [altera_address_span_extender 14.1]
+Warning: address_span_extender_axi: Used altera_address_span_extender 17.1 (instead of 14.1)
+Progress: Parameterizing module address_span_extender_axi
+Info: address_span_extender_axi: Upgrade from altera_address_span_extender v14.1. Removing parameter AUTO_CLOCK_CLOCK_RATE
+Info: address_span_extender_axi: Upgrade from altera_address_span_extender v14.1. Removing parameter AUTO_DEVICE_FAMILY
+Info: address_span_extender_axi: Upgrade from altera_address_span_extender v14.1 TERMINATE_SLAVE_PORT(false) -> ENABLE_SLAVE_PORT(true).
+Progress: Adding mm_bridge_0 [altera_avalon_mm_bridge 14.1]
+Warning: mm_bridge_0: Used altera_avalon_mm_bridge 17.1 (instead of 14.1)
+Progress: Parameterizing module mm_bridge_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Progress: Parameterizing module acl_iface
+Progress: Adding ext_clk_50 [clock_source 17.1]
+Progress: Parameterizing module ext_clk_50
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk: The input clock frequency must be known or set by the parent if this is a subsystem.
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: The legal reference clock frequency is 50.0 MHz..650.0 MHz
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_to_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_from_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Warning: system.acl_iface.acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Warning: system.acl_iface.fpga_sdram: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: system.acl_iface.fpga_sdram.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Info: system.acl_iface.hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: system.acl_iface.hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: system.acl_iface.hps: ECC will be enabled in the preloader because an interface width of 24 or 40 has been chosen.
+Info: system.acl_iface.pll: The legal reference clock frequency is 5.0 MHz..650.0 MHz
+Info: system.acl_iface.pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/kernel_clk.clk_in: kernel_clk.clk_in requires 100000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/acl_memory_bank_divider.kernel_clk: acl_memory_bank_divider.kernel_clk requires 100000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.fpga_sdram: fpga_sdram.pll_sharing must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk: acl_kernel_clk.ctrl must be connected to an Avalon-MM master
+Warning: system.acl_iface.acl_internal_snoop: acl_iface.acl_internal_snoop must be connected to an Avalon-ST sink
+Warning: system.acl_iface: acl_iface.acl_kernel_clk_kernel_pll_locked must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.acl_internal_memorg_kernel must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_interface_acl_bsp_memorg_host0x018 must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_mem0 must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.kernel_mem1 must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.kernel_cra must be connected to an Avalon-MM slave
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/c5soc/system.qsys --synthesis=VERILOG --output-directory=/home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/c5soc/system/synthesis --family="Cyclone V" --part=5CSXFC6D6F31C8ES
+Progress: Loading c5soc/system.qsys
+Progress: Reading input file
+Progress: Adding acl_iface [acl_iface_system 1.0]
+Progress: Parameterizing module acl_iface
+Progress: Adding ext_clk_50 [clock_source 17.1]
+Progress: Parameterizing module ext_clk_50
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk: The input clock frequency must be known or set by the parent if this is a subsystem.
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: The legal reference clock frequency is 50.0 MHz..650.0 MHz
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_to_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_from_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Warning: system.acl_iface.acl_memory_bank_divider: add_instance: Component clock_source version 12.1 is not installed - loaded latest installed version 17.1 instead.  Please check for parameter mismatches 
+Warning: system.acl_iface.fpga_sdram: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: system.acl_iface.fpga_sdram.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Info: system.acl_iface.hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: system.acl_iface.hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: system.acl_iface.hps: ECC will be enabled in the preloader because an interface width of 24 or 40 has been chosen.
+Info: system.acl_iface.pll: The legal reference clock frequency is 5.0 MHz..650.0 MHz
+Info: system.acl_iface.pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/kernel_clk.clk_in: kernel_clk.clk_in requires 100000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/acl_memory_bank_divider.kernel_clk: acl_memory_bank_divider.kernel_clk requires 100000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.fpga_sdram: fpga_sdram.pll_sharing must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk: acl_kernel_clk.ctrl must be connected to an Avalon-MM master
+Warning: system.acl_iface.acl_internal_snoop: acl_iface.acl_internal_snoop must be connected to an Avalon-ST sink
+Warning: system.acl_iface: acl_iface.acl_kernel_clk_kernel_pll_locked must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.acl_internal_memorg_kernel must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_interface_acl_bsp_memorg_host0x018 must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_mem0 must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.kernel_mem1 must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.kernel_cra must be connected to an Avalon-MM slave
+Info: system: Generating system "system" for QUARTUS_SYNTH
+Info: Interconnect is inserted between master clock_cross_kernel_mem1.m0 and slave address_span_extender_kernel.windowed_slave because the master has debugaccess signal 1 bit wide, but the slave is 0 bit wide.
+Info: Interconnect is inserted between master address_span_extender_kernel.expanded_master and slave hps.f2h_sdram0_data because the master has address signal 32 bit wide, but the slave is 27 bit wide.
+Info: Interconnect is inserted between master address_span_extender_kernel.expanded_master and slave hps.f2h_sdram0_data because the master has burstcount signal 5 bit wide, but the slave is 8 bit wide.
+Info: Interconnect is inserted between master hps.h2f_axi_master and slave address_span_extender_axi.windowed_slave because the master is of type axi and the slave is of type avalon.
+Info: Interconnect is inserted between master address_span_extender_axi.expanded_master and slave acl_memory_bank_divider.s because the master has address signal 30 bit wide, but the slave is 25 bit wide.
+Info: Interconnect is inserted between master address_span_extender_axi.expanded_master and slave acl_memory_bank_divider.s because the master has readdata signal 32 bit wide, but the slave is 256 bit wide.
+Info: Interconnect is inserted between master address_span_extender_axi.expanded_master and slave acl_memory_bank_divider.s because the master has writedata signal 32 bit wide, but the slave is 256 bit wide.
+Info: Interconnect is inserted between master address_span_extender_axi.expanded_master and slave acl_memory_bank_divider.s because the master has byteenable signal 4 bit wide, but the slave is 32 bit wide.
+Info: Interconnect is inserted between master hps.h2f_lw_axi_master and slave mm_bridge_0.s0 because the master is of type axi and the slave is of type avalon.
+Warning: hps.f2h_irq0: Cannot connect clock for irq_mapper.sender
+Warning: hps.f2h_irq0: Cannot connect reset for irq_mapper.sender
+Warning: hps.f2h_irq1: Cannot connect clock for irq_mapper_001.sender
+Warning: hps.f2h_irq1: Cannot connect reset for irq_mapper_001.sender
+Info: acl_iface: "system" instantiated acl_iface_system "acl_iface"
+Info: irq_mapper: "system" instantiated altera_irq_mapper "irq_mapper"
+Info: rst_controller: "system" instantiated altera_reset_controller "rst_controller"
+Info: Inserting clock-crossing logic between cmd_demux.src1 and cmd_mux_001.sink0
+Info: Inserting clock-crossing logic between rsp_demux_001.src0 and rsp_mux.sink1
+Info: acl_kernel_clk: "acl_iface" instantiated acl_kernel_clk_noreconfig "acl_kernel_clk"
+Info: clock_cross_kernel_mem0: "acl_iface" instantiated altera_avalon_mm_clock_crossing_bridge "clock_cross_kernel_mem0"
+Info: acl_memory_bank_divider: "acl_iface" instantiated acl_memory_bank_divider "acl_memory_bank_divider"
+Info: version_id: "acl_iface" instantiated version_id "version_id"
+Info: fpga_sdram: "acl_iface" instantiated altera_mem_if_ddr3_emif "fpga_sdram"
+Info: hps: "Running  for module: hps"
+Info: hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: hps: ECC will be enabled in the preloader because an interface width of 24 or 40 has been chosen.
+Info: hps: "acl_iface" instantiated altera_hps "hps"
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has readdata signal 32 bit wide, but the slave is 64 bit wide.
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has writedata signal 32 bit wide, but the slave is 64 bit wide.
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has byteenable signal 4 bit wide, but the slave is 8 bit wide.
+Info: Inserting clock-crossing logic between cmd_demux.src0 and cmd_mux.sink0
+Info: Inserting clock-crossing logic between cmd_demux.src1 and cmd_mux_001.sink0
+Info: Inserting clock-crossing logic between rsp_demux.src0 and rsp_mux.sink0
+Info: Inserting clock-crossing logic between rsp_demux_001.src0 and rsp_mux.sink1
+Warning: irq_ena_0.my_irq_in: Cannot connect clock for irq_mapper.sender
+Warning: irq_ena_0.my_irq_in: Cannot connect reset for irq_mapper.sender
+Info: kernel_interface: "acl_iface" instantiated acl_kernel_interface_soc "kernel_interface"
+Info: pll: "acl_iface" instantiated altera_pll "pll"
+Info: address_span_extender_kernel: "acl_iface" instantiated altera_address_span_extender "address_span_extender_kernel"
+Info: mm_bridge_0: "acl_iface" instantiated altera_avalon_mm_bridge "mm_bridge_0"
+Info: mm_interconnect_0: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: mm_interconnect_1: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_2: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_2"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_3: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_3"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_4: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_4"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_5: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_5"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_6: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_6"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_7: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_7"
+Info: irq_mapper: "acl_iface" instantiated altera_irq_mapper "irq_mapper"
+Info: irq_mapper_001: "acl_iface" instantiated altera_irq_mapper "irq_mapper_001"
+Info: kernel_pll: "acl_kernel_clk" instantiated altera_pll "kernel_pll"
+Info: counter: "acl_kernel_clk" instantiated acl_timer "counter"
+Info: global_routing_kernel_clk: "acl_kernel_clk" instantiated global_routing_clk "global_routing_kernel_clk"
+Info: pll_sw_reset: "acl_kernel_clk" instantiated sw_reset "pll_sw_reset"
+Info: pll_lock_avs_0: "acl_kernel_clk" instantiated pll_lock_avs "pll_lock_avs_0"
+Info: pll_rom: Starting RTL generation for module 'system_acl_iface_acl_kernel_clk_pll_rom'
+Info: pll_rom:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=system_acl_iface_acl_kernel_clk_pll_rom --dir=/tmp/alt7592_6008617171466813566.dir/0012_pll_rom_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7592_6008617171466813566.dir/0012_pll_rom_gen//system_acl_iface_acl_kernel_clk_pll_rom_component_configuration.pl  --do_build_sim=0  ]
+Info: pll_rom: Done RTL generation for module 'system_acl_iface_acl_kernel_clk_pll_rom'
+Info: pll_rom: "acl_kernel_clk" instantiated altera_avalon_onchip_memory2 "pll_rom"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "acl_kernel_clk" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: acl_snoop_adapter_0: "acl_memory_bank_divider" instantiated acl_snoop_adapter "acl_snoop_adapter_0"
+Info: pll0: "fpga_sdram" instantiated altera_mem_if_ddr3_pll "pll0"
+Info: p0: Generating clock pair generator
+Info: p0: Generating system_acl_iface_fpga_sdram_p0_altdqdqs
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: Remember to run the system_acl_iface_fpga_sdram_p0_pin_assignments.tcl
+Info: p0: script after running Synthesis and before Fitting.
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: "fpga_sdram" instantiated altera_mem_if_ddr3_hard_phy_core "p0"
+Error: s0: Error during execution of "/home/hammadj/intelFPGA/17.1/quartus/../nios2eds/nios2_command_shell.sh make all 2>> stderr.txt":  error: unrecognized command line option ‘-mno-hw-div’
+Error: s0: Error during execution of "/home/hammadj/intelFPGA/17.1/quartus/../nios2eds/nios2_command_shell.sh make all 2>> stderr.txt":  error: unrecognized command line option ‘-mno-hw-mul’
+Error: s0: Error during execution of "/home/hammadj/intelFPGA/17.1/quartus/../nios2eds/nios2_command_shell.sh make all 2>> stderr.txt":  error: unrecognized command line option ‘-mno-hw-mulx’
+Error: s0: Error during execution of "/home/hammadj/intelFPGA/17.1/quartus/../nios2eds/nios2_command_shell.sh make all 2>> stderr.txt":  error: unrecognized command line option ‘-mgpopt=global’
+Error: s0: Execution of command "/home/hammadj/intelFPGA/17.1/quartus/../nios2eds/nios2_command_shell.sh make all 2>> stderr.txt" failed
+Error: s0: /home/hammadj/intelFPGA/17.1/quartus/bin/uniphy_mcc -ac_code sequencer_mc/ac_rom.s -inst_code sequencer_mc/inst_rom.s -ac_rom ../system_acl_iface_fpga_sdram_s0_AC_ROM.hex -inst_rom ../system_acl_iface_fpga_sdram_s0_inst_ROM.hex -header sequencer/sequencer_auto.h -vheader ../sequencer_auto_h.sv -ac_rom_init sequencer/sequencer_auto_ac_init.c -inst_rom_init sequencer/sequencer_auto_inst_init.c -DAC_ROM_USER_ADD_0=0_0000_0000_0000 -DAC_ROM_USER_ADD_1=0_0000_0000_1000 -DAC_ROM_MR0=0010000110001 -DAC_ROM_MR0_CALIB= -DAC_ROM_MR0_DLL_RESET=0010100110000 -DAC_ROM_MR1=0000001000100 -DAC_ROM_MR1_OCD_ENABLE= -DAC_ROM_MR2=0000000001000 -DAC_ROM_MR3=0000000000000 -DAC_ROM_MR0_MIRR=0010001001001 -DAC_ROM_MR0_DLL_RESET_MIRR=0010011001000 -DAC_ROM_MR1_MIRR=0000000100100 -DAC_ROM_MR2_MIRR=0000000010000 -DAC_ROM_MR3_MIRR=0000000000000 -DQUARTER_RATE=0 -DHALF_RATE=0 -DFULL_RATE=1 -DNON_DES_CAL=0 -DAP_MODE=0 -DGUARANTEED_READ_BRINGUP_TEST=0 -DMEM_ADDR_WIDTH=13 -DHARD_PHY=1
+Error: s0: UniPHY Sequencer Microcode Compiler
+Error: s0: Copyright (C) 2017  Intel Corporation. All rights reserved.
+Error: s0: Info: Reading sequencer_mc/ac_rom.s ...
+Error: s0: Info: Reading sequencer_mc/inst_rom.s ...
+Error: s0: Info: Writing ../system_acl_iface_fpga_sdram_s0_AC_ROM.hex ...
+Error: s0: Info: Writing ../system_acl_iface_fpga_sdram_s0_inst_ROM.hex ...
+Error: s0: Info: Writing sequencer/sequencer_auto_ac_init.c ...
+Error: s0: Info: Writing sequencer/sequencer_auto_inst_init.c ...
+Error: s0: Info: Writing sequencer/sequencer_auto.h ...
+Error: s0: Info: Writing sequencer/sequencer_auto.h ...
+Error: s0: Info: Writing ../sequencer_auto_h.sv ...
+Error: s0: Info: Microcode compilation successful
+Error: s0: /home/hammadj/intelFPGA/17.1/quartus/../nios2eds/sdk2/bin/nios2-bsp hal sequencer_bsp .. --default_sections_mapping sequencer_mem --use_bootloader DONT_CHANGE
+Error: s0: nios2-bsp: Using /home/hammadj/intelFPGA/17.1/nios2eds/sdk2/bin/bsp-set-defaults.tcl to set system-dependent settings.
+Error: s0: nios2-bsp: Updating existing BSP because sequencer_bsp/settings.bsp exists.
+Error: s0: nios2-bsp: Using SOPC design file ../pre_compile.sopcinfo found in ..
+Error: s0: nios2-bsp: Running "nios2-bsp-update-settings --settings sequencer_bsp/settings.bsp --bsp-dir sequencer_bsp --sopc ../pre_compile.sopcinfo --script /home/hammadj/intelFPGA/17.1/nios2eds/sdk2/bin/bsp-set-defaults.tcl default_sections_mapping sequencer_mem use_bootloader DONT_CHANGE "
+Error: s0: INFO: Updating BSP settings...
+Error: s0: INFO: nios2-bsp-update-settings --settings sequencer_bsp/settings.bsp --bsp-dir sequencer_bsp --sopc ../pre_compile.sopcinfo --script /home/hammadj/intelFPGA/17.1/nios2eds/sdk2/bin/bsp-set-defaults.tcl default_sections_mapping sequencer_mem use_bootloader DONT_CHANGE
+Error: s0: INFO: Initializing BSP components...
+Error: s0: INFO: Finished initializing BSP components. Total time taken = 2 seconds
+Error: s0: INFO: Searching for BSP components with category: os_software_element
+Error: s0: INFO: Initializing SOPC project local software IP
+Error: s0: INFO: [Info] /tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/* matched 5 files in 0.00 seconds
+Error: s0: INFO: [Info] /tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/*/*_sw.tcl matched 0 files in 0.00 seconds
+Error: s0: INFO: [Info] /tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/ip/**/*_sw.tcl matched 0 files in 0.00 seconds
+Error: s0: INFO: [Info] /tmp/alt7592_6008617171466813566.dir/0017_s0_gen/ip/**/*_sw.tcl matched 0 files in 0.00 seconds
+Error: s0: INFO: Finished initializing SOPC project local software IP. Total time taken = 2 seconds
+Error: s0: INFO: Searching for BSP components with category: driver_element
+Error: s0: INFO: Searching for BSP components with category: software_package_element
+Error: s0: INFO: Loading drivers from ensemble report.
+Error: s0: INFO: Finished loading drivers from ensemble report.
+Error: s0: INFO: Tcl message: "No STDIO character device"
+Error: s0: INFO: Tcl message: "No system timer device"
+Error: s0: INFO: Tcl message: "Default linker sections mapped to sequencer_mem"
+Error: s0: INFO: Default memory regions will not be persisted in BSP Settings File.
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/settings.bsp"
+Error: s0: INFO: BSP settings updated
+Error: s0: INFO: Generating BSP files...
+Error: s0: INFO: Generating BSP files in "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp"
+Error: s0: INFO: Default memory regions will not be persisted in BSP Settings File.
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/settings.bsp"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/summary.html"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/mem_init.mk"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/public.mk"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/alt_sys_init.c"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/linker.x"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/linker.h"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/memory.gdb"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/system.h"
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp/Makefile"
+Error: s0: INFO: Finished generating BSP files. Total time taken = 2 seconds
+Error: s0: INFO: BSP files generated in "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp"
+Error: s0: /home/hammadj/intelFPGA/17.1/quartus/../nios2eds/sdk2/bin/nios2-app-generate-makefile --bsp-dir sequencer_bsp --app-dir sequencer --elf-name sequencer.elf --set OBJDUMP_INCLUDE_SOURCE 1 --set APP_CFLAGS_DEFINED_SYMBOLS -DSTACK_POINTER=0x10fff0 --set APP_CFLAGS_OPTIMIZATION "-Os --param max-inline-insns-single=1000 -fno-zero-initialized-in-bss" --set APP_CFLAGS_WARNINGS "-Winline -Wall" --src-files sequencer.c sequencer.h tclrpt.c tclrpt.h sequencer_auto_ac_init.c sequencer_auto_inst_init.c
+Error: s0: INFO: nios2-app-generate-makefile --bsp-dir sequencer_bsp --app-dir sequencer --elf-name sequencer.elf --set OBJDUMP_INCLUDE_SOURCE 1 --set APP_CFLAGS_DEFINED_SYMBOLS -DSTACK_POINTER=0x10fff0 --set APP_CFLAGS_OPTIMIZATION -Os --param max-inline-insns-single=1000 -fno-zero-initialized-in-bss --set APP_CFLAGS_WARNINGS -Winline -Wall --src-files sequencer.c sequencer.h tclrpt.c tclrpt.h sequencer_auto_ac_init.c sequencer_auto_inst_init.c
+Error: s0: INFO: Generating application makefile
+Error: s0: INFO: Generated file "/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer/Makefile"
+Error: s0: INFO: Application makefile generated
+Error: s0: make -C sequencer_bsp clean altera_nios2_qsys_hal_driver_ASM_LIB_SRCS=HAL/src/crt0.S  hal_C_LIB_SRCS=HAL/src/alt_main.c hal_C_LIB_SRCS+=HAL/src/alt_load.c  altera_nios2_qsys_hal_driver_C_LIB_SRCS=HAL/src/altera_nios2_qsys_irq.c altera_nios2_qsys_hal_driver_C_LIB_SRCS+=HAL/src/alt_icache_flush_all.c altera_nios2_qsys_hal_driver_C_LIB_SRCS+=HAL/src/alt_dcache_flush_all.c
+Error: s0: make[1]: Entering directory '/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp'
+Error: s0: [BSP clean complete]
+Error: s0: make[1]: Leaving directory '/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer_bsp'
+Error: s0: make -C sequencer clean all altera_nios2_qsys_hal_driver_ASM_LIB_SRCS=HAL/src/crt0.S  hal_C_LIB_SRCS=HAL/src/alt_main.c hal_C_LIB_SRCS+=HAL/src/alt_load.c  altera_nios2_qsys_hal_driver_C_LIB_SRCS=HAL/src/altera_nios2_qsys_irq.c altera_nios2_qsys_hal_driver_C_LIB_SRCS+=HAL/src/alt_icache_flush_all.c altera_nios2_qsys_hal_driver_C_LIB_SRCS+=HAL/src/alt_dcache_flush_all.c
+Error: s0: make[1]: Entering directory '/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer'
+Error: s0: [sequencer clean complete]
+Error: s0: Info: Building ../sequencer_bsp
+Error: s0: make --no-print-directory -C ../sequencer_bsp
+Error: s0: Compiling alt_dcache_flush_all.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/HAL/src/alt_dcache_flush_all.o HAL/src/alt_dcache_flush_all.c
+Error: s0: Compiling alt_icache_flush_all.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/HAL/src/alt_icache_flush_all.o HAL/src/alt_icache_flush_all.c
+Error: s0: Compiling alt_load.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/HAL/src/alt_load.o HAL/src/alt_load.c
+Error: s0: Compiling alt_main.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/HAL/src/alt_main.o HAL/src/alt_main.c
+Error: s0: Compiling altera_nios2_qsys_irq.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/HAL/src/altera_nios2_qsys_irq.o HAL/src/altera_nios2_qsys_irq.c
+Error: s0: Compiling crt0.S...
+Error: s0: nios2-elf-gcc -MP -MMD -c   -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global    -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED  -Wa,-gdwarf2  -o obj/HAL/src/crt0.o HAL/src/crt0.S
+Error: s0: Compiling alt_sys_init.c...
+Error: s0: nios2-elf-gcc -xc -MP -MMD -c  -I./HAL/inc -I. -I./drivers/inc -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -Os -g -Wall  -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global   -o obj/alt_sys_init.o alt_sys_init.c
+Error: s0: Creating libhal_bsp.a...
+Error: s0: rm -f -f libhal_bsp.a
+Error: s0: nios2-elf-ar -src libhal_bsp.a obj/HAL/src/alt_dcache_flush_all.o obj/HAL/src/alt_icache_flush_all.o obj/HAL/src/alt_load.o obj/HAL/src/alt_main.o obj/HAL/src/altera_nios2_qsys_irq.o obj/HAL/src/crt0.o obj/alt_sys_init.o
+Error: s0: [BSP build complete]
+Error: s0: Info: Compiling sequencer.c to obj/default/sequencer.o
+Error: s0: arm-linux-gnueabihf-gcc -xc -MP -MMD -c -I../sequencer_bsp/HAL/inc -I../sequencer_bsp -I../sequencer_bsp/drivers/inc  -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -D'exit(a)=_exit(a)' -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED  -DSTACK_POINTER=0x10fff0  -Os --param max-inline-insns-single=1000 -fno-zero-initialized-in-bss -g -Winline -Wall   -mno-hw-div -mno-hw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/sequencer.o sequencer.c
+Error: s0: Makefile:781: recipe for target 'obj/default/sequencer.o' failed
+Error: s0: make[1]: Leaving directory '/tmp/alt7592_6008617171466813566.dir/0017_s0_gen/qsys_pre_compile/system_acl_iface_fpga_sdram_s0_software/sequencer'
+Error: s0: Makefile:12: recipe for target 'elf' failed
+Error: s0: WARNING: The BSP persisted OS version "9.1" is not available. The default latest BSP version will be used instead.
+Error: s0: WARNING: The BSP being loaded used OS version "9.1". The BSP version "17.1" will be used instead.
+Error: s0: arm-linux-gnueabihf-gcc: error: unrecognized command line option ‘-mno-hw-div’
+Error: s0: arm-linux-gnueabihf-gcc: error: unrecognized command line option ‘-mno-hw-mul’
+Error: s0: arm-linux-gnueabihf-gcc: error: unrecognized command line option ‘-mno-hw-mulx’
+Error: s0: arm-linux-gnueabihf-gcc: error: unrecognized command line option ‘-mgpopt=global’
+Error: s0: make[1]: *** [obj/default/sequencer.o] Error 1
+Error: s0: make: *** [elf] Error 2
+Error: s0: Cannot find sequencer/sequencer.elf
+Error: s0: An error occurred     while executing "error "An error occurred""     (procedure "_error" line 8)     invoked from within "_error "Cannot find $seq_file""     ("if" then script line 2)     invoked from within "if {[file exists $seq_file] == 0} { 		_error "Cannot find $seq_file" 	}"     (procedure "alt_mem_if::util::seq_mem_size::get_max_memory_usage" line 14)     invoked from within "alt_mem_if::util::seq_mem_size::get_max_memory_usage [file join "sequencer" "sequencer.elf""     invoked from within "set calc_mem_size [alt_mem_if::util::seq_mem_size::get_max_memory_usage [file join "sequencer" "sequencer.elf"]]"     ("if" then script line 2)     invoked from within "if { !$do_only_rw_mgr_mc && !($bfm_mode || $hps_mode)} { 		set calc_mem_size [alt_mem_if::util::seq_mem_size::get_max_memory_usage [file join "sequenc..."     (procedure "generate_qsys_sequencer_sw" line 924)     invoked from within "generate_qsys_sequencer_sw $prepend_str $protocol $pre_compile_dir $fileset $inhdl_dir $rdimm $lrdimm 0 0  $nios_hex_file_name $ac_rom_init_file_name ..."     invoked from within "set seq_mem_size_list [generate_qsys_sequencer_sw $prepend_str $protocol $pre_compile_dir $fileset $inhdl_dir $rdimm $lrdimm 0 0  $nios_hex_file_name ..."     ("if" else script line 2)     invoked from within "if {[::alt_mem_if::util::qini::qini_value alt_mem_if_seq_size_request 0] > 0} { 		set seq_mem_size [::alt_mem_if::util::qini::qini_value alt_mem_if_se..."     (procedure "alt_mem_if::gen::uniphy_gen::generate_qsys_sequencer" line 238)     invoked from within "alt_mem_if::gen::uniphy_gen::generate_qsys_sequencer "${name}" $protocol $tmpdir $fileset {}"     invoked from within "set qsys_sequencer_files_list [alt_mem_if::gen::uniphy_gen::generate_qsys_sequencer "${name}" $protocol $tmpdir $fileset {}]"     (procedure "alt_mem_if::gen::uniphy_gen::generate_sequencer_files" line 3)     invoked from within "alt_mem_if::gen::uniphy_gen::generate_sequencer_files $name "DDR3" $tmpdir QUARTUS_SYNTH"     invoked from within "foreach generated_file [alt_mem_if::gen::uniphy_gen::generate_sequencer_files $name "DDR3" $tmpdir QUARTUS_SYNTH] { 		set file_name [file tail $genera..."     (procedure "generate_synth" line 8)     invoked from within "generate_synth system_acl_iface_fpga_sdram_s0"
+Info: s0: "fpga_sdram" instantiated altera_mem_if_ddr3_qseq "s0"
+Error: Generation stopped, 174 or more modules remaining
+Info: system: Done "system" with 102 modules, 62 files
+Error: qsys-generate failed with exit code 1: 107 Errors, 24 Warnings
+Info: Finished: Create HDL design files for synthesis

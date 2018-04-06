@@ -1,0 +1,402 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system.qsys --block-symbol-file --output-directory=/home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system --family="Cyclone V" --part=5CSEBA6U23I7
+Progress: Loading de10_nano_sharedonly_hdmi/system.qsys
+Progress: Reading input file
+Progress: Adding acl_iface [acl_iface_system 1.0]
+Progress: Reading input file
+Progress: Adding acl_kernel_clk [acl_kernel_clk_noreconfig 1.0]
+Progress: Reading input file
+Progress: Adding kernel_clk [clock_source 13.1]
+Warning: kernel_clk: Used clock_source 17.1 (instead of 13.1)
+Progress: Parameterizing module kernel_clk
+Progress: Adding kernel_pll [altera_pll 13.1]
+Warning: kernel_pll: Used altera_pll 17.1 (instead of 13.1)
+Progress: Parameterizing module kernel_pll
+Progress: Adding pll_reconfig_0 [altera_pll_reconfig 13.1]
+Warning: pll_reconfig_0: Used altera_pll_reconfig 17.1 (instead of 13.1)
+Progress: Parameterizing module pll_reconfig_0
+Progress: Adding counter [acl_timer 10.0]
+Progress: Parameterizing module counter
+Progress: Adding global_routing_kernel_clk [global_routing_clk 10.0]
+Progress: Parameterizing module global_routing_kernel_clk
+Progress: Adding global_routing_kernel_clk2x [global_routing_clk 10.0]
+Progress: Parameterizing module global_routing_kernel_clk2x
+Progress: Adding kernel_pll_refclk [altera_clock_bridge 13.1]
+Warning: kernel_pll_refclk: Used altera_clock_bridge 17.1 (instead of 13.1)
+Progress: Parameterizing module kernel_pll_refclk
+Progress: Adding ctrl [altera_avalon_mm_bridge 13.1]
+Warning: ctrl: Used altera_avalon_mm_bridge 17.1 (instead of 13.1)
+Progress: Parameterizing module ctrl
+Progress: Adding pll_sw_reset [sw_reset 10.0]
+Progress: Parameterizing module pll_sw_reset
+Progress: Adding pll_lock_avs_0 [pll_lock_avs 10.0]
+Progress: Parameterizing module pll_lock_avs_0
+Progress: Adding clk [clock_source 13.1]
+Warning: clk: Used clock_source 17.1 (instead of 13.1)
+Progress: Parameterizing module clk
+Progress: Adding version_id_0 [version_id 10.0]
+Progress: Parameterizing module version_id_0
+Progress: Adding pll_rom [altera_avalon_onchip_memory2 13.1]
+Warning: pll_rom: Used altera_avalon_onchip_memory2 17.1 (instead of 13.1)
+Progress: Parameterizing module pll_rom
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Progress: Parameterizing module acl_kernel_clk
+Progress: Adding acl_kernel_interface [acl_kernel_interface_soc 1.0]
+Progress: Reading input file
+Progress: Adding sys_description_rom [altera_avalon_onchip_memory2 14.0]
+Warning: sys_description_rom: Used altera_avalon_onchip_memory2 17.1 (instead of 14.0)
+Progress: Parameterizing module sys_description_rom
+Progress: Adding kernel_cra [altera_avalon_mm_bridge 14.0]
+Warning: kernel_cra: Used altera_avalon_mm_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module kernel_cra
+Progress: Adding address_span_extender_0 [altera_address_span_extender 1.2]
+Warning: address_span_extender_0: Used altera_address_span_extender 17.1 (instead of 1.2)
+Progress: Parameterizing module address_span_extender_0
+Info: address_span_extender_0: Upgrade from altera_address_span_extender v1.2. Removing parameter AUTO_CLOCK_CLOCK_RATE
+Info: address_span_extender_0: Upgrade from altera_address_span_extender v1.2. Removing parameter AUTO_DEVICE_FAMILY
+Info: address_span_extender_0: Upgrade from altera_address_span_extender v1.2 TERMINATE_SLAVE_PORT(false) -> ENABLE_SLAVE_PORT(true).
+Progress: Adding sw_reset [sw_reset 10.0]
+Progress: Parameterizing module sw_reset
+Progress: Adding kernel_cntrl [altera_avalon_mm_bridge 14.0]
+Warning: kernel_cntrl: Used altera_avalon_mm_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module kernel_cntrl
+Progress: Adding mem_org_mode [mem_org_mode 10.0]
+Progress: Parameterizing module mem_org_mode
+Progress: Adding clk_reset [clock_source 14.0]
+Warning: clk_reset: Used clock_source 17.1 (instead of 14.0)
+Progress: Parameterizing module clk_reset
+Progress: Adding irq_bridge_0 [altera_irq_bridge 14.0]
+Warning: irq_bridge_0: Used altera_irq_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module irq_bridge_0
+Progress: Adding sw_reset_in [altera_reset_bridge 14.0]
+Warning: sw_reset_in: Used altera_reset_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module sw_reset_in
+Progress: Adding version_id_0 [version_id 10.0]
+Progress: Parameterizing module version_id_0
+Progress: Adding reset_controller_sw [altera_reset_controller 14.0]
+Warning: reset_controller_sw: Used altera_reset_controller 17.1 (instead of 14.0)
+Progress: Parameterizing module reset_controller_sw
+Progress: Adding kernel_clk [altera_clock_bridge 14.0]
+Warning: kernel_clk: Used altera_clock_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module kernel_clk
+Progress: Adding reset_bridge_0 [altera_reset_bridge 14.0]
+Warning: reset_bridge_0: Used altera_reset_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module reset_bridge_0
+Progress: Adding reset_bridge_1 [altera_reset_bridge 14.0]
+Warning: reset_bridge_1: Used altera_reset_bridge 17.1 (instead of 14.0)
+Progress: Parameterizing module reset_bridge_1
+Progress: Adding irq_ena_0 [acl_irq_ena 13.0]
+Progress: Parameterizing module irq_ena_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Progress: Parameterizing module acl_kernel_interface
+Progress: Adding address_span_extender_kernel [altera_address_span_extender 16.1]
+Warning: address_span_extender_kernel: Used altera_address_span_extender 17.1 (instead of 16.1)
+Progress: Parameterizing module address_span_extender_kernel
+Progress: Adding alt_vip_itc_0 [alt_vip_itc 14.0]
+Progress: Parameterizing module alt_vip_itc_0
+Progress: Adding alt_vip_vfr_hdmi [alt_vip_vfr 14.0]
+Progress: Parameterizing module alt_vip_vfr_hdmi
+Progress: Adding button_pio [altera_avalon_pio 16.1]
+Warning: button_pio: Used altera_avalon_pio 17.1 (instead of 16.1)
+Progress: Parameterizing module button_pio
+Progress: Adding clock_bridge [altera_clock_bridge 16.1]
+Warning: clock_bridge: Used altera_clock_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module clock_bridge
+Progress: Adding clock_bridge_0 [altera_clock_bridge 16.1]
+Warning: clock_bridge_0: Used altera_clock_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module clock_bridge_0
+Progress: Adding clock_cross_kernel_mem1 [altera_avalon_mm_clock_crossing_bridge 16.1]
+Warning: clock_cross_kernel_mem1: Used altera_avalon_mm_clock_crossing_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module clock_cross_kernel_mem1
+Progress: Adding config_clk [altera_clock_bridge 16.1]
+Warning: config_clk: Used altera_clock_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module config_clk
+Progress: Adding dipsw_pio [altera_avalon_pio 16.1]
+Warning: dipsw_pio: Used altera_avalon_pio 17.1 (instead of 16.1)
+Progress: Parameterizing module dipsw_pio
+Progress: Adding global_reset [altera_reset_bridge 16.1]
+Warning: global_reset: Used altera_reset_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module global_reset
+Progress: Adding hps [altera_hps 16.1]
+Warning: hps: Used altera_hps 17.1 (instead of 16.1)
+Progress: Parameterizing module hps
+Progress: Adding kernel_clk [clock_source 16.1]
+Warning: kernel_clk: Used clock_source 17.1 (instead of 16.1)
+Progress: Parameterizing module kernel_clk
+Progress: Adding led_pio [altera_avalon_pio 16.1]
+Warning: led_pio: Used altera_avalon_pio 17.1 (instead of 16.1)
+Progress: Parameterizing module led_pio
+Progress: Adding pipe_stage_host_ctrl [altera_avalon_mm_bridge 16.1]
+Warning: pipe_stage_host_ctrl: Used altera_avalon_mm_bridge 17.1 (instead of 16.1)
+Progress: Parameterizing module pipe_stage_host_ctrl
+Progress: Adding pll [altera_pll 16.1]
+Warning: pll: Used altera_pll 17.1 (instead of 16.1)
+Progress: Parameterizing module pll
+Progress: Adding version_id [version_id 10.0]
+Progress: Parameterizing module version_id
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Progress: Parameterizing module acl_iface
+Progress: Adding ext_clk_50 [clock_source 17.1]
+Progress: Parameterizing module ext_clk_50
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk: The input clock frequency must be known or set by the parent if this is a subsystem.
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: The legal reference clock frequency is 50.0 MHz..700.0 MHz
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_to_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_from_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.alt_vip_vfr_hdmi: The module properties SIMULATION_MODEL_IN_VERILOG and SIMULATION_MODEL_IN_VHDL can not both be set when using the SIMULATION file property: src_hdl/alt_vipvfr131_vfr.v, src_hdl/alt_vipvfr131_vfr_controller.v, src_hdl/alt_vipvfr131_vfr_control_packet_encoder.v, src_hdl/alt_vipvfr131_prc.v, src_hdl/alt_vipvfr131_prc_core.v, src_hdl/alt_vipvfr131_prc_read_master.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_package.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_bursting_master_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_master.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_unpack_data.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_slave.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_stream_output.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_pulling_width_adapter.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_general_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_fifo_usedw_calculator.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_gray_clock_crosser.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_std_logic_vector_delay.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_one_bit_delay.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_logic_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_ram_fifo.vhd
+Info: system.acl_iface.button_pio: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: system.acl_iface.dipsw_pio: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: system.acl_iface.hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: system.acl_iface.hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: system.acl_iface.pll: The legal reference clock frequency is 5.0 MHz..700.0 MHz
+Info: system.acl_iface.pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/kernel_clk.clk_in: kernel_clk.clk_in requires 50000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.acl_kernel_interface: acl_kernel_interface.acl_bsp_memorg_host0x018 must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.alt_vip_vfr_hdmi: Interrupt sender alt_vip_vfr_hdmi.interrupt_sender is not connected to an interrupt receiver
+Warning: system.acl_iface.acl_kernel_clk: acl_kernel_clk.ctrl must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.acl_internal_memorg_kernel must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.acl_kernel_clk_kernel_pll_locked must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_cra must be connected to an Avalon-MM slave
+Warning: system.acl_iface: acl_iface.kernel_mem0 must be connected to an Avalon-MM master
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system.qsys --synthesis=VERILOG --output-directory=/home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis --family="Cyclone V" --part=5CSEBA6U23I7
+Progress: Loading de10_nano_sharedonly_hdmi/system.qsys
+Progress: Reading input file
+Progress: Adding acl_iface [acl_iface_system 1.0]
+Progress: Parameterizing module acl_iface
+Progress: Adding ext_clk_50 [clock_source 17.1]
+Progress: Parameterizing module ext_clk_50
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk: The input clock frequency must be known or set by the parent if this is a subsystem.
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: The legal reference clock frequency is 50.0 MHz..700.0 MHz
+Info: system.acl_iface.acl_kernel_clk.kernel_pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_to_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.acl_kernel_clk.kernel_pll: kernel_pll.reconfig_from_pll must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.alt_vip_vfr_hdmi: The module properties SIMULATION_MODEL_IN_VERILOG and SIMULATION_MODEL_IN_VHDL can not both be set when using the SIMULATION file property: src_hdl/alt_vipvfr131_vfr.v, src_hdl/alt_vipvfr131_vfr_controller.v, src_hdl/alt_vipvfr131_vfr_control_packet_encoder.v, src_hdl/alt_vipvfr131_prc.v, src_hdl/alt_vipvfr131_prc_core.v, src_hdl/alt_vipvfr131_prc_read_master.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_package.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_bursting_master_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_master.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_unpack_data.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_avalon_mm_slave.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_stream_output.v, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_pulling_width_adapter.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_general_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_fifo_usedw_calculator.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_gray_clock_crosser.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_std_logic_vector_delay.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_one_bit_delay.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_logic_fifo.vhd, /home/hammadj/intelFPGA/17.1/ip/altera/frame_reader/common_hdl/alt_vipvfr131_common_ram_fifo.vhd
+Info: system.acl_iface.button_pio: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: system.acl_iface.dipsw_pio: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: system.acl_iface.hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: system.acl_iface.hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: system.acl_iface.pll: The legal reference clock frequency is 5.0 MHz..700.0 MHz
+Info: system.acl_iface.pll: Able to implement PLL with user settings
+Warning: system.acl_iface.acl_kernel_clk.kernel_clk/kernel_clk.clk_in: kernel_clk.clk_in requires 50000000Hz, but source has frequency of 0Hz
+Warning: system.acl_iface.acl_kernel_interface: acl_kernel_interface.acl_bsp_memorg_host0x018 must be exported, or connected to a matching conduit.
+Warning: system.acl_iface.alt_vip_vfr_hdmi: Interrupt sender alt_vip_vfr_hdmi.interrupt_sender is not connected to an interrupt receiver
+Warning: system.acl_iface.acl_kernel_clk: acl_kernel_clk.ctrl must be connected to an Avalon-MM master
+Warning: system.acl_iface: acl_iface.acl_internal_memorg_kernel must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.acl_kernel_clk_kernel_pll_locked must be exported, or connected to a matching conduit.
+Warning: system.acl_iface: acl_iface.kernel_cra must be connected to an Avalon-MM slave
+Warning: system.acl_iface: acl_iface.kernel_mem0 must be connected to an Avalon-MM master
+Info: system: Generating system "system" for QUARTUS_SYNTH
+Info: Interconnect is inserted between master alt_vip_vfr_hdmi.avalon_master and slave hps.f2h_axi_slave because the master is of type avalon and the slave is of type axi.
+Info: Interconnect is inserted between master address_span_extender_kernel.expanded_master and slave hps.f2h_sdram0_data because the master has address signal 32 bit wide, but the slave is 27 bit wide.
+Info: Interconnect is inserted between master address_span_extender_kernel.expanded_master and slave hps.f2h_sdram0_data because the master has burstcount signal 5 bit wide, but the slave is 8 bit wide.
+Info: Interconnect is inserted between master hps.h2f_lw_axi_master and slave pipe_stage_host_ctrl.s0 because the master is of type axi and the slave is of type avalon.
+Info: Inserting clock-crossing logic between cmd_demux.src0 and cmd_mux.sink0
+Info: Inserting clock-crossing logic between rsp_demux.src0 and rsp_mux.sink0
+Info: Interconnect is inserted between master clock_cross_kernel_mem1.m0 and slave address_span_extender_kernel.windowed_slave because the master has debugaccess signal 1 bit wide, but the slave is 0 bit wide.
+Warning: hps.f2h_irq0: Cannot connect clock for irq_mapper.sender
+Warning: hps.f2h_irq0: Cannot connect reset for irq_mapper.sender
+Warning: hps.f2h_irq1: Cannot connect clock for irq_mapper_001.sender
+Warning: hps.f2h_irq1: Cannot connect reset for irq_mapper_001.sender
+Info: acl_iface: "system" instantiated acl_iface_system "acl_iface"
+Info: irq_mapper: "system" instantiated altera_irq_mapper "irq_mapper"
+Info: rst_controller: "system" instantiated altera_reset_controller "rst_controller"
+Info: Inserting clock-crossing logic between cmd_demux.src1 and cmd_mux_001.sink0
+Info: Inserting clock-crossing logic between rsp_demux_001.src0 and rsp_mux.sink1
+Info: acl_kernel_clk: "acl_iface" instantiated acl_kernel_clk_noreconfig "acl_kernel_clk"
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has readdata signal 32 bit wide, but the slave is 64 bit wide.
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has writedata signal 32 bit wide, but the slave is 64 bit wide.
+Info: Interconnect is inserted between master address_span_extender_0.expanded_master and slave kernel_cra.s0 because the master has byteenable signal 4 bit wide, but the slave is 8 bit wide.
+Info: Inserting clock-crossing logic between cmd_demux.src0 and cmd_mux.sink0
+Info: Inserting clock-crossing logic between cmd_demux.src1 and cmd_mux_001.sink0
+Info: Inserting clock-crossing logic between rsp_demux.src0 and rsp_mux.sink0
+Info: Inserting clock-crossing logic between rsp_demux_001.src0 and rsp_mux.sink1
+Warning: irq_ena_0.my_irq_in: Cannot connect clock for irq_mapper.sender
+Warning: irq_ena_0.my_irq_in: Cannot connect reset for irq_mapper.sender
+Info: acl_kernel_interface: "acl_iface" instantiated acl_kernel_interface_soc "acl_kernel_interface"
+Info: address_span_extender_kernel: "acl_iface" instantiated altera_address_span_extender "address_span_extender_kernel"
+Info: alt_vip_itc_0: "acl_iface" instantiated alt_vip_itc "alt_vip_itc_0"
+Info: alt_vip_vfr_hdmi: "acl_iface" instantiated alt_vip_vfr "alt_vip_vfr_hdmi"
+Info: button_pio: Starting RTL generation for module 'system_acl_iface_button_pio'
+Info: button_pio:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=system_acl_iface_button_pio --dir=/tmp/alt7626_1847725445155652328.dir/0011_button_pio_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7626_1847725445155652328.dir/0011_button_pio_gen//system_acl_iface_button_pio_component_configuration.pl  --do_build_sim=0  ]
+Info: button_pio: Done RTL generation for module 'system_acl_iface_button_pio'
+Info: button_pio: "acl_iface" instantiated altera_avalon_pio "button_pio"
+Info: clock_cross_kernel_mem1: "acl_iface" instantiated altera_avalon_mm_clock_crossing_bridge "clock_cross_kernel_mem1"
+Info: dipsw_pio: Starting RTL generation for module 'system_acl_iface_dipsw_pio'
+Info: dipsw_pio:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=system_acl_iface_dipsw_pio --dir=/tmp/alt7626_1847725445155652328.dir/0013_dipsw_pio_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7626_1847725445155652328.dir/0013_dipsw_pio_gen//system_acl_iface_dipsw_pio_component_configuration.pl  --do_build_sim=0  ]
+Info: dipsw_pio: Done RTL generation for module 'system_acl_iface_dipsw_pio'
+Info: dipsw_pio: "acl_iface" instantiated altera_avalon_pio "dipsw_pio"
+Info: hps: "Running  for module: hps"
+Info: hps: HPS Main PLL counter settings: n = 0  m = 63
+Info: hps: HPS peripherial PLL counter settings: n = 0  m = 39
+Info: hps: "acl_iface" instantiated altera_hps "hps"
+Info: led_pio: Starting RTL generation for module 'system_acl_iface_led_pio'
+Info: led_pio:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=system_acl_iface_led_pio --dir=/tmp/alt7626_1847725445155652328.dir/0014_led_pio_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7626_1847725445155652328.dir/0014_led_pio_gen//system_acl_iface_led_pio_component_configuration.pl  --do_build_sim=0  ]
+Info: led_pio: Done RTL generation for module 'system_acl_iface_led_pio'
+Info: led_pio: "acl_iface" instantiated altera_avalon_pio "led_pio"
+Info: pipe_stage_host_ctrl: "acl_iface" instantiated altera_avalon_mm_bridge "pipe_stage_host_ctrl"
+Info: pll: "acl_iface" instantiated altera_pll "pll"
+Info: version_id: "acl_iface" instantiated version_id "version_id"
+Info: mm_interconnect_0: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_1: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_2: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_2"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_3: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_3"
+Info: mm_interconnect_4: "acl_iface" instantiated altera_mm_interconnect "mm_interconnect_4"
+Info: irq_mapper: "acl_iface" instantiated altera_irq_mapper "irq_mapper"
+Info: irq_mapper_001: "acl_iface" instantiated altera_irq_mapper "irq_mapper_001"
+Info: kernel_pll: "acl_kernel_clk" instantiated altera_pll "kernel_pll"
+Info: counter: "acl_kernel_clk" instantiated acl_timer "counter"
+Info: global_routing_kernel_clk: "acl_kernel_clk" instantiated global_routing_clk "global_routing_kernel_clk"
+Info: pll_sw_reset: "acl_kernel_clk" instantiated sw_reset "pll_sw_reset"
+Info: pll_lock_avs_0: "acl_kernel_clk" instantiated pll_lock_avs "pll_lock_avs_0"
+Info: pll_rom: Starting RTL generation for module 'system_acl_iface_acl_kernel_clk_pll_rom'
+Info: pll_rom:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=system_acl_iface_acl_kernel_clk_pll_rom --dir=/tmp/alt7626_1847725445155652328.dir/0020_pll_rom_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7626_1847725445155652328.dir/0020_pll_rom_gen//system_acl_iface_acl_kernel_clk_pll_rom_component_configuration.pl  --do_build_sim=0  ]
+Info: pll_rom: Done RTL generation for module 'system_acl_iface_acl_kernel_clk_pll_rom'
+Info: pll_rom: "acl_kernel_clk" instantiated altera_avalon_onchip_memory2 "pll_rom"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "acl_kernel_clk" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: sys_description_rom: Starting RTL generation for module 'system_acl_iface_acl_kernel_interface_sys_description_rom'
+Info: sys_description_rom:   Generation command is [exec /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/bin/perl -I /home/hammadj/intelFPGA/17.1/quartus/linux64/perl/lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/europa -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin/perl_lib -I /home/hammadj/intelFPGA/17.1/quartus/sopc_builder/bin -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/hammadj/intelFPGA/17.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=system_acl_iface_acl_kernel_interface_sys_description_rom --dir=/tmp/alt7626_1847725445155652328.dir/0021_sys_description_rom_gen/ --quartus_dir=/home/hammadj/intelFPGA/17.1/quartus --verilog --config=/tmp/alt7626_1847725445155652328.dir/0021_sys_description_rom_gen//system_acl_iface_acl_kernel_interface_sys_description_rom_component_configuration.pl  --do_build_sim=0  ]
+Info: sys_description_rom: Done RTL generation for module 'system_acl_iface_acl_kernel_interface_sys_description_rom'
+Info: sys_description_rom: "acl_kernel_interface" instantiated altera_avalon_onchip_memory2 "sys_description_rom"
+Info: mem_org_mode: "acl_kernel_interface" instantiated mem_org_mode "mem_org_mode"
+Info: irq_bridge_0: "acl_kernel_interface" instantiated altera_irq_bridge "irq_bridge_0"
+Info: irq_ena_0: "acl_kernel_interface" instantiated acl_irq_ena "irq_ena_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "acl_kernel_interface" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_1: "acl_kernel_interface" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: irq_mapper: "acl_kernel_interface" instantiated altera_irq_mapper "irq_mapper"
+Info: fpga_interfaces: "hps" instantiated altera_interface_generator "fpga_interfaces"
+Info: hps_io: "hps" instantiated altera_hps_io "hps_io"
+Info: alt_vip_vfr_hdmi_avalon_master_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "alt_vip_vfr_hdmi_avalon_master_translator"
+Info: alt_vip_vfr_hdmi_avalon_master_agent: "mm_interconnect_0" instantiated altera_merlin_master_agent "alt_vip_vfr_hdmi_avalon_master_agent"
+Info: hps_f2h_axi_slave_agent: "mm_interconnect_0" instantiated altera_merlin_axi_slave_ni "hps_f2h_axi_slave_agent"
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: alt_vip_vfr_hdmi_avalon_master_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "alt_vip_vfr_hdmi_avalon_master_limiter"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: hps_f2h_axi_slave_wr_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "hps_f2h_axi_slave_wr_burst_adapter"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: hps_f2h_sdram0_data_translator: "mm_interconnect_1" instantiated altera_merlin_slave_translator "hps_f2h_sdram0_data_translator"
+Info: hps_f2h_sdram0_data_agent: "mm_interconnect_1" instantiated altera_merlin_slave_agent "hps_f2h_sdram0_data_agent"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: hps_f2h_sdram0_data_agent_rsp_fifo: "mm_interconnect_1" instantiated altera_avalon_sc_fifo "hps_f2h_sdram0_data_agent_rsp_fifo"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_1" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: avalon_st_adapter: "mm_interconnect_1" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: hps_h2f_lw_axi_master_agent: "mm_interconnect_2" instantiated altera_merlin_axi_master_ni "hps_h2f_lw_axi_master_agent"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: router: "mm_interconnect_2" instantiated altera_merlin_router "router"
+Info: router_002: "mm_interconnect_2" instantiated altera_merlin_router "router_002"
+Info: cmd_demux: "mm_interconnect_2" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_2" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_2" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_2" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: avalon_st_adapter: "mm_interconnect_2" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: router: "mm_interconnect_3" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_3" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_3" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_3" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_3" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_demux_001: "mm_interconnect_3" instantiated altera_merlin_demultiplexer "rsp_demux_001"
+Info: rsp_mux: "mm_interconnect_3" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: async_fifo: "mm_interconnect_3" instantiated altera_avalon_dc_fifo "async_fifo"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_dc_fifo.v
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_dcfifo_synchronizer_bundle.v
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_std_synchronizer_nocut.v
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_dc_fifo.sdc
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_001"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: kernel_cra_s0_cmd_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "kernel_cra_s0_cmd_width_adapter"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_1" instantiated altera_merlin_router "router_001"
+Info: router_002: "mm_interconnect_1" instantiated altera_merlin_router "router_002"
+Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_demux_002: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "rsp_demux_002"
+Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: crosser: "mm_interconnect_1" instantiated altera_avalon_st_handshake_clock_crosser "crosser"
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: Reusing file /home/hammadj/intelFPGA/17.1/hld/board/c5soc/hardware/de10_nano_sharedonly_hdmi/system/synthesis/submodules/altera_std_synchronizer_nocut.v
+Info: border: "hps_io" instantiated altera_interface_generator "border"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: system: Done "system" with 103 modules, 203 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis
