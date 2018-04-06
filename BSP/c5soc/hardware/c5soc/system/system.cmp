@@ -1,0 +1,71 @@
+	component system is
+		port (
+			clk_50_clk                          : in    std_logic                     := 'X';             -- clk
+			fpga_memory_mem_a                   : out   std_logic_vector(14 downto 0);                    -- mem_a
+			fpga_memory_mem_ba                  : out   std_logic_vector(2 downto 0);                     -- mem_ba
+			fpga_memory_mem_ck                  : out   std_logic_vector(0 downto 0);                     -- mem_ck
+			fpga_memory_mem_ck_n                : out   std_logic_vector(0 downto 0);                     -- mem_ck_n
+			fpga_memory_mem_cke                 : out   std_logic_vector(0 downto 0);                     -- mem_cke
+			fpga_memory_mem_cs_n                : out   std_logic_vector(0 downto 0);                     -- mem_cs_n
+			fpga_memory_mem_dm                  : out   std_logic_vector(3 downto 0);                     -- mem_dm
+			fpga_memory_mem_ras_n               : out   std_logic_vector(0 downto 0);                     -- mem_ras_n
+			fpga_memory_mem_cas_n               : out   std_logic_vector(0 downto 0);                     -- mem_cas_n
+			fpga_memory_mem_we_n                : out   std_logic_vector(0 downto 0);                     -- mem_we_n
+			fpga_memory_mem_reset_n             : out   std_logic;                                        -- mem_reset_n
+			fpga_memory_mem_dq                  : inout std_logic_vector(31 downto 0) := (others => 'X'); -- mem_dq
+			fpga_memory_mem_dqs                 : inout std_logic_vector(3 downto 0)  := (others => 'X'); -- mem_dqs
+			fpga_memory_mem_dqs_n               : inout std_logic_vector(3 downto 0)  := (others => 'X'); -- mem_dqs_n
+			fpga_memory_mem_odt                 : out   std_logic_vector(0 downto 0);                     -- mem_odt
+			fpga_memory_oct_rzqin               : in    std_logic                     := 'X';             -- rzqin
+			fpga_sdram_status_local_init_done   : out   std_logic;                                        -- local_init_done
+			fpga_sdram_status_local_cal_success : out   std_logic;                                        -- local_cal_success
+			fpga_sdram_status_local_cal_fail    : out   std_logic;                                        -- local_cal_fail
+			kernel_clk_clk                      : out   std_logic;                                        -- clk
+			memory_mem_a                        : out   std_logic_vector(14 downto 0);                    -- mem_a
+			memory_mem_ba                       : out   std_logic_vector(2 downto 0);                     -- mem_ba
+			memory_mem_ck                       : out   std_logic;                                        -- mem_ck
+			memory_mem_ck_n                     : out   std_logic;                                        -- mem_ck_n
+			memory_mem_cke                      : out   std_logic;                                        -- mem_cke
+			memory_mem_cs_n                     : out   std_logic;                                        -- mem_cs_n
+			memory_mem_ras_n                    : out   std_logic;                                        -- mem_ras_n
+			memory_mem_cas_n                    : out   std_logic;                                        -- mem_cas_n
+			memory_mem_we_n                     : out   std_logic;                                        -- mem_we_n
+			memory_mem_reset_n                  : out   std_logic;                                        -- mem_reset_n
+			memory_mem_dq                       : inout std_logic_vector(39 downto 0) := (others => 'X'); -- mem_dq
+			memory_mem_dqs                      : inout std_logic_vector(4 downto 0)  := (others => 'X'); -- mem_dqs
+			memory_mem_dqs_n                    : inout std_logic_vector(4 downto 0)  := (others => 'X'); -- mem_dqs_n
+			memory_mem_odt                      : out   std_logic;                                        -- mem_odt
+			memory_mem_dm                       : out   std_logic_vector(4 downto 0);                     -- mem_dm
+			memory_oct_rzqin                    : in    std_logic                     := 'X';             -- oct_rzqin
+			peripheral_hps_io_emac0_inst_TX_CLK : out   std_logic;                                        -- hps_io_emac0_inst_TX_CLK
+			peripheral_hps_io_emac0_inst_TXD0   : out   std_logic;                                        -- hps_io_emac0_inst_TXD0
+			peripheral_hps_io_emac0_inst_TXD1   : out   std_logic;                                        -- hps_io_emac0_inst_TXD1
+			peripheral_hps_io_emac0_inst_TXD2   : out   std_logic;                                        -- hps_io_emac0_inst_TXD2
+			peripheral_hps_io_emac0_inst_TXD3   : out   std_logic;                                        -- hps_io_emac0_inst_TXD3
+			peripheral_hps_io_emac0_inst_RXD0   : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RXD0
+			peripheral_hps_io_emac0_inst_MDIO   : inout std_logic                     := 'X';             -- hps_io_emac0_inst_MDIO
+			peripheral_hps_io_emac0_inst_MDC    : out   std_logic;                                        -- hps_io_emac0_inst_MDC
+			peripheral_hps_io_emac0_inst_RX_CTL : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RX_CTL
+			peripheral_hps_io_emac0_inst_TX_CTL : out   std_logic;                                        -- hps_io_emac0_inst_TX_CTL
+			peripheral_hps_io_emac0_inst_RX_CLK : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RX_CLK
+			peripheral_hps_io_emac0_inst_RXD1   : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RXD1
+			peripheral_hps_io_emac0_inst_RXD2   : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RXD2
+			peripheral_hps_io_emac0_inst_RXD3   : in    std_logic                     := 'X';             -- hps_io_emac0_inst_RXD3
+			peripheral_hps_io_sdio_inst_CMD     : inout std_logic                     := 'X';             -- hps_io_sdio_inst_CMD
+			peripheral_hps_io_sdio_inst_D0      : inout std_logic                     := 'X';             -- hps_io_sdio_inst_D0
+			peripheral_hps_io_sdio_inst_D1      : inout std_logic                     := 'X';             -- hps_io_sdio_inst_D1
+			peripheral_hps_io_sdio_inst_CLK     : out   std_logic;                                        -- hps_io_sdio_inst_CLK
+			peripheral_hps_io_sdio_inst_D2      : inout std_logic                     := 'X';             -- hps_io_sdio_inst_D2
+			peripheral_hps_io_sdio_inst_D3      : inout std_logic                     := 'X';             -- hps_io_sdio_inst_D3
+			peripheral_hps_io_uart0_inst_RX     : in    std_logic                     := 'X';             -- hps_io_uart0_inst_RX
+			peripheral_hps_io_uart0_inst_TX     : out   std_logic;                                        -- hps_io_uart0_inst_TX
+			peripheral_hps_io_i2c0_inst_SDA     : inout std_logic                     := 'X';             -- hps_io_i2c0_inst_SDA
+			peripheral_hps_io_i2c0_inst_SCL     : inout std_logic                     := 'X';             -- hps_io_i2c0_inst_SCL
+			peripheral_hps_io_gpio_inst_GPIO41  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO41
+			peripheral_hps_io_gpio_inst_GPIO42  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO42
+			peripheral_hps_io_gpio_inst_GPIO43  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO43
+			peripheral_hps_io_gpio_inst_GPIO44  : inout std_logic                     := 'X';             -- hps_io_gpio_inst_GPIO44
+			reset_50_reset_n                    : in    std_logic                     := 'X'              -- reset_n
+		);
+	end component system;
+
