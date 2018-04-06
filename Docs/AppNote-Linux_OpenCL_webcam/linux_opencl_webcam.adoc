@@ -27,7 +27,7 @@ Hardware:
 This document assumes you are at least somewhat familiar with the following topics:
 
 * Linux (navigating via the commandline, and commandline tools)
-* Quartus, and Qsys (now known as Platform Designer in 17.1 and up)
+* Quartus 17.1, and Qsys (now known as Platform Designer in 17.1 and up)
 * Basics of VHDL or Verilog
 
 No prior knowledge is required in:
@@ -95,12 +95,12 @@ The RTE contains diagnostic tools, a compiled kernel driver to communicate with 
 ====
 
 === Download the image 
-The `.img` file can be downloaded from [here]
+The `.img` file can be downloaded from https://drive.google.com/file/d/1r_3QgYYsHSgcc0NMVzGlTrhL19zCaudW/view?usp=sharing[here].
 
 === Load the image onto a MicroSD card
 On Windows use Win32DiskImager, on Mac or Linux use `dd`.
 
-You can follow Intel's guide on writing the image with these tools https://rocketboards.org/foswiki/Documentation/GSRDBootLinuxSd[here.]
+You can follow Intel's guide on writing the image with these tools https://rocketboards.org/foswiki/Documentation/GSRDBootLinuxSd[here].
 
 Connect the DE10-Nano to your development PC with the Mini-USB cable and open a serial connection with baud rate 115200.
 
@@ -450,3 +450,5 @@ a| Shutdown DE10, plug MicroSD card into PC and copy the `.rbf` file that corres
 Alternatively, there could be something wrong with the BSP creating an invalid `.rbf` file. Double check the BSP has no errors in Quartus/Qsys.
 
 |===
+
+Mackenzie Hauck ECE492 2018
