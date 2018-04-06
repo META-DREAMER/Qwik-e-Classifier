@@ -485,6 +485,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_compiling_code_cl_code_for_software_emulation">7.5. Compiling <code>.cl</code> for software emulation</a></li>
 <li><a href="#_opencl_quickstart">7.6. OpenCL quickstart</a></li>
 <li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">7.7. Documentation for Intel FPGA SDK for OpenCL</a></li>
+<li><a href="#_useful_linux_commands">7.8. Useful Linux commands</a></li>
 </ul>
 </li>
 <li><a href="#_troubleshooting">8. Troubleshooting</a></li>
@@ -533,7 +534,10 @@ If you do not need a Linux image with both HDMI output, AND OpenCL to be running
 <p>SD card reader</p>
 </li>
 <li>
-<p>A PC that can run Quartus (preferably running Linux, see apendix for running on Windows)</p>
+<p>A PC that can run Quartus</p>
+</li>
+<li>
+<p>A PC/server running Linux (to compile the Linux kernel)</p>
 </li>
 <li>
 <p>Optional: webcam, USB OTG to USB A adapter</p>
@@ -871,7 +875,7 @@ $ clinfo</code></pre>
 <div class="content">
 <pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
 # set the environment variables, and load the OpenCL driver
-$ source ./init_opencl_17
+$ source ./init_opencl_17.1.sh
 $ aocl diagnose</code></pre>
 </div>
 </div>
@@ -1253,6 +1257,25 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 <p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf">Custom Platform Toolkit</a></p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_useful_linux_commands">7.8. Useful Linux commands</h3>
+<div class="paragraph">
+<p>Check if dynamic libraries are available for a given executable</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ ldd [executable]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>List loaded kernel modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ lsmod</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1297,7 +1320,7 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Environment variables not set</p></td>
 <td class="tableblock halign-left valign-top"><div><div class="paragraph">
-<p>run: <code>source ./init_opencl_17</code> from the home directory</p>
+<p>run: <code>source ./init_opencl_17.1.sh</code> from the home directory</p>
 </div></div></td>
 </tr>
 <tr>
@@ -1333,7 +1356,7 @@ If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-05 19:44:39 DST
+Last updated 2018-04-05 20:02:20 DST
 </div>
 </div>
 </body>

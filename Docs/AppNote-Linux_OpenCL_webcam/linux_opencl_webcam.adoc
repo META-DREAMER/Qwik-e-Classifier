@@ -20,7 +20,8 @@ Hardware:
 * 4GB+ MicroSD card
 * Ethernet cable 
 * SD card reader
-* A PC that can run Quartus (preferably running Linux, see apendix for running on Windows)
+* A PC that can run Quartus
+* A PC/server running Linux (to compile the Linux kernel)
 * Optional: webcam, USB OTG to USB A adapter
 
 This document assumes you are at least somewhat familiar with the following topics:
@@ -207,7 +208,7 @@ After initializing the environment variables for use with the RTE, we can run `a
 ```sh
 $ cd ~
 # set the environment variables, and load the OpenCL driver
-$ source ./init_opencl_17
+$ source ./init_opencl_17.1.sh 
 $ aocl diagnose
 ```
 
@@ -395,6 +396,17 @@ https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guid
 
 https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf[Custom Platform Toolkit]
 
+=== Useful Linux commands 
+Check if dynamic libraries are available for a given executable
+```sh 
+$ ldd [executable]
+```
+
+List loaded kernel modules:
+```sh 
+$ lsmod
+```
+
 == Troubleshooting
 
 |===
@@ -409,7 +421,7 @@ a| remake the SD card with the provided `.img` and verify you get a login screen
 
 a| `aocl` command not found
 | Environment variables not set 
-a| run: `source ./init_opencl_17` from the home directory 
+a| run: `source ./init_opencl_17.1.sh` from the home directory 
 
 a| `quartus_cpf` command not found 
 | Development PC environment variables not set correctly
