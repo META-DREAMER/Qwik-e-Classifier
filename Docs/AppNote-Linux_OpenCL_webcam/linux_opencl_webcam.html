@@ -451,53 +451,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_run_the_example_host_program_on_the_de10">5. Run the example host program on the DE10</a></li>
-<li><a href="#_appendix">6. Appendix</a>
+<li><a href="#_troubleshooting">6. Troubleshooting</a></li>
+<li><a href="#_appendix">A. Appendix</a>
 <ul class="sectlevel2">
-<li><a href="#_compilation_flow">6.1. Compilation flow</a></li>
-<li><a href="#_compiling_a_custom_linux_kernel">6.2. Compiling a custom Linux kernel</a>
-<ul class="sectlevel3">
-<li><a href="#_installing_dependencies">6.2.1. Installing dependencies</a></li>
-<li><a href="#_downloading_kernel_source">6.2.2. Downloading kernel source</a></li>
-<li><a href="#_building_with_a_modified_config">6.2.3. Building with a modified config</a></li>
+<li><a href="#_compilation_flow">A.1. Compilation flow</a></li>
+<li><a href="#_compiling_a_custom_linux_kernel">A.2. Compiling a custom Linux kernel</a></li>
+<li><a href="#_compiling_opencl_code">A.3. Compiling OpenCL code</a></li>
+<li><a href="#_transferring_files_to_de10">A.4. Transferring files to DE10</a></li>
+<li><a href="#_quartus_setup">A.5. Quartus setup</a></li>
+<li><a href="#_the_device_source_tree">A.6. The device source tree</a></li>
+<li><a href="#_modifying_linux_kernel_config">A.7. Modifying Linux kernel config</a></li>
+<li><a href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">A.8. Running graphics programs on the HDMI output, from the USB serial port</a></li>
+<li><a href="#_working_remotely_with_vpn">A.9. Working remotely with VPN</a></li>
+<li><a href="#_compiling_code_cl_code_for_software_emulation">A.10. Compiling <code>.cl</code> for software emulation</a></li>
+<li><a href="#_installing_rust_on_the_de10_nano">A.11. Installing Rust on the DE10-Nano</a></li>
+<li><a href="#_opencl_introduction">A.12. OpenCL Introduction</a></li>
+<li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">A.13. Documentation for Intel FPGA SDK for OpenCL</a></li>
+<li><a href="#_useful_linux_commands">A.14. Useful Linux commands</a></li>
 </ul>
 </li>
-<li><a href="#_compiling_opencl_code">6.3. Compiling OpenCL code</a>
-<ul class="sectlevel3">
-<li><a href="#_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code">6.3.1. Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></a></li>
-</ul>
-</li>
-<li><a href="#_transferring_files_to_de10">6.4. Transferring files to DE10</a>
-<ul class="sectlevel3">
-<li><a href="#_sftp">6.4.1. SFTP</a></li>
-<li><a href="#_sd_card_in_pc">6.4.2. SD card in PC</a></li>
-</ul>
-</li>
-<li><a href="#_quartus_setup">6.5. Quartus setup</a>
-<ul class="sectlevel3">
-<li><a href="#_installation">6.5.1. Installation</a></li>
-<li><a href="#_environment_variable_setup">6.5.2. Environment Variable setup</a></li>
-<li><a href="#_board_support_package_bsp">6.5.3. Board Support Package (BSP)</a></li>
-<li><a href="#_bsp_installation">6.5.4. BSP Installation</a></li>
-</ul>
-</li>
-<li><a href="#_the_device_source_tree">6.6. The device source tree</a></li>
-<li><a href="#_modifying_linux_kernel_config">6.7. Modifying Linux kernel config</a></li>
-<li><a href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">6.8. Running graphics programs on the HDMI output, from the USB serial port</a></li>
-<li><a href="#_working_remotely_with_vpn">6.9. Working remotely with VPN</a></li>
-<li><a href="#_compiling_code_cl_code_for_software_emulation">6.10. Compiling <code>.cl</code> for software emulation</a></li>
-<li><a href="#_installing_rust_on_the_de10_nano">6.11. Installing Rust on the DE10-Nano</a></li>
-<li><a href="#_opencl_introduction">6.12. OpenCL Introduction</a></li>
-<li><a href="#_documentation_for_intel_fpga_sdk_for_opencl">6.13. Documentation for Intel FPGA SDK for OpenCL</a></li>
-<li><a href="#_useful_linux_commands">6.14. Useful Linux commands</a></li>
-</ul>
-</li>
-<li><a href="#_troubleshooting">7. Troubleshooting</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_overview">1. Overview</h2>
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>1. Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This document will go over all of the steps needed to get embedded Linux with OpenCL drivers, HDMI video out, and webcam drivers running on the Terasic DE10-Nano board.</p>
@@ -518,7 +496,7 @@ If you do not need a Linux image with both HDMI output, AND OpenCL to be running
 <p>We will use precompiled binaries for sake of getting started quickly. See the appendix for how these files were compiled.</p>
 </div>
 <div class="sect2">
-<h3 id="_prerequisites">1.1. Prerequisites</h3>
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>1.1. Prerequisites</h3>
 <div class="paragraph">
 <p>Hardware:</p>
 </div>
@@ -584,7 +562,7 @@ If you do not need a Linux image with both HDMI output, AND OpenCL to be running
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hardware">1.2. Hardware</h3>
+<h3 id="_hardware"><a class="anchor" href="#_hardware"></a>1.2. Hardware</h3>
 <div class="paragraph">
 <p>The DE10-Nano includes a single CycloneV SoC (system on chip) composed of a dual core ARM Cortex A9 CPU and a FPGA with 110k logic elements, a MicroSD card slot, USB host via an OTG (on-the-go) port, and ethernet.
 Intel supports running Linux on the SoC which then requires drivers to communicate with ethernet, USB webcams, FPGA fabric, and OpenCL custom components that run <em>in</em> the FPGA fabric.
@@ -600,7 +578,7 @@ The processor also supports the NEON SIMD instructions.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_embedded_software">1.3. Embedded Software</h3>
+<h3 id="_embedded_software"><a class="anchor" href="#_embedded_software"></a>1.3. Embedded Software</h3>
 <div class="paragraph">
 <p>In order to more easily take advantage of the FPGA logic from Linux, Intel provides an OpenCL offline compiler allowing us to write "high-level" OpenCL code that then gets compiled down into a bitstream that can be loaded onto the FPGA.
 The Linux kernel communicates with the custom logic on the FPGA by way of an Intel provided kernel driver and the matching Qsys component.
@@ -622,7 +600,7 @@ However, in practice, the workflows are slightly different:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sd_card_layout">1.4. SD Card layout</h3>
+<h3 id="_sd_card_layout"><a class="anchor" href="#_sd_card_layout"></a>1.4. SD Card layout</h3>
 <div class="paragraph">
 <p>Our operating system is stored on the SD card, split into several partitions.
 The two partitions we are interested in are the root file system partition (EXT3), and the "boot" partition that contains the bootloader, u-boot script, <code>.rbf</code> used to configure the FPGA on boot, and the compressed kernel image file.
@@ -657,7 +635,7 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 </div>
 </div>
 <div class="sect2">
-<h3 id="_block_diagram">1.5. Block diagram</h3>
+<h3 id="_block_diagram"><a class="anchor" href="#_block_diagram"></a>1.5. Block diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="images/block.png" alt="block diagram?">
@@ -670,7 +648,7 @@ The boot partition is FAT32, so we can access its contents from Windows, or anot
 </div>
 </div>
 <div class="sect1">
-<h2 id="_preparing_our_donor_sd_card_image">2. Preparing our donor SD card image</h2>
+<h2 id="_preparing_our_donor_sd_card_image"><a class="anchor" href="#_preparing_our_donor_sd_card_image"></a>2. Preparing our donor SD card image</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We will be using the SD card image provied by the user thinkoco on Github which uses kernel version 3.18 with a root file system containing Ubuntu 16.04.</p>
@@ -692,13 +670,13 @@ If you end up using a different Linux kernel version (other than 3.18), see the 
 </table>
 </div>
 <div class="sect2">
-<h3 id="_download_the_image">2.1. Download the image</h3>
+<h3 id="_download_the_image"><a class="anchor" href="#_download_the_image"></a>2.1. Download the image</h3>
 <div class="paragraph">
 <p>The <code>.img</code> file can be downloaded from <a href="https://drive.google.com/file/d/1r_3QgYYsHSgcc0NMVzGlTrhL19zCaudW/view?usp=sharing">here</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_load_the_image_onto_a_microsd_card">2.2. Load the image onto a MicroSD card</h3>
+<h3 id="_load_the_image_onto_a_microsd_card"><a class="anchor" href="#_load_the_image_onto_a_microsd_card"></a>2.2. Load the image onto a MicroSD card</h3>
 <div class="paragraph">
 <p>On Windows use Win32DiskImager, on Mac or Linux use <code>dd</code>.</p>
 </div>
@@ -731,7 +709,7 @@ If you get a login prompt, you are ready for the next step.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_using_a_modified_linux_kernel">3. Using a modified Linux kernel</h2>
+<h2 id="_using_a_modified_linux_kernel"><a class="anchor" href="#_using_a_modified_linux_kernel"></a>3. Using a modified Linux kernel</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will use our own kernel with the required drivers.
@@ -801,7 +779,7 @@ the filename must be <code>zImage</code> on the SD card. The file provided is na
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installing_and_running_opencl_diagnostic_tools">4. Installing and running OpenCL diagnostic tools</h2>
+<h2 id="_installing_and_running_opencl_diagnostic_tools"><a class="anchor" href="#_installing_and_running_opencl_diagnostic_tools"></a>4. Installing and running OpenCL diagnostic tools</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>First, we need to expand the root filesystem to give us the full space on the SD card.</p>
@@ -814,7 +792,7 @@ $ ./expand_rootfs.sh
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installing_code_clinfo_code">4.1. Installing <code>clinfo</code></h3>
+<h3 id="_installing_code_clinfo_code"><a class="anchor" href="#_installing_code_clinfo_code"></a>4.1. Installing <code>clinfo</code></h3>
 <div class="paragraph">
 <p>We need to copy some files around so the diagnostic tools know what OpenCL devices are available.</p>
 </div>
@@ -859,7 +837,7 @@ $ clinfo</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_intel_s_code_aocl_code_tool">4.2. Intel&#8217;s <code>aocl</code> tool</h3>
+<h3 id="_intel_s_code_aocl_code_tool"><a class="anchor" href="#_intel_s_code_aocl_code_tool"></a>4.2. Intel&#8217;s <code>aocl</code> tool</h3>
 <div class="paragraph">
 <p>After initializing the environment variables for use with the RTE, we can run <code>aocl diagnose</code> to check that the kernel module loaded correctly.</p>
 </div>
@@ -888,7 +866,7 @@ $ aocl diagnose</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_run_the_example_host_program_on_the_de10">5. Run the example host program on the DE10</h2>
+<h2 id="_run_the_example_host_program_on_the_de10"><a class="anchor" href="#_run_the_example_host_program_on_the_de10"></a>5. Run the example host program on the DE10</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We first need to copy the correct <code>.rbf</code> file to the FAT32 partition of the SD card, so that the FPGA is programmed with our OpenCL logic when it boots.
@@ -926,511 +904,11 @@ $ ./example trivial.aocx</code></pre>
 <p>Where <code>trivial.aocx</code> is the compiled output of <code>trivial.cl</code>.
 For more info see <a href="#_compilation_flow">Compilation flow</a></p>
 </div>
+<div style="page-break-after: always;"></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_appendix">6. Appendix</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_compilation_flow">6.1. Compilation flow</h3>
-<div class="imageblock">
-<div class="content">
-<img src="images/compilation.png" alt="Compilation overview">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_compiling_a_custom_linux_kernel">6.2. Compiling a custom Linux kernel</h3>
-<div class="paragraph">
-<p>The following steps were done on a server running Ubuntu 16.04.</p>
-</div>
-<div class="sect3">
-<h4 id="_installing_dependencies">6.2.1. Installing dependencies</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ sudo apt update
-$ sudo apt install u-boot-tools gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libncurses5-dev make lsb uml-utilities git</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_downloading_kernel_source">6.2.2. Downloading kernel source</h4>
-<div class="paragraph">
-<p>Apparently Intel does not like keeping source code public that is vulnerable to some exploits, so they have removed their 3.18 branch from github possibly due to the Meltdown / Spectre exploits.
-Instead, we will download the kernel source from thinkoco&#8217;s github repository.</p>
-</div>
-<div class="paragraph">
-<p>We can either clone the whole repository (~1.4GB), or just a single branch as shown below.
-If you clone the entire repo, be sure to checkout the 3.18 branch.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
-$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
-$ cd linux-socfpga</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_building_with_a_modified_config">6.2.3. Building with a modified config</h4>
-<div class="paragraph">
-<p>We will use a config already modified to include support for webcams.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The <code>.config</code> file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a <code>ncurses</code> frontend.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ cp 3.18_usbcam_config .config
-# setup compiler options
-$ export ARCH=arm
-$ export CROSS_COMPILE=arm-linux-gnueabihf-
-$ export LOADADDR=0x8000
-
-# setting LOCALVERSION blank means that kernel modules will
-# not have to match their version exactly to the kernel
-$ export LOCALVERSION=
-
-# build with 24 threads. replace 24 with the number of threads on your machine.
-# with 24 cores this took ~90 seconds
-$ make -j24 zImage
-
-# copy the compiled kernel
-$ cp arch/arm/boot/zImage ~/output/</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_compiling_opencl_code">6.3. Compiling OpenCL code</h3>
-<div class="paragraph">
-<p>Quartus must be installed, see <a href="#_quartus_setup">Quartus setup</a></p>
-</div>
-<div class="sect3">
-<h4 id="_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code">6.3.1. Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></h4>
-<div class="paragraph">
-<p>Intel&#8217;s offline OpenCL compiler is invoked via the <code>aoc</code> command from the commandline.
-We can compile our <code>trivial.cl</code> OpenCL source file into <code>trivial.aocx</code> with:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This compiles with verbose message printing, produces a report, and selects the correct BSP.</p>
-</div>
-<div class="paragraph">
-<p>Since we need a <code>.rbf</code> file we can convert the generated <code>top.sof</code> to <code>opencl.rbf</code> with:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now copy the generated <code>opencl.rbf</code> to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_transferring_files_to_de10">6.4. Transferring files to DE10</h3>
-<div class="paragraph">
-<p>There are two ways to transfer files to the root file system partition:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Using SFTP over ethernet</p>
-</li>
-<li>
-<p>Plugging the SD card into a Linux computer</p>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="_sftp">6.4.1. SFTP</h4>
-<div class="paragraph">
-<p>With the DE10 on the same network as a PC, we can use a SFTP client to easily transfer files.
-On most laptops you can also share the laptops wifi to ethernet, to connect that way if on a network that whitelists ethernet connections.
-In a FTP client like Filezilla, connect using:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Host: The ip address of the DE10. Can be found on the USB serial port by running: <code>ifconfig</code></p>
-</li>
-<li>
-<p>Username: root</p>
-</li>
-<li>
-<p>Password (leave blank):</p>
-</li>
-<li>
-<p>Port: 22</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This will take you to the home directory of <code>root</code> where you can transfer the files.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_sd_card_in_pc">6.4.2. SD card in PC</h4>
-<div class="paragraph">
-<p>This must be done on Linux, as Windows does not support the EXT3 partition.
-We can simply open a file manager and navigate to the EXT3 partition, and into the top level <code>root</code> folder.
-This is the home folder for user <code>root</code>.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Caution</div>
-</td>
-<td class="content">
-We needed to run our file explorer as <code>sudo</code> in order to transfer the files.
-From the terminal in Ubuntu the command is: <code>sudo nautilus</code>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_quartus_setup">6.5. Quartus setup</h3>
-<div class="sect3">
-<h4 id="_installation">6.5.1. Installation</h4>
-<div class="paragraph">
-<p><a href="http://dl.altera.com/opencl/17.1/?edition=standard&amp;download_manager=direct">Download and install Intel FPGA for OpenCL 17.1 edition of Quartus</a>.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/download_center.png" alt="Screenshot of which Quartus version to download">
-</div>
-<div class="title">Figure 1. Screenshot of download page</div>
-</div>
-<div class="paragraph">
-<p>When installing, be sure to enable support for Cyclone V devices.
-We will need at least a Standard license in order to compile everything.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-See the <a href="#_working_remotely_with_vpn">Working remotely with VPN</a> for working from home with a VPN and using the University of Alberta license server.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_environment_variable_setup">6.5.2. Environment Variable setup</h4>
-<div class="paragraph">
-<p>Follow Intel&#8217;s instructions from their getting started guide <a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">here</a>.</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Table Summary of Variables (on Windows)</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Variable</th>
-<th class="tableblock halign-left valign-top">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INTELFPGAOCLSDKROOT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFGPA\17.1\hld</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AOCL_BOARD_PACKAGE_ROOT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFPGA\17.1\hld\board\c5soc</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATH</code></p></td>
-<td class="tableblock halign-left valign-top"><div><div class="paragraph">
-<p>append these to <code>PATH</code>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>%INTELFPGAOCLSDKROOT%\bin</code></p>
-</li>
-<li>
-<p><code>%INTELFPGAOCLSDKROOT%\windows64\bin</code></p>
-</li>
-<li>
-<p><code>%INTELFPGAOCLSDKROOT%\host\windows64\bin</code></p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_board_support_package_bsp">6.5.3. Board Support Package (BSP)</h4>
-<div class="paragraph">
-<p>To go with the Linux image provided by thinkoco, we will also use an updated version of their board support package (BSP).</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-<div class="title">What is a BSP?</div>
-<div class="paragraph">
-<p>A BSP allows us to include non OpenCL code in our FPGA fabric.
-This is where we add custom Qsys components, custom VHDL or Verilog code, etc.</p>
-</div>
-<div class="paragraph">
-<p>The BSP we use contains:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Qsys component <code>acl_iface</code> "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.</p>
-</li>
-<li>
-<p>Qsys component for HDMI output</p>
-</li>
-<li>
-<p>Qsys components for onboard switches, buttons, and LEDs</p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_bsp_installation">6.5.4. BSP Installation</h4>
-<div class="paragraph">
-<p>Copy the included folder <code>de10_nano_sharedonly_hdmi</code> to the following folder: <code>C:\intelFPGA\17.1\hld\board\c5soc\hardware</code> or equivalent if on Linux.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-You can view the contents of the BSP by opening the above folder&#8217;s <code>top.qpf</code> file in Quartus, and opening <code>system.qsys</code> and <code>iface/acl_iface_system.qsys</code> in Platform Designer.
-If using a newer version than 17.1 of Quartus, you may need to do an IP upgrade for the BSP to work correctly.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_device_source_tree">6.6. The device source tree</h3>
-<div class="paragraph">
-<p>In the FAT32 partition of the SD card there is a file named <code>socfpga.dtb</code> which is a "device tree blob".
-The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.</p>
-</div>
-<div class="paragraph">
-<p>It includes things like the kind of processor, amount of RAM, the HDMI Qsys component&#8217;s address, FPGA manager address, button addresses, onboard LED addresses, etc.
-You can view Intel&#8217;s documentation on how to modify a <code>.dts</code> file (device tree <em>source</em>) which is then compiled into the above <code>.dtb</code> file.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator">Intel documentation</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_modifying_linux_kernel_config">6.7. Modifying Linux kernel config</h3>
-<div class="paragraph">
-<p>The config can be modified on the command line by running the following in the kernel source directory:</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Caution</div>
-</td>
-<td class="content">
-The <code>ARCH</code> and <code>CROSS_COMPILE</code> environment variables should be set before running this command
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ make menuconfig</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will give you an ncurses interface to modify the config.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port">6.8. Running graphics programs on the HDMI output, from the USB serial port</h3>
-<div class="paragraph">
-<p>It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.</p>
-</div>
-<div class="paragraph">
-<p>To open these programs on the HDMI output, export the <code>DISPLAY</code> environment variable.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ export DISPLAY=":0"</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_working_remotely_with_vpn">6.9. Working remotely with VPN</h3>
-<div class="paragraph">
-<p>We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university&#8217;s VPN to contact the U of A license server.</p>
-</div>
-<div class="paragraph">
-<p>Install the university VPN client from <a href="https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158">here</a>.</p>
-</div>
-<div class="paragraph">
-<p>Login with your CCID, and password.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-The VPN will only tunnel traffic to <code>*.ualberta.ca</code> domains, so your external IP won&#8217;t change.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Close Quartus if it&#8217;s open.</p>
-</div>
-<div class="paragraph">
-<p>Set the <code>LM_LICENSE_FILE</code> environment variable to: <code>12000@lic.ece.ualberta.ca</code></p>
-</div>
-<div class="paragraph">
-<p>When opening Quartus, set the license to use the environment variable.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_compiling_code_cl_code_for_software_emulation">6.10. Compiling <code>.cl</code> for software emulation</h3>
-<div class="paragraph">
-<p>Since <code>aoc</code> takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the <code>.cl</code> code before committing to the full build time.</p>
-</div>
-<div class="paragraph">
-<p>To compile for emulator add <code>-march=emulator</code> to the <code>aoc</code> command.
-The OpenCL host program can then be compiled for the development PC, and run with this <code>.aocx</code> file, even if the dev PC doesn&#8217;t have an FPGA installed.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the folders is <code>OpenCL.lib</code>. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_installing_rust_on_the_de10_nano">6.11. Installing Rust on the DE10-Nano</h3>
-<div class="paragraph">
-<p>I am most familiar with Rust, so the example was written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).</p>
-</div>
-<div class="paragraph">
-<p>See the included files (<code>example-rs/src/main.rs</code>) to see the Rust code.
-Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
-$ mkdir rust
-$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
-$ chmod +x rustup-init
-$ ./rustup-init
-$ [enter]
-# after finished installing, follow instructions to add the rust executables to `PATH`
-
-# install the OpenCL headers
-$ sudo apt install ocl-icd-opencl-dev</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_opencl_introduction">6.12. OpenCL Introduction</h3>
-<div class="paragraph">
-<p><a href="http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854" class="bare">http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_documentation_for_intel_fpga_sdk_for_opencl">6.13. Documentation for Intel FPGA SDK for OpenCL</h3>
-<div class="paragraph">
-<p>Intel&#8217;s official documentation, with more detailed instructions for installing Quartus, and running <code>aoc</code>.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">Getting Started</a></p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf">Programming Guide</a></p>
-</div>
-<div class="paragraph">
-<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf">Custom Platform Toolkit</a></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_useful_linux_commands">6.14. Useful Linux commands</h3>
-<div class="paragraph">
-<p>Check if dynamic libraries are available for a given executable</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ ldd [executable]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>List loaded kernel modules:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ lsmod</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_troubleshooting">7. Troubleshooting</h2>
+<h2 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>6. Troubleshooting</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -1502,15 +980,518 @@ $ sudo apt install ocl-icd-opencl-dev</code></pre>
 </tr>
 </tbody>
 </table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_appendix"><a class="anchor" href="#_appendix"></a>A. Appendix</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_compilation_flow"><a class="anchor" href="#_compilation_flow"></a>A.1. Compilation flow</h3>
+<div class="imageblock">
+<div class="content">
+<img src="images/compilation.png" alt="Compilation overview">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compiling_a_custom_linux_kernel"><a class="anchor" href="#_compiling_a_custom_linux_kernel"></a>A.2. Compiling a custom Linux kernel</h3>
 <div class="paragraph">
-<p>Mackenzie Hauck <a href="mailto:mchauck@ualberta.ca">mchauck@ualberta.ca</a> ECE492 2018</p>
+<p>The following steps were done on a server running Ubuntu 16.04.</p>
+</div>
+<div class="sect3">
+<h4 id="_installing_dependencies"><a class="anchor" href="#_installing_dependencies"></a>Installing dependencies</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ sudo apt update
+$ sudo apt install u-boot-tools gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libncurses5-dev make lsb uml-utilities git</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_downloading_kernel_source"><a class="anchor" href="#_downloading_kernel_source"></a>Downloading kernel source</h4>
+<div class="paragraph">
+<p>Apparently Intel does not like keeping source code public that is vulnerable to some exploits, so they have removed their 3.18 branch from github possibly due to the Meltdown / Spectre exploits.
+Instead, we will download the kernel source from thinkoco&#8217;s github repository.</p>
+</div>
+<div class="paragraph">
+<p>We can either clone the whole repository (~1.4GB), or just a single branch as shown below.
+If you clone the entire repo, be sure to checkout the 3.18 branch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
+$ cd linux-socfpga</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_building_with_a_modified_config"><a class="anchor" href="#_building_with_a_modified_config"></a>Building with a modified config</h4>
+<div class="paragraph">
+<p>We will use a config already modified to include support for webcams.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>.config</code> file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a <code>ncurses</code> frontend.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cp 3.18_usbcam_config .config
+# setup compiler options
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-linux-gnueabihf-
+$ export LOADADDR=0x8000
+
+# setting LOCALVERSION blank means that kernel modules will
+# not have to match their version exactly to the kernel
+$ export LOCALVERSION=
+
+# build with 24 threads. replace 24 with the number of threads on your machine.
+# with 24 cores this took ~90 seconds
+$ make -j24 zImage
+
+# copy the compiled kernel
+$ cp arch/arm/boot/zImage ~/output/</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compiling_opencl_code"><a class="anchor" href="#_compiling_opencl_code"></a>A.3. Compiling OpenCL code</h3>
+<div class="paragraph">
+<p>Quartus must be installed, see <a href="#_quartus_setup">Quartus setup</a></p>
+</div>
+<div class="sect3">
+<h4 id="_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code"><a class="anchor" href="#_compiling_code_cl_code_file_into_code_aocx_code_and_code_rbf_code_files_with_code_aoc_code"></a>Compiling <code>.cl</code> file into <code>.aocx</code> and <code>.rbf</code> files with <code>aoc</code></h4>
+<div class="paragraph">
+<p>Intel&#8217;s offline OpenCL compiler is invoked via the <code>aoc</code> command from the commandline.
+We can compile our <code>trivial.cl</code> OpenCL source file into <code>trivial.aocx</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This compiles with verbose message printing, produces a report, and selects the correct BSP.</p>
+</div>
+<div class="paragraph">
+<p>Since we need a <code>.rbf</code> file we can convert the generated <code>top.sof</code> to <code>opencl.rbf</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now copy the generated <code>opencl.rbf</code> to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transferring_files_to_de10"><a class="anchor" href="#_transferring_files_to_de10"></a>A.4. Transferring files to DE10</h3>
+<div class="paragraph">
+<p>There are two ways to transfer files to the root file system partition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using SFTP over ethernet</p>
+</li>
+<li>
+<p>Plugging the SD card into a Linux computer</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_sftp"><a class="anchor" href="#_sftp"></a>SFTP</h4>
+<div class="paragraph">
+<p>With the DE10 on the same network as a PC, we can use a SFTP client to easily transfer files.
+On most laptops you can also share the laptops wifi to ethernet, to connect that way if on a network that whitelists ethernet connections.
+In a FTP client like Filezilla, connect using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Host: The ip address of the DE10. Can be found on the USB serial port by running: <code>ifconfig</code></p>
+</li>
+<li>
+<p>Username: root</p>
+</li>
+<li>
+<p>Password (leave blank):</p>
+</li>
+<li>
+<p>Port: 22</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This will take you to the home directory of <code>root</code> where you can transfer the files.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sd_card_in_pc"><a class="anchor" href="#_sd_card_in_pc"></a>SD card in PC</h4>
+<div class="paragraph">
+<p>This must be done on Linux, as Windows does not support the EXT3 partition.
+We can simply open a file manager and navigate to the EXT3 partition, and into the top level <code>root</code> folder.
+This is the home folder for user <code>root</code>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+We needed to run our file explorer as <code>sudo</code> in order to transfer the files.
+From the terminal in Ubuntu the command is: <code>sudo nautilus</code>
+</td>
+</tr>
+</table>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quartus_setup"><a class="anchor" href="#_quartus_setup"></a>A.5. Quartus setup</h3>
+<div class="sect3">
+<h4 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h4>
+<div class="paragraph">
+<p><a href="http://dl.altera.com/opencl/17.1/?edition=standard&amp;download_manager=direct">Download and install Intel FPGA for OpenCL 17.1 edition of Quartus</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/download_center.png" alt="Screenshot of which Quartus version to download">
+</div>
+<div class="title">Figure 1. Screenshot of download page</div>
+</div>
+<div class="paragraph">
+<p>When installing, be sure to enable support for Cyclone V devices.
+We will need at least a Standard license in order to compile everything.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+See the <a href="#_working_remotely_with_vpn">Working remotely with VPN</a> for working from home with a VPN and using the University of Alberta license server.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_environment_variable_setup"><a class="anchor" href="#_environment_variable_setup"></a>Environment Variable setup</h4>
+<div class="paragraph">
+<p>Follow Intel&#8217;s instructions from their getting started guide <a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">here</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Table Summary of Variables (on Windows)</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Variable</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>INTELFPGAOCLSDKROOT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFGPA\17.1\hld</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AOCL_BOARD_PACKAGE_ROOT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>C:\intelFPGA\17.1\hld\board\c5soc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATH</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>append these to <code>PATH</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\bin</code></p>
+</li>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\windows64\bin</code></p>
+</li>
+<li>
+<p><code>%INTELFPGAOCLSDKROOT%\host\windows64\bin</code></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_board_support_package_bsp"><a class="anchor" href="#_board_support_package_bsp"></a>Board Support Package (BSP)</h4>
+<div class="paragraph">
+<p>To go with the Linux image provided by thinkoco, we will also use an updated version of their board support package (BSP).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="title">What is a BSP?</div>
+<div class="paragraph">
+<p>A BSP allows us to include non OpenCL code in our FPGA fabric.
+This is where we add custom Qsys components, custom VHDL or Verilog code, etc.</p>
+</div>
+<div class="paragraph">
+<p>The BSP we use contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Qsys component <code>acl_iface</code> "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.</p>
+</li>
+<li>
+<p>Qsys component for HDMI output</p>
+</li>
+<li>
+<p>Qsys components for onboard switches, buttons, and LEDs</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bsp_installation"><a class="anchor" href="#_bsp_installation"></a>BSP Installation</h4>
+<div class="paragraph">
+<p>Copy the included folder <code>de10_nano_sharedonly_hdmi</code> to the following folder: <code>C:\intelFPGA\17.1\hld\board\c5soc\hardware</code> or equivalent if on Linux.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You can view the contents of the BSP by opening the above folder&#8217;s <code>top.qpf</code> file in Quartus, and opening <code>system.qsys</code> and <code>iface/acl_iface_system.qsys</code> in Platform Designer.
+If using a newer version than 17.1 of Quartus, you may need to do an IP upgrade for the BSP to work correctly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_device_source_tree"><a class="anchor" href="#_the_device_source_tree"></a>A.6. The device source tree</h3>
+<div class="paragraph">
+<p>In the FAT32 partition of the SD card there is a file named <code>socfpga.dtb</code> which is a "device tree blob".
+The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.</p>
+</div>
+<div class="paragraph">
+<p>It includes things like the kind of processor, amount of RAM, the HDMI Qsys component&#8217;s address, FPGA manager address, button addresses, onboard LED addresses, etc.
+You can view Intel&#8217;s documentation on how to modify a <code>.dts</code> file (device tree <em>source</em>) which is then compiled into the above <code>.dtb</code> file.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator">Intel documentation</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_modifying_linux_kernel_config"><a class="anchor" href="#_modifying_linux_kernel_config"></a>A.7. Modifying Linux kernel config</h3>
+<div class="paragraph">
+<p>The config can be modified on the command line by running the following in the kernel source directory:</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+The <code>ARCH</code> and <code>CROSS_COMPILE</code> environment variables should be set before running this command
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ make menuconfig</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will give you an ncurses interface to modify the config.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port"><a class="anchor" href="#_running_graphics_programs_on_the_hdmi_output_from_the_usb_serial_port"></a>A.8. Running graphics programs on the HDMI output, from the USB serial port</h3>
+<div class="paragraph">
+<p>It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.</p>
+</div>
+<div class="paragraph">
+<p>To open these programs on the HDMI output, export the <code>DISPLAY</code> environment variable.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ export DISPLAY=":0"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_working_remotely_with_vpn"><a class="anchor" href="#_working_remotely_with_vpn"></a>A.9. Working remotely with VPN</h3>
+<div class="paragraph">
+<p>We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university&#8217;s VPN to contact the U of A license server.</p>
+</div>
+<div class="paragraph">
+<p>Install the university VPN client from <a href="https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Login with your CCID, and password.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The VPN will only tunnel traffic to <code>*.ualberta.ca</code> domains, so your external IP won&#8217;t change.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Close Quartus if it&#8217;s open.</p>
+</div>
+<div class="paragraph">
+<p>Set the <code>LM_LICENSE_FILE</code> environment variable to: <code>12000@lic.ece.ualberta.ca</code></p>
+</div>
+<div class="paragraph">
+<p>When opening Quartus, set the license to use the environment variable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compiling_code_cl_code_for_software_emulation"><a class="anchor" href="#_compiling_code_cl_code_for_software_emulation"></a>A.10. Compiling <code>.cl</code> for software emulation</h3>
+<div class="paragraph">
+<p>Since <code>aoc</code> takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the <code>.cl</code> code before committing to the full build time.</p>
+</div>
+<div class="paragraph">
+<p>To compile for emulator add <code>-march=emulator</code> to the <code>aoc</code> command.
+The OpenCL host program can then be compiled for the development PC, and run with this <code>.aocx</code> file, even if the dev PC doesn&#8217;t have an FPGA installed.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If on Windows, you can download Intel&#8217;s RTE for Windows, and in one of the folders is <code>OpenCL.lib</code>. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installing_rust_on_the_de10_nano"><a class="anchor" href="#_installing_rust_on_the_de10_nano"></a>A.11. Installing Rust on the DE10-Nano</h3>
+<div class="paragraph">
+<p>I am most familiar with Rust, so the example was written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).</p>
+</div>
+<div class="paragraph">
+<p>See the included files (<code>example-rs/src/main.rs</code>) to see the Rust code.
+Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
+$ mkdir rust
+$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
+$ chmod +x rustup-init
+$ ./rustup-init
+$ [enter]
+# after finished installing, follow instructions to add the rust executables to `PATH`
+
+# install the OpenCL headers
+$ sudo apt install ocl-icd-opencl-dev</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opencl_introduction"><a class="anchor" href="#_opencl_introduction"></a>A.12. OpenCL Introduction</h3>
+<div class="paragraph">
+<p><a href="http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854" class="bare">http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_documentation_for_intel_fpga_sdk_for_opencl"><a class="anchor" href="#_documentation_for_intel_fpga_sdk_for_opencl"></a>A.13. Documentation for Intel FPGA SDK for OpenCL</h3>
+<div class="paragraph">
+<p>Intel&#8217;s official documentation, with more detailed instructions for installing Quartus, and running <code>aoc</code>.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf">Getting Started</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf">Programming Guide</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf">Custom Platform Toolkit</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_useful_linux_commands"><a class="anchor" href="#_useful_linux_commands"></a>A.14. Useful Linux commands</h3>
+<div class="paragraph">
+<p>Check if dynamic libraries are available for a given executable</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ ldd [executable]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>List loaded kernel modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ lsmod</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Written by Mackenzie Hauck <a href="mailto:mchauck@ualberta.ca">mchauck@ualberta.ca</a> ECE492 2018</em></p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-09 00:38:59 DST
+Last updated 2018-04-09 00:56:18 DST
 </div>
 </div>
 </body>

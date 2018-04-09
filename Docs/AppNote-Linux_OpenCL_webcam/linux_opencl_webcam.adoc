@@ -4,8 +4,10 @@ Mackenzie Hauck <mchauck@ualberta.ca>
 :numbered:
 :imagesdir: images
 :toc: left
-:toclevels: 3
+:toclevels: 2
 :experimental:
+:sectanchors:
+:sectnumlevels: 2
 :pdf-page-size: LETTER
 
 == Overview
@@ -216,6 +218,43 @@ You should see: ...
 Where `trivial.aocx` is the compiled output of `trivial.cl`.
 For more info see <<Compilation flow>>
 
+<<<
+== Troubleshooting
+
+|===
+| Problem | Possible Cause | Possible Solution
+
+| No login prompt 
+a| 
+* corrupt root file system
+* corrupt `zImage`
+* incorrect `socfpga.dtb` 
+a| remake the SD card with the provided `.img` and verify you get a login screen without any modifications
+
+a| `aocl` command not found
+| Environment variables not set 
+a| run: `source ./init_opencl_17.1.sh` from the home directory 
+
+a| `quartus_cpf` command not found 
+| Development PC environment variables not set correctly
+| See <<Environment Variable setup>>
+
+a| `aoc` command not found 
+| Development PC environment variables not set correctly
+| See <<Environment Variable setup>>
+
+| OpenCL host program freezes when run on DE10
+a| `opencl.rbf` is not the correct version
+a| Shutdown DE10, plug MicroSD card into PC and copy the `.rbf` file that corresponds to the OpenCL host program. It should be named `opencl.rbf` in the FAT32 partition.
+
+Alternatively, there could be something wrong with the BSP creating an invalid `.rbf` file. Double check the BSP has no errors in Quartus/Qsys.
+
+|===
+
+
+<<<
+:appendix-caption!:
+[appendix]
 == Appendix
 
 === Compilation flow 
@@ -314,7 +353,7 @@ CAUTION: We needed to run our file explorer as `sudo` in order to transfer the f
 From the terminal in Ubuntu the command is: `sudo nautilus`
 
 
-
+<<<
 === Quartus setup
 ==== Installation
 http://dl.altera.com/opencl/17.1/?edition=standard&download_manager=direct[Download and install Intel FPGA for OpenCL 17.1 edition of Quartus].
@@ -470,36 +509,4 @@ List loaded kernel modules:
 $ lsmod
 ```
 
-== Troubleshooting
-
-|===
-| Problem | Possible Cause | Possible Solution
-
-| No login prompt 
-a| 
-* corrupt root file system
-* corrupt `zImage`
-* incorrect `socfpga.dtb` 
-a| remake the SD card with the provided `.img` and verify you get a login screen without any modifications
-
-a| `aocl` command not found
-| Environment variables not set 
-a| run: `source ./init_opencl_17.1.sh` from the home directory 
-
-a| `quartus_cpf` command not found 
-| Development PC environment variables not set correctly
-| See <<Environment Variable setup>>
-
-a| `aoc` command not found 
-| Development PC environment variables not set correctly
-| See <<Environment Variable setup>>
-
-| OpenCL host program freezes when run on DE10
-a| `opencl.rbf` is not the correct version
-a| Shutdown DE10, plug MicroSD card into PC and copy the `.rbf` file that corresponds to the OpenCL host program. It should be named `opencl.rbf` in the FAT32 partition.
-
-Alternatively, there could be something wrong with the BSP creating an invalid `.rbf` file. Double check the BSP has no errors in Quartus/Qsys.
-
-|===
-
-{author} {email} ECE492 2018
+_Written by {author} {email} ECE492 2018_
