@@ -678,6 +678,9 @@ If you end up using a different Linux kernel version (other than 3.18), see the 
 <div class="sect2">
 <h3 id="_load_the_image_onto_a_microsd_card"><a class="anchor" href="#_load_the_image_onto_a_microsd_card"></a>2.2. Load the image onto a MicroSD card</h3>
 <div class="paragraph">
+<p>Extrac the downloaded <code>.7z</code> file (we used 7zip). Once extracted, the file we be around 3.7GB.</p>
+</div>
+<div class="paragraph">
 <p>On Windows use Win32DiskImager, on Mac or Linux use <code>dd</code>.</p>
 </div>
 <div class="paragraph">
@@ -808,19 +811,6 @@ An internet connection on the DE10 is required for this step
 </tr>
 </table>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-Run the included <code>setup_cl_tools.sh</code> script on the DE10 to do all these steps for you!
-See <a href="#_transferring_files_to_de10">Transferring files to DE10</a> for how to copy the script (or other files) over.
-</td>
-</tr>
-</table>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~/aocl-rte-17.1.0-590.arm32
@@ -876,6 +866,9 @@ Copy the provided <code>trivial.rbf</code> to the FAT32 partition and rename it 
 <p>Now copy the folder <code>example-executable/</code> to the home directory on the DE10 via one of the methods described in <a href="#_transferring_files_to_de10">Transferring files to DE10</a></p>
 </div>
 <div class="paragraph">
+<p>We also need to use updated shared libraries for OpenCL. Overwrite the existing <code>libOpenCL.so</code> and <code>libOpenCL.so.1</code> in the folder: <code>/root/aocl-rte-17.1.0-590.arm32/host/arm32/lib</code> with their provided versions.</p>
+</div>
+<div class="paragraph">
 <p>Boot the DE10, and login.</p>
 </div>
 <div class="paragraph">
@@ -898,11 +891,27 @@ $ ./example trivial.aocx</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You should see: &#8230;&#8203;</p>
-</div>
-<div class="paragraph">
 <p>Where <code>trivial.aocx</code> is the compiled output of <code>trivial.cl</code>.
 For more info see <a href="#_compilation_flow">Compilation flow</a></p>
+</div>
+<div class="paragraph">
+<p>You should see:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>root@DE10_NANO:~/example-executable# ./example trivial.aocx
+binary file len is: 2602196
+platform name: Intel(R) FPGA SDK for OpenCL(TM)
+        Device(DeviceId(0xb54752a8))
+platform found!
+The value at index [200007] is now '10'!</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We now have OpenCL code executing on the FPGA, while still having HDMI output!</p>
+</div>
+<div class="paragraph">
+<p>For information on compiling this example executable, see the comments in <code>example-rs/src/main.rs</code> provided with this app note.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1021,7 +1030,7 @@ If you clone the entire repo, be sure to checkout the 3.18 branch.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-sh" data-lang="sh">$ cd ~
-$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
+$ git clone --single-branch -b socfpga-3.18 https://github.com/thinkoco/linux-socfpga.git
 $ cd linux-socfpga</code></pre>
 </div>
 </div>
@@ -1029,7 +1038,7 @@ $ cd linux-socfpga</code></pre>
 <div class="sect3">
 <h4 id="_building_with_a_modified_config"><a class="anchor" href="#_building_with_a_modified_config"></a>Building with a modified config</h4>
 <div class="paragraph">
-<p>We will use a config already modified to include support for webcams.</p>
+<p>We will use a config already modified to include support for webcams (<code>usbcam_config</code>).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1045,7 +1054,7 @@ The <code>.config</code> file holds the configuration for building the kernel an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sh" data-lang="sh">$ cp 3.18_usbcam_config .config
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ cp usbcam_config .config
 # setup compiler options
 $ export ARCH=arm
 $ export CROSS_COMPILE=arm-linux-gnueabihf-
@@ -1491,7 +1500,7 @@ $ sudo apt install ocl-icd-opencl-dev</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-09 00:56:18 DST
+Last updated 2018-04-09 14:09:38 DST
 </div>
 </div>
 </body>

@@ -105,6 +105,8 @@ If you end up using a different Linux kernel version (other than 3.18), see the 
 The `.img` file can be downloaded from https://drive.google.com/file/d/1r_3QgYYsHSgcc0NMVzGlTrhL19zCaudW/view?usp=sharing[here].
 
 === Load the image onto a MicroSD card
+Extrac the downloaded `.7z` file (we used 7zip). Once extracted, the file we be around 3.7GB.
+
 On Windows use Win32DiskImager, on Mac or Linux use `dd`.
 
 You can follow Intel's guide on writing the image with these tools https://rocketboards.org/foswiki/Documentation/GSRDBootLinuxSd[here].
@@ -161,9 +163,6 @@ We need to copy some files around so the diagnostic tools know what OpenCL devic
 
 NOTE: An internet connection on the DE10 is required for this step
 
-TIP: Run the included `setup_cl_tools.sh` script on the DE10 to do all these steps for you! 
-See <<Transferring files to DE10>> for how to copy the script (or other files) over.
-
 ```sh
 $ cd ~/aocl-rte-17.1.0-590.arm32
 $ mkdir -p /etc/OpenCL/vendors
@@ -197,6 +196,8 @@ Copy the provided `trivial.rbf` to the FAT32 partition and rename it to `opencl.
 
 Now copy the folder `example-executable/` to the home directory on the DE10 via one of the methods described in <<Transferring files to DE10>>
 
+We also need to use updated shared libraries for OpenCL. Overwrite the existing `libOpenCL.so` and `libOpenCL.so.1` in the folder: `/root/aocl-rte-17.1.0-590.arm32/host/arm32/lib` with their provided versions.
+
 Boot the DE10, and login.
 
 Load the OpenCL kernel module, and set the required environment variables:
@@ -213,10 +214,23 @@ $ chmod +x example
 $ ./example trivial.aocx
 ```
 
-You should see: ...
-
 Where `trivial.aocx` is the compiled output of `trivial.cl`.
 For more info see <<Compilation flow>>
+
+You should see:
+
+```
+root@DE10_NANO:~/example-executable# ./example trivial.aocx
+binary file len is: 2602196
+platform name: Intel(R) FPGA SDK for OpenCL(TM)
+        Device(DeviceId(0xb54752a8))
+platform found!
+The value at index [200007] is now '10'!
+```
+
+We now have OpenCL code executing on the FPGA, while still having HDMI output!
+
+For information on compiling this example executable, see the comments in `example-rs/src/main.rs` provided with this app note.
 
 <<<
 == Troubleshooting
@@ -278,17 +292,17 @@ We can either clone the whole repository (~1.4GB), or just a single branch as sh
 If you clone the entire repo, be sure to checkout the 3.18 branch. 
 ```sh
 $ cd ~
-$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
+$ git clone --single-branch -b socfpga-3.18 https://github.com/thinkoco/linux-socfpga.git
 $ cd linux-socfpga
 ```
 
 ==== Building with a modified config 
-We will use a config already modified to include support for webcams.
+We will use a config already modified to include support for webcams (`usbcam_config`).
 
 NOTE: The `.config` file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a `ncurses` frontend.
 
 ```sh
-$ cp 3.18_usbcam_config .config 
+$ cp usbcam_config .config 
 # setup compiler options
 $ export ARCH=arm
 $ export CROSS_COMPILE=arm-linux-gnueabihf-
