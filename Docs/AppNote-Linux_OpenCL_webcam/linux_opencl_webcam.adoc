@@ -1,16 +1,21 @@
 = Installing Linux on a DE10-Nano with support for OpenCL, HDMI, and Webcams
 Mackenzie Hauck <mchauck@ualberta.ca>
+:doctype: article
 :numbered:
 :imagesdir: images
 :toc: left
-:toclevels: 3
+:toclevels: 2
 :experimental:
+:sectanchors:
+:sectnumlevels: 2
 :pdf-page-size: LETTER
 
 == Overview
 This document will go over all of the steps needed to get embedded Linux with OpenCL drivers, HDMI video out, and webcam drivers running on the Terasic DE10-Nano board.
 
 NOTE: If you do not need a Linux image with both HDMI output, AND OpenCL to be running, you can use an official SD card image provided by Terasic or Intel.
+
+We will use precompiled binaries for sake of getting started quickly. See the appendix for how these files were compiled.
 
 === Prerequisites
 Hardware:
@@ -39,7 +44,7 @@ No prior knowledge is required in:
 
 === Hardware
 The DE10-Nano includes a single CycloneV SoC (system on chip) composed of a dual core ARM Cortex A9 CPU and a FPGA with 110k logic elements, a MicroSD card slot, USB host via an OTG (on-the-go) port, and ethernet.
-Intel supports running Linux on the SoC which then requires drivers to communicate with ethernet, USB webcams, FPGA fabric, and OpenCL custom components that _run in_ the FPGA fabric.
+Intel supports running Linux on the SoC which then requires drivers to communicate with ethernet, USB webcams, FPGA fabric, and OpenCL custom components that run _in_ the FPGA fabric.
 Most of these drivers are available in the Linux kernel source, so including them is as simple as enabling them in the kernel configuration.
 The one not supported directly by the kernel is the OpenCL driver.
 Intel provides the source code of this driver which can be compiled to be used with our kernel.
@@ -84,6 +89,7 @@ https://rocketboards.org/foswiki/Documentation/GSRDSdCard[Here is the documentat
 === Block diagram
 image::block.png[block diagram?]
 
+All of the components in the FPGA section are programmed by the `opencl.rbf` file on the SD card. See <<Compiling OpenCL code>>
 
 == Preparing our donor SD card image 
 We will be using the SD card image provied by the user thinkoco on Github which uses kernel version 3.18 with a root file system containing Ubuntu 16.04.
@@ -92,6 +98,7 @@ We will be using the SD card image provied by the user thinkoco on Github which 
 ====
 The file system also already includes the Intel RTE (Runtime Environment, a subset of the FPGA SDK for OpenCL).
 The RTE contains diagnostic tools, a compiled kernel driver to communicate with the OpenCL FPGA logic, and the OpenCL dynamic libraries (`.so` files) that the host program is linked against.
+If you end up using a different Linux kernel version (other than 3.18), see the Makefile for the driver on how to rebuild it.
 ====
 
 === Download the image 
@@ -116,69 +123,27 @@ If you get a login prompt, you are ready for the next step.
 
 
 
-
-
-== Compiling our custom Linux kernel 
-The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will build our own kernel with the required drivers.
+== Using a modified Linux kernel 
+The Linux kernel provided by thinkoco does not have USB webcams enabled, so we will use our own kernel with the required drivers.
 In the FAT32 boot partition, the kernel is the `zImage` file.
+I have pre compiled this already, and it is available as `zImage_webcams` file provided with this app note.
+
 [TIP]
 ====
 A `zImage` is a compressed kernel image, signified by the 'z'.
 An uncompressed kernel image is named `uImage`.
 ====
 
-Our built kernel (`zImage`) will also disable strict checking for loadable modules. 
-This means that even if the version magic of a module does not match exactly, it will still be loaded by the kernel.
+Our built kernel also disables strict checking for loadable modules, this means that even if the version magic of a module does not match exactly it will still be loaded by the kernel.
 
 NOTE: Our OpenCL Linux kernel driver is loaded as module into the kernel, hence the need for loadable module support. 
 
 WARNING: Loading kernel modules that weren't compiled against the _exact_ kernel version (3.18) may lead to kernel panics with this setting disabled. Be sure to re-enable for non-development builds.
 
-The following steps were done on a server running Ubuntu 16.04.
+With our custom `zImage` we can now insert the MicroSD card into our computer and overwrite the original `zImage` in the FAT32 partition.
 
-=== Installing dependencies
-```sh
-$ sudo apt update
-$ sudo apt install u-boot-tools gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libncurses5-dev make lsb uml-utilities git
-```
+NOTE: the filename must be `zImage` on the SD card. The file provided is named that way to distinguish it from other `zImages`
 
-=== Downloading kernel source 
-Apparently Intel does not like keeping source code public that is vulnerable to some exploits, so they have removed their 3.18 branch from github possibly due to the Meltdown / Spectre exploits.
-Instead, we will download the kernel source from thinkoco's github repository.
-
-We can either clone the whole repository (~1.4GB), or just a single branch as shown below. 
-If you clone the entire repo, be sure to checkout the 3.18 branch. 
-```sh
-$ cd ~
-$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
-$ cd linux-socfpga
-```
-
-=== Building with a modified config 
-We will use a config already modified to include support for webcams.
-
-NOTE: The `.config` file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a `ncurses` frontend.
-
-```sh
-$ cp 3.18_usbcam_config .config 
-# setup compiler options
-$ export ARCH=arm
-$ export CROSS_COMPILE=arm-linux-gnueabihf-
-$ export LOADADDR=0x8000
-
-# setting LOCALVERSION blank means that kernel modules will 
-# not have to match their version exactly to the kernel
-$ export LOCALVERSION=
-
-# build with 24 threads. replace 24 with the number of threads on your machine.
-# with 24 cores this took ~90 seconds
-$ make -j24 zImage 
-
-# copy the compiled kernel
-$ cp arch/arm/boot/zImage ~/output/
-```
-
-Now that we have our modified `zImage`, we can insert the MicroSD card into our computer and overwrite the original `zImage` in the FAT32 partition.
 Once again, boot the DE10 with the USB serial connected and verify you get to the login prompt.
 
 == Installing and running OpenCL diagnostic tools 
@@ -193,6 +158,11 @@ $ ./expand_rootfs.sh
 
 === Installing `clinfo`
 We need to copy some files around so the diagnostic tools know what OpenCL devices are available.
+
+NOTE: An internet connection on the DE10 is required for this step
+
+TIP: Run the included `setup_cl_tools.sh` script on the DE10 to do all these steps for you! 
+See <<Transferring files to DE10>> for how to copy the script (or other files) over.
 
 ```sh
 $ cd ~/aocl-rte-17.1.0-590.arm32
@@ -209,6 +179,10 @@ $ clinfo
 
 === Intel's `aocl` tool 
 After initializing the environment variables for use with the RTE, we can run `aocl diagnose` to check that the kernel module loaded correctly.
+
+NOTE: The environment variables have to be set for each shell session if you want access to the RTE programs like `aocl`.
+Run the following `source ./init_opencl_17.1.sh` to do this for you.
+
 ```sh
 $ cd ~
 # set the environment variables, and load the OpenCL driver
@@ -216,110 +190,14 @@ $ source ./init_opencl_17.1.sh
 $ aocl diagnose
 ```
 
-== Quartus setup
 
-=== Installation
-http://dl.altera.com/opencl/17.1/?edition=standard&download_manager=direct[Download and install Intel FPGA for OpenCL 17.1 edition of Quartus].
+== Run the example host program on the DE10 
+We first need to copy the correct `.rbf` file to the FAT32 partition of the SD card, so that the FPGA is programmed with our OpenCL logic when it boots.
+Copy the provided `trivial.rbf` to the FAT32 partition and rename it to `opencl.rbf` overwriting the existing file.
 
-.Screenshot of download page
-image::download_center.png[Screenshot of which Quartus version to download]
+Now copy the folder `example-executable/` to the home directory on the DE10 via one of the methods described in <<Transferring files to DE10>>
 
-When installing, be sure to enable support for Cyclone V devices.
-We will need at least a Standard license in order to compile everything.
-
-TIP: See the appendix for working from home with a VPN and using the University of Alberta license server.
-
-==== Environment Variable setup 
-
-Follow Intel's instructions from their getting started guide https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[here].
-
-.Table Summary of Variables (on Windows)
-|===
-| Variable | Value
-
-| `INTELFPGAOCLSDKROOT`
-| `C:\intelFGPA\17.1\hld`
-
-| `AOCL_BOARD_PACKAGE_ROOT`
-| `C:\intelFPGA\17.1\hld\board\c5soc`
-
-| `PATH`
-a| append these to `PATH`:
-
-* `%INTELFPGAOCLSDKROOT%\bin`
-* `%INTELFPGAOCLSDKROOT%\windows64\bin`
-* `%INTELFPGAOCLSDKROOT%\host\windows64\bin`
-
-|===
-
-=== Board Support Package (BSP)
-To go with the Linux image provided by thinkoco, we will also use their board support package (BSP).
-
-[NOTE]
-.What is a BSP?
-====
-A BSP allows us to include non OpenCL code in our FPGA fabric.
-This is where we add custom Qsys components, custom VHDL or Verilog code, etc.
-
-The BSP we use contains:
-
-* Qsys component `acl_iface` "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.
-* Qsys component for HDMI output
-* Qsys components for onboard switches, buttons, and LEDs
-====
-
-==== Installation
-Download or clone https://github.com/thinkoco/c5soc_opencl[thinkoco's repository].
-
-Copy the folder `de10_nano_sharedonly_hdmi` to the following folder: `C:\intelFPGA\17.1\hld\board\c5soc\hardware` or equivalent if on Linux.
-
-NOTE: If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
-
-TIP: You can view the contents of the BSP by opening the above folder's `top.qpf` file in Quartus, and opening `system.qsys` and `iface/acl_iface_system.qsys` in Platform Designer.
-
-
-
-== Compiling and running our own host program, and OpenCL code 
-The offline OpenCL compiler is invoked with the `aoc` command at the commandline.
-
-=== Compiling `.cl` file into `.aocx` and `.rbf` files with `aoc`
-Intel's offline OpenCL compiler is invoked via the `aoc` command from the commandline.
-We can compile our `trivial.cl` OpenCL source file into the required `trivial.aocx` with:
-
-```sh 
-$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx 
-```
-This compiles with verbose message printing, produces a report, and selects the BSP.
-
-Since we need a `.rbf` file we can convert the generated `top.sof` to `opencl.rbf` with:
-```sh
-$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf
-```
-
-Now copy the generated `opencl.rbf` to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.
-
-
-=== Install Rust on the DE10-Nano
-I am most familiar with Rust, so the example will be written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).
-
-See the included files (`example-rs/src/main.rs`) to see the Rust code.
-Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10. 
-
-```sh
-$ cd ~
-$ mkdir rust 
-$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
-$ chmod +x rustup-init 
-$ ./rustup-init 
-$ [enter]
-# after finished installing, follow instructions to add the rust executables to `PATH`
-
-# install the OpenCL headers 
-$ sudo apt install ocl-icd-opencl-dev
-```
-
-=== Run the example on the DE10 
-Copy the example code to the DE10 into `~/example-rs`
+Boot the DE10, and login.
 
 Load the OpenCL kernel module, and set the required environment variables:
 
@@ -328,97 +206,19 @@ $ cd ~
 $ source ./init_opencl_17.1.sh 
 ```
 
-NOTE: Rust's package manager `cargo` needs an internet connection to download the required dependencies.
-
+Run the example!
 ```sh
-$ cd ~/example-rs
-$ cargo run --release trivial.aocx
+$ cd ~/example-executable
+$ chmod +x example
+$ ./example trivial.aocx
 ```
+
+You should see: ...
 
 Where `trivial.aocx` is the compiled output of `trivial.cl`.
 For more info see <<Compilation flow>>
 
-== Appendix
-
-=== Compilation flow 
-image::compilation.png[Compilation overview]
-
-=== The device source tree
-In the FAT32 partition of the SD card there is a file named `socfpga.dtb` which is a "device tree blob".
-The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.
-
-It includes things like the kind of processor, amount of RAM, the HDMI Qsys component's address, FPGA manager address, button addresses, onboard LED addresses, etc.
-You can view Intel's documentation on how to modify a `.dts` file (device tree _source_) which is then compiled into the above `.dtb` file.
-
-https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator[Intel documentation]
-
-=== Modifying Linux kernel config
-The config can be modified on the command line by running the following in the kernel source directory:
-
-CAUTION: The `ARCH` and `CROSS_COMPILE` environment variables should be set before running this command
-
-```sh
-$ make menuconfig
-```
-
-This will give you an ncurses interface to modify the config.
-Be sure to backup your config before running `make clean` as I believe it deletes it.
-
-=== Running graphics programs on the HDMI output, from the USB serial port 
-It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.
-
-To open these programs on the HDMI output, export the `DISPLAY` environment variable.
-
-```sh 
-$ export DISPLAY=":0"
-```
-
-=== Working remotely with VPN 
-We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university's VPN to contact the U of A license server.
-
-Install the university VPN client from https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158[here].
-
-Login with your CCID, and password.
-
-NOTE: The VPN will only tunnel traffic to *.ualberta.ca domains, so your external IP won't change.
-
-Close Quartus if it's open.
-
-Set the `LM_LICENSE_FILE` environment variable to: 12000@lic.ece.ualberta.ca
-
-When opening Quartus, set the license to use the environment variable.
-
-=== Compiling `.cl` for software emulation
-Since `aoc` takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the `.cl` code before committing to the full build time.
-
-To compile for emulator add `-march=emulator` to the `aoc` command.
-The OpenCL host program can then be compiled for the development PC, and run with this `.aocx` file, even if the dev PC doesn't have an FPGA installed.
-
-TIP: If on Windows, you can download Intel's RTE for Windows, and in one of the folders is `OpenCL.lib`. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
-
-=== OpenCL quickstart
-http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854
-
-=== Documentation for Intel FPGA SDK for OpenCL
-Intel's official documentation, with more detailed instructions for installing Quartus, and running `aoc`.
-
-https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[Getting Started]
-
-https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf[Programming Guide]
-
-https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf[Custom Platform Toolkit]
-
-=== Useful Linux commands 
-Check if dynamic libraries are available for a given executable
-```sh 
-$ ldd [executable]
-```
-
-List loaded kernel modules:
-```sh 
-$ lsmod
-```
-
+<<<
 == Troubleshooting
 
 |===
@@ -451,4 +251,262 @@ Alternatively, there could be something wrong with the BSP creating an invalid `
 
 |===
 
-Mackenzie Hauck ECE492 2018
+
+<<<
+:appendix-caption!:
+[appendix]
+== Appendix
+
+=== Compilation flow 
+image::compilation.png[Compilation overview]
+
+=== Compiling a custom Linux kernel 
+
+The following steps were done on a server running Ubuntu 16.04.
+
+==== Installing dependencies
+```sh
+$ sudo apt update
+$ sudo apt install u-boot-tools gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libncurses5-dev make lsb uml-utilities git
+```
+
+==== Downloading kernel source 
+Apparently Intel does not like keeping source code public that is vulnerable to some exploits, so they have removed their 3.18 branch from github possibly due to the Meltdown / Spectre exploits.
+Instead, we will download the kernel source from thinkoco's github repository.
+
+We can either clone the whole repository (~1.4GB), or just a single branch as shown below. 
+If you clone the entire repo, be sure to checkout the 3.18 branch. 
+```sh
+$ cd ~
+$ git clone --single-branch -b socfpga-opencl_3.18 https://github.com/thinkoco/linux-socfpga.git
+$ cd linux-socfpga
+```
+
+==== Building with a modified config 
+We will use a config already modified to include support for webcams.
+
+NOTE: The `.config` file holds the configuration for building the kernel and should only be modified by certain tools. See the appendix for how to modify it with a `ncurses` frontend.
+
+```sh
+$ cp 3.18_usbcam_config .config 
+# setup compiler options
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-linux-gnueabihf-
+$ export LOADADDR=0x8000
+
+# setting LOCALVERSION blank means that kernel modules will 
+# not have to match their version exactly to the kernel
+$ export LOCALVERSION=
+
+# build with 24 threads. replace 24 with the number of threads on your machine.
+# with 24 cores this took ~90 seconds
+$ make -j24 zImage 
+
+# copy the compiled kernel
+$ cp arch/arm/boot/zImage ~/output/
+```
+
+=== Compiling OpenCL code 
+Quartus must be installed, see <<Quartus setup>>
+
+==== Compiling `.cl` file into `.aocx` and `.rbf` files with `aoc`
+Intel's offline OpenCL compiler is invoked via the `aoc` command from the commandline.
+We can compile our `trivial.cl` OpenCL source file into `trivial.aocx` with:
+
+```sh 
+$ aoc -v -report -board=de10_nano_sharedonly_hdmi trivial.cl -o trivial.aocx 
+```
+This compiles with verbose message printing, produces a report, and selects the correct BSP.
+
+Since we need a `.rbf` file we can convert the generated `top.sof` to `opencl.rbf` with:
+```sh
+$ quartus_cpf -c -o bitstream_compression=on top.sof opencl.rbf
+```
+
+Now copy the generated `opencl.rbf` to the FAT32 partition of the SD card. The FPGA will be programmed with this file on every boot.
+
+
+=== Transferring files to DE10
+There are two ways to transfer files to the root file system partition:
+
+* Using SFTP over ethernet
+* Plugging the SD card into a Linux computer 
+
+==== SFTP 
+With the DE10 on the same network as a PC, we can use a SFTP client to easily transfer files.
+On most laptops you can also share the laptops wifi to ethernet, to connect that way if on a network that whitelists ethernet connections.
+In a FTP client like Filezilla, connect using:
+
+* Host: The ip address of the DE10. Can be found on the USB serial port by running: `ifconfig`
+* Username: root 
+* Password (leave blank): 
+* Port: 22
+
+This will take you to the home directory of `root` where you can transfer the files.
+
+==== SD card in PC 
+This must be done on Linux, as Windows does not support the EXT3 partition.
+We can simply open a file manager and navigate to the EXT3 partition, and into the top level `root` folder.
+This is the home folder for user `root`.
+
+CAUTION: We needed to run our file explorer as `sudo` in order to transfer the files.
+From the terminal in Ubuntu the command is: `sudo nautilus`
+
+
+<<<
+=== Quartus setup
+==== Installation
+http://dl.altera.com/opencl/17.1/?edition=standard&download_manager=direct[Download and install Intel FPGA for OpenCL 17.1 edition of Quartus].
+
+.Screenshot of download page
+image::download_center.png[Screenshot of which Quartus version to download]
+
+When installing, be sure to enable support for Cyclone V devices.
+We will need at least a Standard license in order to compile everything.
+
+TIP: See the <<Working remotely with VPN>> for working from home with a VPN and using the University of Alberta license server.
+
+==== Environment Variable setup 
+
+Follow Intel's instructions from their getting started guide https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[here].
+
+.Table Summary of Variables (on Windows)
+|===
+| Variable | Value
+
+| `INTELFPGAOCLSDKROOT`
+| `C:\intelFGPA\17.1\hld`
+
+| `AOCL_BOARD_PACKAGE_ROOT`
+| `C:\intelFPGA\17.1\hld\board\c5soc`
+
+| `PATH`
+a| append these to `PATH`:
+
+* `%INTELFPGAOCLSDKROOT%\bin`
+* `%INTELFPGAOCLSDKROOT%\windows64\bin`
+* `%INTELFPGAOCLSDKROOT%\host\windows64\bin`
+
+|===
+
+==== Board Support Package (BSP)
+To go with the Linux image provided by thinkoco, we will also use an updated version of their board support package (BSP).
+
+[NOTE]
+.What is a BSP?
+====
+A BSP allows us to include non OpenCL code in our FPGA fabric.
+This is where we add custom Qsys components, custom VHDL or Verilog code, etc.
+
+The BSP we use contains:
+
+* Qsys component `acl_iface` "OpenCL interface" which is what our Linux kernel driver will use to communicate with the compiled OpenCL code.
+* Qsys component for HDMI output
+* Qsys components for onboard switches, buttons, and LEDs
+====
+
+==== BSP Installation
+Copy the included folder `de10_nano_sharedonly_hdmi` to the following folder: `C:\intelFPGA\17.1\hld\board\c5soc\hardware` or equivalent if on Linux.
+
+NOTE: If you do not have admin access to this folder on Windows, there are ways to setup the environment variables from earlier to work around it, but they will not be covered here.
+
+TIP: You can view the contents of the BSP by opening the above folder's `top.qpf` file in Quartus, and opening `system.qsys` and `iface/acl_iface_system.qsys` in Platform Designer.
+If using a newer version than 17.1 of Quartus, you may need to do an IP upgrade for the BSP to work correctly.
+
+
+=== The device source tree
+In the FAT32 partition of the SD card there is a file named `socfpga.dtb` which is a "device tree blob".
+The device tree is a way to compile a single Linux kernel that can run on different hardware, as it defines where all of the hardware components are located.
+
+It includes things like the kind of processor, amount of RAM, the HDMI Qsys component's address, FPGA manager address, button addresses, onboard LED addresses, etc.
+You can view Intel's documentation on how to modify a `.dts` file (device tree _source_) which is then compiled into the above `.dtb` file.
+
+https://rocketboards.org/foswiki/Documentation/GSRDDeviceTreeGenerator[Intel documentation]
+
+=== Modifying Linux kernel config
+The config can be modified on the command line by running the following in the kernel source directory:
+
+CAUTION: The `ARCH` and `CROSS_COMPILE` environment variables should be set before running this command
+
+```sh
+$ make menuconfig
+```
+
+This will give you an ncurses interface to modify the config.
+
+=== Running graphics programs on the HDMI output, from the USB serial port 
+It is convenient to use the shell provided on the USB serial port, but usually it does not let us open programs on the HDMI output.
+
+To open these programs on the HDMI output, export the `DISPLAY` environment variable.
+
+```sh 
+$ export DISPLAY=":0"
+```
+
+=== Working remotely with VPN 
+We need a license to compile the OpenCL code with Quartus, so to work remotely we can use the university's VPN to contact the U of A license server.
+
+Install the university VPN client from https://uofaprod.service-now.com/kb_view.do?sysparm_article=KB0012158[here].
+
+Login with your CCID, and password.
+
+NOTE: The VPN will only tunnel traffic to `*.ualberta.ca` domains, so your external IP won't change.
+
+Close Quartus if it's open.
+
+Set the `LM_LICENSE_FILE` environment variable to: `12000@lic.ece.ualberta.ca`
+
+When opening Quartus, set the license to use the environment variable.
+
+=== Compiling `.cl` for software emulation
+Since `aoc` takes around 1 hour to finish when compiling for hardware, we can instead use its emulator to quickly check the functionality of the `.cl` code before committing to the full build time.
+
+To compile for emulator add `-march=emulator` to the `aoc` command.
+The OpenCL host program can then be compiled for the development PC, and run with this `.aocx` file, even if the dev PC doesn't have an FPGA installed.
+
+TIP: If on Windows, you can download Intel's RTE for Windows, and in one of the folders is `OpenCL.lib`. Copy this library beside the source (beside Cargo.toml in above examples) when compiling so it links to the OpenCL headers.
+
+=== Installing Rust on the DE10-Nano
+I am most familiar with Rust, so the example was written in it, but many languages support the OpenCL interface (C, C++, Python, Java, etc.).
+
+See the included files (`example-rs/src/main.rs`) to see the Rust code.
+Cross compiling is a pain since we have to link to the OpenCL headers, so we will take the easy way out and install Rust on the DE10. 
+
+```sh
+$ cd ~
+$ mkdir rust 
+$ wget https://static.rust-lang.org/rustup/dist/armv7-unknown-linux-gnueabihf/rustup-init
+$ chmod +x rustup-init 
+$ ./rustup-init 
+$ [enter]
+# after finished installing, follow instructions to add the rust executables to `PATH`
+
+# install the OpenCL headers 
+$ sudo apt install ocl-icd-opencl-dev
+```
+
+
+=== OpenCL Introduction
+http://www.drdobbs.com/parallel/a-gentle-introduction-to-opencl/231002854
+
+=== Documentation for Intel FPGA SDK for OpenCL
+Intel's official documentation, with more detailed instructions for installing Quartus, and running `aoc`.
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_getting_started.pdf[Getting Started]
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/aocl_programming_guide.pdf[Programming Guide]
+
+https://www.altera.com/en_US/pdfs/literature/hb/opencl-sdk/ug_aocl_custom_platform_toolkit.pdf[Custom Platform Toolkit]
+
+=== Useful Linux commands 
+Check if dynamic libraries are available for a given executable
+```sh 
+$ ldd [executable]
+```
+
+List loaded kernel modules:
+```sh 
+$ lsmod
+```
+
+_Written by {author} {email} ECE492 2018_
