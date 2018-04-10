@@ -76,6 +76,7 @@ channel channel_scal   bypass_ch  __attribute__((depth(CHN_DEPTH)));
 
 
 // parallel MAC units including (VEC_SIZE-1) multipliers
+// multiply accumulate
 MACTYPE mac(lane_data input, lane_data weights)
 {
 	MACTYPE output = MASK_MULT & CZERO;
@@ -214,131 +215,130 @@ void memRead(
 		else
 			data_offset = weight_dim3/VEC_SIZE;	// the upper half of the output feature maps depend on the upper half of the input
 	
-				flag = out_idx_xyz & 0x01; //ping-pong flag
+		flag = out_idx_xyz & 0x01; //ping-pong flag
+		
+		// reset output loop counters
+		output_idx_dim1 = 0;
+		output_idx_dim2 = 0;
+		output_idx_dim3 = 0;
+		// reset in-group item counters 
+		gp_item_idx_x = 0;
+		
+		// reset input winbuffer loop counters
+		win_itm_x = 0;
+		win_itm_y = 0;
+		win_itm_z = 0;
+		
+		
+		if(gp_num_x==group_num_x-1)
+			item_loop_bound = win_size_x>=group_rem_size_x?(win_size_xyz/VEC_SIZE):(group_rem_size_xyz/VEC_SIZE);
+		else{
+			item_loop_bound = (weight_dim1x2x3*CONV_GP_SIZE_Y*CONV_GP_SIZE_X/VEC_SIZE);
+		}
+
+
+		#pragma ivdep array(win_buffer)
+		#pragma ivdep array(weight_buffer)
+		Item:for(unsigned int  win_itm_xyz=0; win_itm_xyz<item_loop_bound; win_itm_xyz++){
+			// Winbuffer loading operations
+			if(win_itm_z<weight_dim3/VEC_SIZE){
+
+				feature_idx_dim1 = win_itm_x+gp_num_x_winbuf*CONV_GP_SIZE_X*stride;
+				feature_idx_dim2 = win_itm_y+gp_num_y_winbuf*CONV_GP_SIZE_Y*stride;
+				feature_idx_dim3 = win_itm_z;
+
+				if((feature_idx_dim1>=padding && feature_idx_dim1<data_dim1+padding) && (feature_idx_dim2>=padding && feature_idx_dim2<data_dim2+padding)){
 				
-				// reset output loop counters
-				output_idx_dim1 = 0;
-				output_idx_dim2 = 0;
-				output_idx_dim3 = 0;
-				// reset in-group item counters 
-				gp_item_idx_x = 0;
-				
-				// reset input winbuffer loop counters
-				win_itm_x = 0;
-				win_itm_y = 0;
-				win_itm_z = 0;
-				
-				
-				if(gp_num_x==group_num_x-1)
-					item_loop_bound = win_size_x>=group_rem_size_x?(win_size_xyz/VEC_SIZE):(group_rem_size_xyz/VEC_SIZE);
-				else{
-					item_loop_bound = (weight_dim1x2x3*CONV_GP_SIZE_Y*CONV_GP_SIZE_X/VEC_SIZE);
+					data_vec = bottom[data_offset*data_dim1xdim2 + feature_idx_dim3*data_dim1xdim2 + (feature_idx_dim2-padding)*data_dim1 + (feature_idx_dim1-padding)];
+													}
+				else{ // for padding (feature_idx<padding or data_dim+padding<=feature_idx<data_dim+2*padding)
+					#pragma unroll
+					for(unsigned char vv=0; vv<VEC_SIZE; vv++){
+						data_vec.data[vv] = CZERO;
+					}
 				}
+				
+				win_buffer[(~flag)&0x01][win_itm_z*win_size_y*win_size_x + win_itm_y*win_size_x + win_itm_x] = data_vec;
 
+				// used as loop counters
+				if((win_itm_z==weight_dim3/VEC_SIZE-1) && (win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
+					win_itm_z = 0;
+				else if((win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
+					win_itm_z++;
 
-				#pragma ivdep array(win_buffer)
-				#pragma ivdep array(weight_buffer)
-				Item:for(unsigned int  win_itm_xyz=0; win_itm_xyz<item_loop_bound; win_itm_xyz++){
+				if((win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
+					win_itm_y = 0;
+				else if(win_itm_x==win_size_x-1)
+					win_itm_y++;
+				
+				if(win_itm_x==win_size_x-1)
+					win_itm_x = 0;
+				else
+					win_itm_x++;
+					
+			}
+			
+			// Load weight into weight buffer
+			if(gp_item_idx_x==0){
+				
+				weight_ch_vec = weights[out_idx_z*weight_dim1x2x3/VEC_SIZE + output_idx_dim3*weight_dim1x2 + output_idx_dim2*weight_dim1 + output_idx_dim1];
+				weight_buffer[output_idx_dim3*weight_dim2*weight_dim1 + output_idx_dim2*weight_dim1 + output_idx_dim1] = weight_ch_vec;
+			}
 
-							// Winbuffer loading operations
-							if(win_itm_z<weight_dim3/VEC_SIZE){
-
-								feature_idx_dim1 = win_itm_x+gp_num_x_winbuf*CONV_GP_SIZE_X*stride;
-								feature_idx_dim2 = win_itm_y+gp_num_y_winbuf*CONV_GP_SIZE_Y*stride;
-								feature_idx_dim3 = win_itm_z;
-
-								if((feature_idx_dim1>=padding && feature_idx_dim1<data_dim1+padding) && (feature_idx_dim2>=padding && feature_idx_dim2<data_dim2+padding)){
-								
-									data_vec = bottom[data_offset*data_dim1xdim2 + feature_idx_dim3*data_dim1xdim2 + (feature_idx_dim2-padding)*data_dim1 + (feature_idx_dim1-padding)];
-																	}
-								else{ // for padding (feature_idx<padding or data_dim+padding<=feature_idx<data_dim+2*padding)
-									#pragma unroll
-									for(unsigned char vv=0; vv<VEC_SIZE; vv++){
-										data_vec.data[vv] = CZERO;
-									}
-								}
-								
-								win_buffer[(~flag)&0x01][win_itm_z*win_size_y*win_size_x + win_itm_y*win_size_x + win_itm_x] = data_vec;
-
-								// used as loop counters
-								if((win_itm_z==weight_dim3/VEC_SIZE-1) && (win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
-									win_itm_z = 0;
-								else if((win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
-									win_itm_z++;
-
-								if((win_itm_y==win_size_y-1) && (win_itm_x==win_size_x-1))
-									win_itm_y = 0;
-								else if(win_itm_x==win_size_x-1)
-									win_itm_y++;
-								
-								if(win_itm_x==win_size_x-1)
-									win_itm_x = 0;
-								else
-									win_itm_x++;
-									
-							}
-							
-							// Load weight into weight buffer
-							if(gp_item_idx_x==0){
-								
-								weight_ch_vec = weights[out_idx_z*weight_dim1x2x3/VEC_SIZE + output_idx_dim3*weight_dim1x2 + output_idx_dim2*weight_dim1 + output_idx_dim1];
-								weight_buffer[output_idx_dim3*weight_dim2*weight_dim1 + output_idx_dim2*weight_dim1 + output_idx_dim1] = weight_ch_vec;
-							}
-
-							// In this version, grouping is only performed in row (x) direction
-							if(gp_num_x*CONV_GP_SIZE_X+gp_item_idx_x<conv_x){
-                    
-								if(output_idx_dim1==0 && output_idx_dim2==0 && output_idx_dim3==0){
-
-									bias_ch_in = bias[out_idx_z];
-									write_channel_intel(bias_ch, bias_ch_in);
-
-									//#ifdef DEBUG_MEMRD
-									//printf("work-item x=%d, y=%d, z=%d, channel =0, write bias=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, bias_ch_in.lane[0]);
-									//#endif
-								}
-
-								// data
-								data_vec = win_buffer[flag][output_idx_dim3*win_size_y*win_size_x + output_idx_dim2*win_size_x + (output_idx_dim1+gp_item_idx_x*stride)];
-								#pragma unroll
-								for(unsigned char ll=0; ll<LANE_NUM; ll++){
-									data_ch_vec.lane[ll] = data_vec;
-								}
-								write_channel_intel(data_ch, data_ch_vec);	
-								
-								
-								// weight and bias fetcher
-								weight_ch_vec = weight_buffer[output_idx_dim3*weight_dim2*weight_dim1 + output_idx_dim2*weight_dim1 + output_idx_dim1];
-								write_channel_intel(weight_ch, weight_ch_vec);	
-								
-								#ifdef DEBUG_MEMRD
-								//if(gp_num_x==group_num_x-1 && gp_num_y==0 && out_idx_z==0){
-									// printf("work-item x=%d, y=%d, z=%d, offset=%d, write data in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, data_offset, (float)data_ch_vec.lane[0].data[0]);
-									//printf("work-item x=%d, y=%d, z=%d, write weight in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, (float)weight_ch_vec.lane[0].data[0]);
-								//}
-								#endif
+			// In this version, grouping is only performed in row (x) direction
+			if(gp_num_x*CONV_GP_SIZE_X+gp_item_idx_x<conv_x){
 	
-								// used as output loop counters
-								if((output_idx_dim3==weight_dim3/VEC_SIZE-1) && (output_idx_dim2==weight_dim2-1) && (output_idx_dim1==weight_dim1-1)){
-									output_idx_dim3 = 0;
-									gp_item_idx_x++;
-								}
-								else if((output_idx_dim2==weight_dim2-1)&& (output_idx_dim1==weight_dim1-1))
-									output_idx_dim3++;
-								
-								if((output_idx_dim2==weight_dim2-1) && (output_idx_dim1==weight_dim1-1))
-									output_idx_dim2 = 0;
-								else if(output_idx_dim1==weight_dim1-1)
-									output_idx_dim2++;
-	                
-								if(output_idx_dim1==weight_dim1-1)
-									output_idx_dim1 = 0;
-								else
-									output_idx_dim1++;
+				if(output_idx_dim1==0 && output_idx_dim2==0 && output_idx_dim3==0){
 
-							}
+					bias_ch_in = bias[out_idx_z];
+					write_channel_intel(bias_ch, bias_ch_in);
 
+					//#ifdef DEBUG_MEMRD
+					//printf("work-item x=%d, y=%d, z=%d, channel =0, write bias=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, bias_ch_in.lane[0]);
+					//#endif
 				}
+
+				// data
+				data_vec = win_buffer[flag][output_idx_dim3*win_size_y*win_size_x + output_idx_dim2*win_size_x + (output_idx_dim1+gp_item_idx_x*stride)];
+				#pragma unroll
+				for(unsigned char ll=0; ll<LANE_NUM; ll++){
+					data_ch_vec.lane[ll] = data_vec;
+				}
+				write_channel_intel(data_ch, data_ch_vec);	
+				
+				
+				// weight and bias fetcher
+				weight_ch_vec = weight_buffer[output_idx_dim3*weight_dim2*weight_dim1 + output_idx_dim2*weight_dim1 + output_idx_dim1];
+				write_channel_intel(weight_ch, weight_ch_vec);	
+				
+				#ifdef DEBUG_MEMRD
+				//if(gp_num_x==group_num_x-1 && gp_num_y==0 && out_idx_z==0){
+					// printf("work-item x=%d, y=%d, z=%d, offset=%d, write data in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, data_offset, (float)data_ch_vec.lane[0].data[0]);
+					//printf("work-item x=%d, y=%d, z=%d, write weight in channel 0=%f\n", output_idx_dim1, output_idx_dim2, output_idx_dim3, (float)weight_ch_vec.lane[0].data[0]);
+				//}
+				#endif
+
+				// used as output loop counters
+				if((output_idx_dim3==weight_dim3/VEC_SIZE-1) && (output_idx_dim2==weight_dim2-1) && (output_idx_dim1==weight_dim1-1)){
+					output_idx_dim3 = 0;
+					gp_item_idx_x++;
+				}
+				else if((output_idx_dim2==weight_dim2-1)&& (output_idx_dim1==weight_dim1-1))
+					output_idx_dim3++;
+				
+				if((output_idx_dim2==weight_dim2-1) && (output_idx_dim1==weight_dim1-1))
+					output_idx_dim2 = 0;
+				else if(output_idx_dim1==weight_dim1-1)
+					output_idx_dim2++;
+	
+				if(output_idx_dim1==weight_dim1-1)
+					output_idx_dim1 = 0;
+				else
+					output_idx_dim1++;
+
+			}
+
+		}
 
 
 		// used as virtual group loop counters for winbuf loading operations
@@ -405,7 +405,7 @@ void coreConv(
 	MACTYPE conv_sum_bias[LANE_NUM];
 	DPTYPE  conv_final[LANE_NUM];
 
-	// each iteration generates one output
+	// each iteration generates one output (conv_x * conv_y * weight_m)/lane_num
 	for(unsigned int k=0; k<output_num; k++){
 		
 		bias_ch_out = read_channel_intel(bias_ch);
@@ -418,6 +418,7 @@ void coreConv(
 
 			#pragma unroll
 			for(unsigned int p=0; p<PIPE_DEPTH; p++){
+				// this sets everything to zero?
 				accum_piped[ll][p] = MASK_ACCUM & CZERO;
 			}
 		}
@@ -429,16 +430,24 @@ void coreConv(
 
 			#pragma unroll
 			for(unsigned char ll=0; ll<LANE_NUM; ll++){
-				
-				lane_accum[ll] = (MASK_ACCUM & accum_piped[ll][PIPE_DEPTH-1]) + (MASK_MULT & mac(mac_data.lane[ll], mac_weight.lane[ll]));
-			
+				// for each lane, multiply accumulate (?)
+
+				// mask_accum and mask_mult are 0xFFFFFFFF (they have no effect on the output)
+				// lane_accum[ll] = accum_piped[ll][PIPE_DEPTH-1] + mac(mac_data.lane[ll], mac_weight.lane[ll])
+				//                  ^ this is zero always !?!?
+				//lane_accum[ll] = (MASK_ACCUM & accum_piped[ll][PIPE_DEPTH-1]) + (MASK_MULT & mac(mac_data.lane[ll], mac_weight.lane[ll]));
+
+				lane_accum[ll] = mac(mac_data.lane[ll], mac_weight.lane[ll]);
+
+				/*
 				#pragma unroll
 				for(unsigned int p=PIPE_DEPTH-1; p>0; p-- ){
+					// `MASK_ACCUM &` is nop
 					accum_piped[ll][p] = MASK_ACCUM & accum_piped[ll][p-1];
 				}
 				
 				accum_piped[ll][0] = MASK_ACCUM & lane_accum[ll];
-
+				*/
 				#ifdef DEBUG_CONV
 				//if(ll==0 && k==0){
 				//	printf("dot_cnt=%d data=%f weight=%f (loop=%d, lane= %d, vec=0)\n", k, (float)mac_data.lane[ll].data[0], (float)mac_weight.lane[ll].data[0], j, ll);
@@ -447,28 +456,42 @@ void coreConv(
 			}
 		}// end of conv loop
 
+		// accum_piped[ll][0] === lane_accum[ll]
+		// lane_accum[] now contains the accumulated results as an int 32 bit (dot product)
 		#pragma unroll
 		for(unsigned char ll=0; ll<LANE_NUM; ll++){
 
+			/*
 			#pragma unroll
 			for(unsigned i=0; i<PIPE_DEPTH; i++){
-				conv_out[ll] += accum_piped[ll][i];
+				conv_out[ll] += lane_accum[ll];
 			}
+			*/
+			conv_out[ll] += lane_accum[ll];
 			
 			if(conv_out[ll]>=0)
 				conv_sign_exten[ll] = 0x00;
-			else
+			else // this should never happen(??)
 				conv_sign_exten[ll] = ~(0xFFFFFFFF>>(frac_w+frac_din-frac_dout-1));
 			
+			// divide conv_out[ll] by 2^(frac_w + (frac_din - frac_dout) -1)
+			// then add 1 for some reason (2's complement??)?
+			// this is type int
 			conv_with_rnd_bit[ll] = (conv_sign_exten[ll] | (conv_out[ll]>>(frac_w+frac_din-frac_dout-1))) + 0x01;
 
+			// now conv_with_rnd (rounded?) should be a fixed point representation (?)
+
+			// MASK9B = 0x1FE
 			if(conv_with_rnd_bit[ll]>=256)
 				conv_sum_bias[ll] = MASK9B & 0xFF;
 			else if(conv_with_rnd_bit[ll]<-256)
 				conv_sum_bias[ll] = MASK9B & 0x100;
-			else
+			else // add our dot product to our bias
 				conv_sum_bias[ll] = (MASK9B & conv_with_rnd_bit[ll])+(bias[ll]>>(frac_w-frac_dout-1))+0x01;
 
+			// this is type char
+			// MASK8B = 0xFF
+			// convert our result of (bias + dotproduct) back to fixed point??
 			conv_final[ll] = MASK8B & (conv_sum_bias[ll]>>0x01);
 			
 			// Relu operation
