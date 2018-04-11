@@ -24,10 +24,9 @@
 // CNN network configuration file
 #include "../device/hw_param.cl"
 #include "layer_config.h"
-
+#include "YOLO.hpp"
 
 #ifdef USE_OPENCV
-#include "YOLO.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
@@ -279,7 +278,7 @@ int main(int argc, char** argv)
 	knl_conv.reset(num_devices);
 	knl_memWr.reset(num_devices);
 	knl_pool.reset(num_devices);
-	// knl_lrn.reset(num_devices);
+	knl_lrn.reset(num_devices);
 	// For each layer a group of buffers are created to store the weights and bias
 	weights_buf.reset(num_devices*LAYER_NUM);
 	bias_buf.reset(num_devices*LAYER_NUM);
@@ -691,25 +690,25 @@ int main(int argc, char** argv)
 			}
 
 			//  Set knl_lrn arguments.
-			// if(layer_config[j][lrn_on]){
-			// 	argi = 0;
+			if(layer_config[j][lrn_on]){
+				argi = 0;
 
-			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_x]);
-			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_x]);
+				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_y]);
-			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_uchar), &layer_config[j][pool_y]);
+				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_char), &precision_config[j][frac_dout]);
-			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_char), &precision_config[j][frac_dout]);
+				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &output_buf[i*input_config[batch_size]+k]);
-			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &output_buf[i*input_config[batch_size]+k]);
+				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			// 	status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &data_buf[i*input_config[batch_size]+k]);
-			// 	checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
+				status = clSetKernelArg(knl_lrn[i], argi++, sizeof(cl_mem), &data_buf[i*input_config[batch_size]+k]);
+				checkError(status, "Failed to set argument %d of kernel lrn", argi - 1);
 
-			// }
+			}
 
 			// Excutes Kernel
 			//
@@ -755,22 +754,22 @@ int main(int argc, char** argv)
 			checkError(status, "Failed to launch kernel memWr");
 
 			// kernel lrn
-			// if(layer_config[j][lrn_on]){
+			if(layer_config[j][lrn_on]){
 
-			// 	printf("\nHam3.5\n");
-			// 	knl_lrn_global_size[0] = layer_config[j][pool_x];
-			// 	knl_lrn_global_size[1] = layer_config[j][pool_y];
-			// 	knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
-			// 	knl_lrn_local_size[0] = 1;
-			// 	knl_lrn_local_size[1] = 1;
-			// 	knl_lrn_local_size[2] = layer_config[j][pool_z]/VEC_SIZE;
+				printf("\nHam3.5\n");
+				knl_lrn_global_size[0] = layer_config[j][pool_x];
+				knl_lrn_global_size[1] = layer_config[j][pool_y];
+				knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
+				knl_lrn_local_size[0] = 1;
+				knl_lrn_local_size[1] = 1;
+				knl_lrn_local_size[2] = layer_config[j][pool_z]/VEC_SIZE;
 
-			// 	if(k == 0&&pic_num==1)
-			// 		printf("\nLaunching kernel lrn with local size: %d, %d, %d  (global size: %d, %d, %d)\n", (int)knl_lrn_local_size[0], (int)knl_lrn_local_size[1], (int)knl_lrn_local_size[2], (int)knl_lrn_global_size[0], (int)knl_lrn_global_size[1], (int)knl_lrn_global_size[2]);
+				if(k == 0&&pic_num==1)
+					printf("\nLaunching kernel lrn with local size: %d, %d, %d  (global size: %d, %d, %d)\n", (int)knl_lrn_local_size[0], (int)knl_lrn_local_size[1], (int)knl_lrn_local_size[2], (int)knl_lrn_global_size[0], (int)knl_lrn_global_size[1], (int)knl_lrn_global_size[2]);
 
-			// 	status = clEnqueueNDRangeKernel(que_memWr[i], knl_lrn[i], 3, NULL, knl_lrn_global_size, knl_lrn_local_size, 0, NULL, &lrn_event[i]);
-			// 	checkError(status, "Failed to launch kernel lrn");
-			// }
+				status = clEnqueueNDRangeKernel(que_memWr[i], knl_lrn[i], 3, NULL, knl_lrn_global_size, knl_lrn_local_size, 0, NULL, &lrn_event[i]);
+				checkError(status, "Failed to launch kernel lrn");
+			}
 
 			// Wait for all kernel to finish
 			if(layer_config[j][lrn_on]){

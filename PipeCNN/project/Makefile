@@ -21,9 +21,9 @@ HOST_DEBUG =
 #supported vendors are xilinx, altera, amd
 VENDOR = altera
 #select the host archecture  x86|arm32
-PLATFORM = arm32
+PLATFORM = x86
 #optinal flows are hw|hw_emu|sw_emu
-FLOW        = hw
+FLOW        = sw_emu
 ifeq ($(VENDOR),xilinx)
 KERNEL_SRCS = ./device/conv_pipe_xilinx.cl
 else
