@@ -37,7 +37,7 @@
 
 // Macro architecture parameters
 // General
-#define VEC_SIZE            16              // larger than 4, i.e., 4, 8, 16, ...
+#define VEC_SIZE            8              // larger than 4, i.e., 4, 8, 16, ...
 #define LANE_NUM            8             // larger than 1, for alexnet: 2, 3, 4, 8, 12, 15, 16, 22, 28, 32, 34, 48, 50, 51, 52, 64, ...
 #define CHN_DEPTH           0
 //MemRD Kernel
@@ -54,11 +54,12 @@
 // Conv Kernel
 #define PIPE_DEPTH          4
 // Pooling Kernel
-#define POOL_LBUF_DEPTH     512            // Must be large enough to hold one line (dim1/dim2)
+#define POOL_LBUF_DEPTH     512            // YOLO - Must be large enough to hold one line (dim1/dim2)
+// #define POOL_LBUF_DEPTH     224         // AlexNet Must be large enough to hold one line (dim1/dim2)
 #define POOL_MAX_SIZE       3
 // Lrn Kernel
 #define LRN_WIN_SIZE        5
-#define LRN_MAX_LOCAL_SIZE  (512/VEC_SIZE) // For alexnet the max dim3 size is 256
+#define LRN_MAX_LOCAL_SIZE  (256/VEC_SIZE) // For alexnet the max dim3 size is 256
 #define MAN_BITS            23             // Floating point format setting
 #define EXP_MASK            0xFF           // Floating point format setting
 #define MAN_MASK            0x7FFFFF       // Floating point format setting

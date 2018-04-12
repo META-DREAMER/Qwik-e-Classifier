@@ -24,9 +24,10 @@
 // CNN network configuration file
 #include "../device/hw_param.cl"
 #include "layer_config.h"
-#include "YOLO.hpp"
+
 
 #ifdef USE_OPENCV
+#include "YOLO.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
@@ -70,23 +71,34 @@ char  synset_buf[1000][1024]={0};
 DTYPE searchTop[1024];
 float accuracy1=0;
 float accuracy5=0;
+float maxProb=0;
 
 
-// AlexNet
+#ifdef USE_YOLO
+// YOLO
 // Original problem size
 // File size is in num of DTYPE numbers
 #define IMAGE_FILE_SIZE   (416*416*3)
-//#define WEIGHTS_FILE_SIZE 60965224 //fc8-1000
 #define WEIGHTS_FILE_SIZE 15858717  //fc8-1024
 #define LAYER_NUM         9
 #define CONV_NUM          9
-
-
 const char *weight_file_path = "./data/yolo/weights.dat";
 const char *input_file_path = "./data/yolo/dog.dat";
 const char *ref_file_path = "./data/data_alex/fc8.dat";
 const char *dump_file_path = "./result_dump.txt";
 
+#else
+// AlexNet
+#define IMAGE_FILE_SIZE   (227*227*3)
+#define WEIGHTS_FILE_SIZE 61063552  //fc8-1024
+#define LAYER_NUM         8
+#define CONV_NUM          5
+const char *weight_file_path = "./data/data_alex/weights.dat";
+const char *input_file_path = "./data/data_alex/image.dat";
+const char *ref_file_path = "./data/data_alex/fc8.dat";
+const char *dump_file_path = "./result_dump.txt";
+
+#endif
 
 /*
 // VGG16
@@ -322,9 +334,10 @@ int main(int argc, char** argv)
 		knl_memWr[i] = clCreateKernel(program, knl_name_memWr, &status);
 		checkError(status, "Failed to create memWr kernel");
 
-		// knl_lrn[i] = clCreateKernel(program, knl_name_lrn, &status);
-		// checkError(status, "Failed to create lrn kernel");
-
+		#ifndef USE_YOLO
+		knl_lrn[i] = clCreateKernel(program, knl_name_lrn, &status);
+		checkError(status, "Failed to create lrn kernel");
+		#endif
 		// Mems
 		// Create weight and bias buffers for each layer
 		for(unsigned j = 0; j < LAYER_NUM; ++j){
@@ -386,6 +399,7 @@ int main(int argc, char** argv)
 	unsigned short out_dim1xbatch;
 	unsigned int   out_dim1x2xbatch;
 	unsigned char  padding_offset;
+
 	unsigned short  conv_group_num_dim1, conv_group_num_dim2;
 	unsigned char  conv_win_size_dim1, conv_win_size_dim2;
 	unsigned int   conv_win_size_dim1x2x3;
@@ -755,8 +769,6 @@ int main(int argc, char** argv)
 
 			// kernel lrn
 			if(layer_config[j][lrn_on]){
-
-				printf("\nHam3.5\n");
 				knl_lrn_global_size[0] = layer_config[j][pool_x];
 				knl_lrn_global_size[1] = layer_config[j][pool_y];
 				knl_lrn_global_size[2] = layer_config[j][pool_z]/VEC_SIZE;
@@ -941,6 +953,7 @@ void verifyResult(int num)
 {
 
 #ifdef USE_OPENCV
+	#ifdef USE_YOLO
     int max_label;
     char * substr;
     unsigned xDim = output_config[output_w];
@@ -963,6 +976,32 @@ void verifyResult(int num)
     imshow("PipeCNN", curImage);
 
     waitKey(600);
+    #else 
+
+    int max_label;
+    char * substr;
+	softmax(output_reorder, output_one_item);
+	max_label = getProb(output_one_item);
+
+    char probstr[24];
+    sprintf(probstr, "Probability: %f", maxProb);
+	// Show the picture
+    substr = &synset_buf[max_label][10];
+
+	// Mat img = imread(picture_file_path);
+    putText(curImage,substr,Point(20, 50), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(255, 255, 0), 2, 8);
+    putText(curImage, probstr,Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 255, 0), 2, 8);
+    // if(max_label == label[num-1]){
+    //     putText(img,"True",Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 255, 0), 2, 8);
+    // } else {
+    //     putText(img,"False",Point(20, 80), CV_FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 0, 255), 2, 8);
+    //     printf("False: True_label = %d Inferred_label = %d\n\n", label[num], max_label);
+    // }
+    imshow( "PipeCNN", curImage);
+	cvMoveWindow("PipeCNN",0,0);//set the window's position
+    waitKey(600);
+    #endif
+
 #else
 	// Validate the results
 	printf("\nStart verifying results ...\n");
@@ -1002,12 +1041,14 @@ void loadImageToBuffer(int num)
 #ifdef USE_OPENCV
 	// load image from picture files
 	// get the correct paths for each pictures
-	char end[14]="00000000.JPEG";//endof the char[] '\0'
-	char head[100];
-	numtochar(num,end);
-	memset(picture_file_path,0x00,sizeof(char)*100);
-	strcpy(head,picture_file_path_head);
-	strcpy(picture_file_path,strcat(head,end));
+	// #ifndef USE_YOLO
+	// char end[14]="00000000.JPEG";//endof the char[] '\0'
+	// char head[100];
+	// numtochar(num,end);
+	// memset(picture_file_path,0x00,sizeof(char)*100);
+	// strcpy(head,picture_file_path_head);
+	// strcpy(picture_file_path,strcat(head,end));
+	// #endif
 
 	if(load_picture(image)==1)
 		printf("Error: loading image data from real pictures failed !!!\n");
@@ -1152,7 +1193,6 @@ int prepare()
 		}
 		conv_win_size_dim2    = layer_config[ll][weight_h];
 		// check win_buffer size
-		printf("\nlayer: %d, dim1: %d, dim2: %d, weight_n: %d\n", ll, conv_win_size_dim1, conv_win_size_dim2, layer_config[ll][weight_n]/VEC_SIZE);
 		if(conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE > WIN_BUF_SIZE){
 
 			printf("Error: required win_buffer size is %d, configured size is %d \n", conv_win_size_dim1*conv_win_size_dim2*layer_config[ll][weight_n]/VEC_SIZE, WIN_BUF_SIZE);
@@ -1467,12 +1507,12 @@ void softmax(DTYPE *output_reorder , DTYPE *output)
 int getProb(DTYPE *output)
 {
     int m=0;
-    float max=output[0];
+    maxProb=output[0];
 
 	// find the class with the highest score
     for(unsigned int i=0;i<output_config[output_n];i++){
-        if(max<output[i]){
-			max=output[i];
+        if(maxProb<output[i]){
+			maxProb=output[i];
             m=i;
 		}
     }
@@ -1482,7 +1522,7 @@ int getProb(DTYPE *output)
     synset_buf[m][ii-2]= 32;
     synset_buf[m][ii-1]= 32;
 
-	printf("\nThe inference result is %s (the prob is %5.2f) \n\n", synset_buf[m], max);
+	printf("\nThe inference result is %s (the prob is %5.2f) \n\n", synset_buf[m], maxProb);
 
 	return m;
 
@@ -1509,7 +1549,6 @@ void dumpResult(){
 	result_file.close();
 }
 
-
 void formatResult(){
 	ofstream result_file;
 
@@ -1524,7 +1563,7 @@ void formatResult(){
 	for(unsigned x=0; x<xDim; x++){
 		for(unsigned y=0; y<yDim; y++){
 			for(unsigned z=0; z<zDim; z++){
-				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[8][frac_dout]) << " ";
+				result_file << (float)output_reorder[x + xDim*y + xDim*yDim*z]*pow(2, -1*precision_config[LAYER_NUM - 1][frac_dout]) << " ";
 			}
 		}
 	}
@@ -1535,32 +1574,85 @@ void formatResult(){
 #ifdef USE_OPENCV
 // Load image from files
 int load_picture(DTYPE *image){
-		VideoCapture cap;
-		if(!cap.open(0)) {
-			printf("Error: unable to open webcam.\n");
-        	return 1;
-		}
-		Mat img1;
-		cap >> img1;
+	#ifdef USE_YOLO
+	VideoCapture cap;
+	if(!cap.open(0)) {
+		printf("Error: unable to open webcam.\n");
+    	return 1;
+	}
+	Mat img1;
+	cap >> img1;
 
-		// resize to the input size of the first layer
-		resize(img1,curImage,Size(layer_config_original[0][data_w],layer_config_original[0][data_h]));
-		// convert to 8-bit fixed-point
-		curImage.convertTo(curImage,CV_8SC3);
+	// resize to the input size of the first layer
+	resize(img1,curImage,Size(layer_config_original[0][data_w],layer_config_original[0][data_h]));
+	// convert to 8-bit fixed-point
+	curImage.convertTo(curImage,CV_8SC3);
 
-		// reorder channel sequence from RGB to GBR
-		DTYPE * data_ptr = (DTYPE*)curImage.data;
-		unsigned int w,h,c;
-		unsigned int k=0;
-		for(h=0;h<layer_config_original[0][data_h];h++){
-			for(w=0;w<layer_config_original[0][data_w];w++){
-				for (c=0;c<layer_config_original[0][data_n];c++){
-					 image[c*layer_config_original[0][data_w]*layer_config_original[0][data_h]+h*layer_config_original[0][data_w]+w]=data_ptr[k];
-					 k++;
-				}
+	// reorder channel sequence from RGB to GBR
+	DTYPE * data_ptr = (DTYPE*)curImage.data;
+	unsigned int w,h,c;
+	unsigned int k=0;
+	for(h=0;h<layer_config_original[0][data_h];h++){
+		for(w=0;w<layer_config_original[0][data_w];w++){
+			for (c=0;c<layer_config_original[0][data_n];c++){
+				 image[c*layer_config_original[0][data_w]*layer_config_original[0][data_h]+h*layer_config_original[0][data_w]+w]=data_ptr[k];
+				 k++;
 			}
 		}
-		return 0;
+	}
+	return 0;
+	#else
+
+	float *mean_data;
+
+	printf("\nLoading picture %s .....\n\n", picture_file_path);
+
+	// load ILSVRC2012 database mean data
+	mean_data = (float *) malloc(sizeof(float)*MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT*MEAN_DATA_CHANNEl);
+	if(mean_data == NULL){
+		printf("Error: allocating memory for images failed !!!\n");
+		return 1;
+	}
+
+	FILE *p_mean_data=fopen(mean_data_file_path,"rb");
+	fread(mean_data,sizeof(float),MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT*MEAN_DATA_CHANNEl,p_mean_data);
+
+	// load picture from files
+	VideoCapture cap;
+	if(!cap.open(0)) {
+		printf("Error: unable to open webcam.\n");
+    	return 1;
+	}
+	cap >> curImage;
+
+	// Mat img = imread(picture_file_path);
+	// resize pic to MEAN_DATA_WIDTH*MEAN_DATA_HEIGHT, and substract with mean data
+	Mat img1;
+	resize(curImage,img1,Size(MEAN_DATA_WIDTH,MEAN_DATA_HEIGHT));
+	img1.convertTo(img1,CV_32FC3);
+	Mat mean_mat(MEAN_DATA_WIDTH, MEAN_DATA_HEIGHT, CV_32FC3, mean_data);
+	img1 = img1 - mean_mat;
+	// resize to the input size of the first layer
+	Mat img2;
+	resize(img1,img2,Size(layer_config_original[0][data_w],layer_config_original[0][data_h]));
+	// convert to 8-bit fixed-point
+	img2.convertTo(img2,CV_8SC3);
+	// reorder channel sequence from RGB to GBR
+	DTYPE * data_ptr = (DTYPE*)img2.data;
+	unsigned int w,h,c;
+	unsigned int k=0;
+	for(h=0;h<layer_config_original[0][data_h];h++){
+		for(w=0;w<layer_config_original[0][data_w];w++){
+			for (c=0;c<layer_config_original[0][data_n];c++){
+				 image[c*layer_config_original[0][data_w]*layer_config_original[0][data_h]+h*layer_config_original[0][data_w]+w]=data_ptr[k];
+				 k++;
+			}
+		}
+	}
+	fclose(p_mean_data);
+	return 0;
+	#endif
+
 }
 
 void labelNum()
@@ -1723,5 +1815,5 @@ void cleanup()
 	alignedFree(output);
 	alignedFree(output_reorder);
 	alignedFree(output_one_item);
-
+	curImage.release();
 }

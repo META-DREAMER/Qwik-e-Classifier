@@ -683,130 +683,132 @@ void memWrite(
 	barrier(CLK_LOCAL_MEM_FENCE);
 }
 
+#ifndef USE_YOLO
 
-// __kernel
-// __attribute__((max_work_group_size(LRN_MAX_LOCAL_SIZE)))
-// void lrn(
-// 			// Params Ports
-// 			uchar data_dim1,
-// 			uchar data_dim2,
-// 			char  frac_dout,
-// 			// Data Ports
-// 			__global lane_data *restrict bottom,
-// 			__global lane_data *restrict top
-// 		)
-// {
-// 	uchar  global_x = get_global_id(0); // max value 256
-// 	uchar  global_y = get_global_id(1); // max value 256
-// 	ushort global_z = get_global_id(2); // max value 4096
+__kernel
+__attribute__((max_work_group_size(LRN_MAX_LOCAL_SIZE)))
+void lrn(
+			// Params Ports
+			uchar data_dim1,
+			uchar data_dim2,
+			char  frac_dout,
+			// Data Ports
+			__global lane_data *restrict bottom,
+			__global lane_data *restrict top
+		)
+{
+	uchar  global_x = get_global_id(0); // max value 256
+	uchar  global_y = get_global_id(1); // max value 256
+	ushort global_z = get_global_id(2); // max value 4096
 
-// 	#ifdef DEBUG_LRN
-// 	int local_x = get_local_id(0);
-// 	int local_y = get_local_id(1);
-// 	int local_z = get_local_id(2);
-// 	int block_x = get_group_id(0);
-// 	int block_y = get_group_id(1);
-// 	int block_z = get_group_id(2);
-// 	#endif
+	#ifdef DEBUG_LRN
+	int local_x = get_local_id(0);
+	int local_y = get_local_id(1);
+	int local_z = get_local_id(2);
+	int block_x = get_group_id(0);
+	int block_y = get_group_id(1);
+	int block_z = get_group_id(2);
+	#endif
 	
-// 	__local DPTYPE z_buffer[VEC_SIZE*LRN_MAX_LOCAL_SIZE+LRN_WIN_SIZE]; // allocate two more points for padding
-// 	__local DPTYPE lrn_buffer[VEC_SIZE*LRN_MAX_LOCAL_SIZE];
-// 	channel_scal data_in;
-// 	channel_scal data_pad_left;
-// 	channel_scal data_pad_right;
-// 	channel_scal data_out;
-// 	lane_data    data_in_partial;
-// 	lane_data    data_left_partial;
-// 	lane_data    data_right_partial;
-// 	lane_data    data_out_partial;
-// 	int          *convert_ptr;
-// 	int          expo;
-// 	uint         manti;
-// 	uint         addr_1, addr_2, addr;
-// 	float        lrn_reg1, lrn_reg2, lrn_tmp, lrn_out;
-// 	short        lrn_cnvt, lrn_cnvt2;
+	__local DPTYPE z_buffer[VEC_SIZE*LRN_MAX_LOCAL_SIZE+LRN_WIN_SIZE]; // allocate two more points for padding
+	__local DPTYPE lrn_buffer[VEC_SIZE*LRN_MAX_LOCAL_SIZE];
+	channel_scal data_in;
+	channel_scal data_pad_left;
+	channel_scal data_pad_right;
+	channel_scal data_out;
+	lane_data    data_in_partial;
+	lane_data    data_left_partial;
+	lane_data    data_right_partial;
+	lane_data    data_out_partial;
+	int          *convert_ptr;
+	int          expo;
+	uint         manti;
+	uint         addr_1, addr_2, addr;
+	float        lrn_reg1, lrn_reg2, lrn_tmp, lrn_out;
+	short        lrn_cnvt, lrn_cnvt2;
 	
-// 	// Load the all data in one line along dim3 into local line buffer
-// 	#pragma unroll
-// 	for(unsigned char ll=0; ll<VEC_SIZE; ll++){
-// 		z_buffer[global_z*VEC_SIZE+ll+LRN_WIN_SIZE/2] = bottom[global_z*data_dim2*data_dim1 + global_y*data_dim1+ global_x].data[ll];
-// 	}
+	// Load the all data in one line along dim3 into local line buffer
+	#pragma unroll
+	for(unsigned char ll=0; ll<VEC_SIZE; ll++){
+		z_buffer[global_z*VEC_SIZE+ll+LRN_WIN_SIZE/2] = bottom[global_z*data_dim2*data_dim1 + global_y*data_dim1+ global_x].data[ll];
+	}
 	
-// 	//Padding left
-// 	if(global_z==0){
-// 		#pragma unroll
-// 		for(unsigned char ll=0; ll<LRN_WIN_SIZE/2; ll++){
-// 			z_buffer[ll] = CZERO;
-// 		}
-// 	}
+	//Padding left
+	if(global_z==0){
+		#pragma unroll
+		for(unsigned char ll=0; ll<LRN_WIN_SIZE/2; ll++){
+			z_buffer[ll] = CZERO;
+		}
+	}
 
-// 	// Padding right
-// 	if(global_z==(get_global_size(2)-1)){
-// 		#pragma unroll
-// 		for(unsigned char ll=0; ll<LRN_WIN_SIZE/2; ll++){
-// 			z_buffer[VEC_SIZE*get_local_size(2)+ll+LRN_WIN_SIZE/2] = CZERO;
-// 		}
-// 	}
+	// Padding right
+	if(global_z==(get_global_size(2)-1)){
+		#pragma unroll
+		for(unsigned char ll=0; ll<LRN_WIN_SIZE/2; ll++){
+			z_buffer[VEC_SIZE*get_local_size(2)+ll+LRN_WIN_SIZE/2] = CZERO;
+		}
+	}
 
-// 	#ifdef DEBUG_LRN
-// 	if(global_z==0&&global_x==0&&global_y==0)
-// 	printf("Kernel LRN: work-item x=%d, y=%d, z=%d(z_local=%d)\n", global_x, global_y, global_z, local_z);
-// 	#endif
-// 	barrier(CLK_LOCAL_MEM_FENCE);
+	#ifdef DEBUG_LRN
+	if(global_z==0&&global_x==0&&global_y==0)
+	printf("Kernel LRN: work-item x=%d, y=%d, z=%d(z_local=%d)\n", global_x, global_y, global_z, local_z);
+	#endif
+	barrier(CLK_LOCAL_MEM_FENCE);
 
-// 	// Piecewise interpolation pipeline for lrn operation (i.e., y=pwlf(x'))
-// 	for(unsigned char ll=0; ll<VEC_SIZE; ll++){
-// 		// First Step: Coefficients table looking-up
-// 		// Calculate x'=sum(x(k)^2) for the pwlf function, x(k)s are from adjacent featuremaps
-// 		lrn_reg2 = CZERO;
-// 		#pragma unroll
-// 		for(char k=-LRN_WIN_SIZE/2; k<=LRN_WIN_SIZE/2; k++){
-// 			lrn_cnvt = z_buffer[global_z*VEC_SIZE+ll+k+LRN_WIN_SIZE/2]<<(-frac_dout);
-// 			lrn_reg1 = convert_float(lrn_cnvt);
-// 			lrn_reg2 += lrn_reg1 * lrn_reg1;
-// 			#ifdef DEBUG_LRN
-// 			if(global_z==0&&global_x==0&&global_y==0)
-// 			printf("x=%f(k=%d), ", lrn_reg1, k);
-// 			#endif
-// 		}
-// 		convert_ptr = (int*) (&lrn_reg2);
-// 		expo = (EXP_MASK & (*convert_ptr >> MAN_BITS)) - 127;
-// 		manti = ((*convert_ptr) & MAN_MASK);
+	// Piecewise interpolation pipeline for lrn operation (i.e., y=pwlf(x'))
+	for(unsigned char ll=0; ll<VEC_SIZE; ll++){
+		// First Step: Coefficients table looking-up
+		// Calculate x'=sum(x(k)^2) for the pwlf function, x(k)s are from adjacent featuremaps
+		lrn_reg2 = CZERO;
+		#pragma unroll
+		for(char k=-LRN_WIN_SIZE/2; k<=LRN_WIN_SIZE/2; k++){
+			lrn_cnvt = z_buffer[global_z*VEC_SIZE+ll+k+LRN_WIN_SIZE/2]<<(-frac_dout);
+			lrn_reg1 = convert_float(lrn_cnvt);
+			lrn_reg2 += lrn_reg1 * lrn_reg1;
+			#ifdef DEBUG_LRN
+			if(global_z==0&&global_x==0&&global_y==0)
+			printf("x=%f(k=%d), ", lrn_reg1, k);
+			#endif
+		}
+		convert_ptr = (int*) (&lrn_reg2);
+		expo = (EXP_MASK & (*convert_ptr >> MAN_BITS)) - 127;
+		manti = ((*convert_ptr) & MAN_MASK);
 		
-// 		addr_1 = ((expo-EXP_STEP_MIN)>>EXP_STEP_LOG)<<MAN_INDEX_BITS;
-// 		addr_2 = (manti>>(MAN_BITS-MAN_INDEX_BITS) & MAN_INDEX_MASK)+1;
-// 		if(expo<EXP_STEP_MIN)
-// 			addr = 0;
-// 		else
-// 			addr = addr_1+addr_2;
+		addr_1 = ((expo-EXP_STEP_MIN)>>EXP_STEP_LOG)<<MAN_INDEX_BITS;
+		addr_2 = (manti>>(MAN_BITS-MAN_INDEX_BITS) & MAN_INDEX_MASK)+1;
+		if(expo<EXP_STEP_MIN)
+			addr = 0;
+		else
+			addr = addr_1+addr_2;
 
-// 		lrn_tmp = ((lrn_reg2-x_sample[addr])*h_inv[addr])*coef1[addr] + coef0[addr];	
+		lrn_tmp = ((lrn_reg2-x_sample[addr])*h_inv[addr])*coef1[addr] + coef0[addr];	
 		
-// 		lrn_cnvt2 = z_buffer[global_z*VEC_SIZE+ll+LRN_WIN_SIZE/2]<<(-frac_dout);
-// 		lrn_out = lrn_tmp*convert_float(lrn_cnvt2);
+		lrn_cnvt2 = z_buffer[global_z*VEC_SIZE+ll+LRN_WIN_SIZE/2]<<(-frac_dout);
+		lrn_out = lrn_tmp*convert_float(lrn_cnvt2);
 
-// 		// Convert float to DPTYPE fixed-point
-// 		// Note: current version only support frac_din=0 for next layer
-// 		lrn_buffer[global_z*VEC_SIZE+ll] = convert_char_rte(lrn_out);
+		// Convert float to DPTYPE fixed-point
+		// Note: current version only support frac_din=0 for next layer
+		lrn_buffer[global_z*VEC_SIZE+ll] = convert_char_rte(lrn_out);
 
-// 		#ifdef DEBUG_LRN
-// 		if(global_z==0&&global_x==0&&global_y==0)
-// 		printf("\nKernel LRN (ll=%d): pwlf_x=%f, expo=%d, addr=%d, pwlf_y=%f, lrn=%f\n", ll, lrn_reg2, expo, addr, lrn_tmp, lrn_out);
-// 		#endif
-// 		barrier(CLK_LOCAL_MEM_FENCE);
-// 	}
+		#ifdef DEBUG_LRN
+		if(global_z==0&&global_x==0&&global_y==0)
+		printf("\nKernel LRN (ll=%d): pwlf_x=%f, expo=%d, addr=%d, pwlf_y=%f, lrn=%f\n", ll, lrn_reg2, expo, addr, lrn_tmp, lrn_out);
+		#endif
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
 
-// 	// Store the results back to global mem
-// 	#pragma unroll
-// 	for(unsigned char vv=0; vv<VEC_SIZE; vv++){
-// 		data_out_partial.data[vv]=lrn_buffer[global_z*VEC_SIZE+vv];
-// 	}
-// 	top[global_z*data_dim2*data_dim1 + global_y*data_dim1 + global_x] = data_out_partial;
+	// Store the results back to global mem
+	#pragma unroll
+	for(unsigned char vv=0; vv<VEC_SIZE; vv++){
+		data_out_partial.data[vv]=lrn_buffer[global_z*VEC_SIZE+vv];
+	}
+	top[global_z*data_dim2*data_dim1 + global_y*data_dim1 + global_x] = data_out_partial;
 	
-// 	#ifdef DEBUG_LRN_OUT
-// 	if(global_z==0&&global_x==0&&global_y==0)
-// 	printf("\nKernel LRN OUT: x=%d, y=%d, z=%d, result=%f\n", global_x, global_y, global_z, (float)data_out_partial.data[0]);
-// 	#endif
+	#ifdef DEBUG_LRN_OUT
+	if(global_z==0&&global_x==0&&global_y==0)
+	printf("\nKernel LRN OUT: x=%d, y=%d, z=%d, result=%f\n", global_x, global_y, global_z, (float)data_out_partial.data[0]);
+	#endif
 
-// }
+}
 
+#endif

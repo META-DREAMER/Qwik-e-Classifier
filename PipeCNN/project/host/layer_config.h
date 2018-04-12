@@ -402,14 +402,14 @@ char precision_config[][3] ={{7,  0, -2}//Layer-1
 
 // unsigned input_config[5] = {227, 227, 3, 1}; //original image size(dim1, dim2, dim3), batch size
 
-// //unsigned output_config[3] = {27, 27, 96};//Layer-1
-// //unsigned output_config[3] = {55, 55, 96};//Layer-1
+//unsigned output_config[3] = {27, 27, 96};//Layer-1
+//unsigned output_config[3] = {55, 55, 96};//Layer-1
 
-// //unsigned output_config[3] = {13, 13, 256};//Layer-2
+//unsigned output_config[3] = {13, 13, 256};//Layer-2
 
-// //unsigned output_config[3] = {6, 6, 256};//Layer-5
+//unsigned output_config[3] = {6, 6, 256};//Layer-5
 
-// //unsigned output_config[3] = {1, 1, 4096};//Layer-6
+//unsigned output_config[3] = {1, 1, 4096};//Layer-6
 
 // unsigned output_config[3] = {1, 1, 1024};//Layer-8  Note: only one result is extracted and verified
 

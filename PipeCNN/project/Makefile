@@ -2,6 +2,8 @@
 #if you are loading images from OpenCV interfaces please set to 1
 USE_OPENCV = 1
 
+USE_YOLO = 1
+
 #set source and target for host
 HOST_EXE  = run.exe
 HOST_SRCS_ORIG = ./host/main.cpp ../common/ocl_util.cpp ../common/timer.cpp
@@ -23,7 +25,7 @@ VENDOR = altera
 #select the host archecture  x86|arm32
 PLATFORM = x86
 #optinal flows are hw|hw_emu|sw_emu
-FLOW        = sw_emu
+FLOW        = sw
 ifeq ($(VENDOR),xilinx)
 KERNEL_SRCS = ./device/conv_pipe_xilinx.cl
 else
