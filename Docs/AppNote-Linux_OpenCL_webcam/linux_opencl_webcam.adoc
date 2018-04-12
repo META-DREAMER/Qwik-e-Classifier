@@ -50,7 +50,7 @@ The one not supported directly by the kernel is the OpenCL driver.
 Intel provides the source code of this driver which can be compiled to be used with our kernel.
 
 Our operating system (Linux) is stored on the MicroSD card, and the setup is very similar to that of a Raspberry Pi.
-The architecture of the A9 cores is `armv7` (the same as Raspbery Pi 2 and up), and includes floating point hardware, so looking at tutorials for those Pi's may be useful to get cross compilers or other software installed.
+The architecture of the A9 cores is `armv7` (the same as Raspberry Pi 2 and up), and includes floating point hardware, so looking at tutorials for those Pi's may be useful to get cross compilers or other software installed.
 The prefix for this architecture is `arm-linux-gnueabihf` where the `hf` stands for "hard float", i.e., dedicated floating point hardware.
 The processor also supports the NEON SIMD instructions.
 
@@ -92,7 +92,7 @@ image::block.png[block diagram?]
 All of the components in the FPGA section are programmed by the `opencl.rbf` file on the SD card. See <<Compiling OpenCL code>>
 
 == Preparing our donor SD card image 
-We will be using the SD card image provied by the user thinkoco on Github which uses kernel version 3.18 with a root file system containing Ubuntu 16.04.
+We will be using the SD card image provided by the user thinkoco on Github which uses kernel version 3.18 with a root file system containing Ubuntu 16.04.
 
 [NOTE]
 ====
@@ -105,7 +105,7 @@ If you end up using a different Linux kernel version (other than 3.18), see the 
 The `.img` file can be downloaded from https://drive.google.com/file/d/1r_3QgYYsHSgcc0NMVzGlTrhL19zCaudW/view?usp=sharing[here].
 
 === Load the image onto a MicroSD card
-Extrac the downloaded `.7z` file (we used 7zip). Once extracted, the file we be around 3.7GB.
+Extract the downloaded `.7z` file (we used 7zip). Once extracted, the file we be around 3.7GB.
 
 On Windows use Win32DiskImager, on Mac or Linux use `dd`.
 
@@ -348,7 +348,7 @@ There are two ways to transfer files to the root file system partition:
 
 ==== SFTP 
 With the DE10 on the same network as a PC, we can use a SFTP client to easily transfer files.
-On most laptops you can also share the laptops wifi to ethernet, to connect that way if on a network that whitelists ethernet connections.
+On most laptops you can also share the laptops Wi-Fi to ethernet, to connect that way if on a network that whitelists ethernet connections.
 In a FTP client like Filezilla, connect using:
 
 * Host: The ip address of the DE10. Can be found on the USB serial port by running: `ifconfig`
